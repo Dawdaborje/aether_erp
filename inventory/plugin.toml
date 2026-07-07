@@ -1,0 +1,7 @@
+[plugin]
+name = "inventory"
+version = "0.1.0"
+description = "Aeter ERP Inventory Plugin"
+long_description = """Aeter ERP Inventory Addon"""
+target = "wasm"
+output = "./bin"

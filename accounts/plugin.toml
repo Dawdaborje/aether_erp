@@ -1,0 +1,7 @@
+[plugin]
+name = "accounts"
+version = "0.1.0"
+description = "Aeter ERP Accounts Plugin"
+long_description = """Aeter ERP Accounts Addon"""
+target = "wasm"
+output = "./bin"

@@ -1,0 +1,24 @@
+[workspace]
+name = "erp"
+label = "Enterprise Resource Planner"
+version = "0.1"
+assets = "./assets"
+description = "This is an erp workspace"
+long_description = """
+This is a software suite
+"""
+group_label = "ERP Software Addons"
+group_icon = "./assets/erp.svg"
+dependants = ["crm"]
+
+[frontend]
+menues = [
+    {key="accounting", label = "Accounting", icon = "./assets/accounting.svg"},
+    {key="procurement", label = "Procurement", icon = "./assets/procurement.svg"},
+    {key="inventory", label = "Inventory", icon = "./assets/inventory.svg"},
+    {key="manufacturing", label = "Manufacturing", icon = "./assets/manufacturing.svg"}
+]
+
+[[modules]]
+name = "accounting"
+path = "./accounting"
