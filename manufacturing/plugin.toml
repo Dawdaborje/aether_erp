@@ -1,7 +1,0 @@
-[plugin]
-name = "manufacturing"
-version = "0.1.0"
-description = "Aeter ERP Manufacturing Plugin"
-long_description = """Aeter ERP Manufacturing Addon"""
-target = "wasm"
-output = "./bin"

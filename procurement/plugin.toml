@@ -1,7 +1,0 @@
-[plugin]
-name = "procurement"
-version = "0.1.0"
-description = "Aeter ERP Procurement Plugin"
-long_description = """Aeter ERP Procurement Addon"""
-target = "wasm"
-output = "./bin"
