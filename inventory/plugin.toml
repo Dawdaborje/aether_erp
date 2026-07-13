@@ -1,0 +1,7 @@
+[plugin]
+name = "inventory"
+label = "Inventory"
+version = "0.0.1"
+description = "Inventory plugin"
+authors = [{ name = "John Doe", email = "john.doe@example.com", github = "" }]
+url = "https://example.com"

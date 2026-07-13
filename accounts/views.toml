@@ -1,0 +1,7 @@
+[[views]]
+id = "accounts"
+label = "Accounts"
+icon = "fa-solid fa-money-bill"
+url = "/accounts"
+order = 1
+page = "./pages/home.xml"
