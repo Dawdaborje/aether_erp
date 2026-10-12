@@ -1,0 +1,109 @@
+{
+  "model_id": "mdl_sinv000001",
+  "name": "sales_invoice",
+  "label": "%sales_invoice%",
+  "plural_label": "%sales_invoices%",
+  "icon": "receipt",
+  "title_field": "number",
+  "fields": [
+    {
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "max_length": 40,
+      "index": "plain",
+      "id": "fld_5mg67noyew"
+    },
+    {
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "id": "fld_nfc775i72w"
+    },
+    {
+      "name": "customer",
+      "label": "%customer%",
+      "type": "link",
+      "required": true,
+      "target": "party.party",
+      "target_id": "mdl_mr76tss5ic",
+      "id": "fld_ny42dsmza6"
+    },
+    {
+      "name": "so",
+      "label": "%so%",
+      "type": "link",
+      "required": true,
+      "target": "so",
+      "index": "plain",
+      "id": "fld_hc64vcwqxf"
+    },
+    {
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 8,
+      "id": "fld_vuykpdhi2p"
+    },
+    {
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "draft",
+      "options": [
+        {
+          "id": "opt_vhvli3baui",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_wihjyvdjji",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_weoo7j7aw4",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ],
+      "id": "fld_wvza3qogf2"
+    },
+    {
+      "name": "invoice_date",
+      "label": "%invoice_date%",
+      "type": "date",
+      "required": true,
+      "id": "fld_kbaivmmcui"
+    },
+    {
+      "name": "total",
+      "label": "%total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0",
+      "id": "fld_j3p2xg4rqo"
+    },
+    {
+      "name": "source_version",
+      "label": "%source_version%",
+      "type": "int",
+      "default": 1,
+      "id": "fld_3nevy25fdg"
+    }
+  ],
+  "view": {
+    "list": [
+      "number",
+      "customer",
+      "state",
+      "invoice_date",
+      "total"
+    ]
+  }
+}

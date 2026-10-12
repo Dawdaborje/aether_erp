@@ -1,0 +1,89 @@
+{
+  "model_id": "mdl_fdy39c3m99",
+  "name": "item",
+  "label": "%item%",
+  "plural_label": "%items%",
+  "icon": "package",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_j3qpl2509i",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 64,
+      "index": "unique"
+    },
+    {
+      "id": "fld_tvpn6hfznh",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 200
+    },
+    {
+      "id": "fld_141p6ys2qk",
+      "name": "category",
+      "label": "%category%",
+      "type": "link",
+      "target": "item_category",
+      "index": "plain"
+    },
+    {
+      "id": "fld_qh1ctjnyaf",
+      "name": "uom",
+      "label": "%uom%",
+      "type": "link",
+      "required": true,
+      "target": "uom.uom",
+      "target_id": "mdl_gidmmkjdj5",
+      "index": "plain"
+    },
+    {
+      "id": "fld_h6qaooopla",
+      "name": "tracking",
+      "label": "%tracking%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_vgaqon6kux",
+          "value": "none",
+          "label": "%none%"
+        },
+        {
+          "id": "opt_rjsxey3k4e",
+          "value": "lot",
+          "label": "%lot%"
+        }
+      ],
+      "default": "none",
+      "required": true
+    },
+    {
+      "id": "fld_w2e210uvjm",
+      "name": "is_stocked",
+      "label": "%is_stocked%",
+      "type": "bool",
+      "default": true,
+      "help": "When false the item is purchasable or saleable but never enters the stock ledger."
+    },
+    {
+      "id": "fld_d1w9ii9zkl",
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "code",
+      "name",
+      "uom",
+      "is_stocked",
+      "active"
+    ]
+  }
+}

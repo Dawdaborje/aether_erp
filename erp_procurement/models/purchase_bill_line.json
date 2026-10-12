@@ -1,0 +1,109 @@
+{
+  "model_id": "mdl_pbx7wriv8s",
+  "name": "purchase_bill_line",
+  "label": "%purchase_bill_line%",
+  "plural_label": "%purchase_bill_lines%",
+  "icon": "list",
+  "title_field": "line_no",
+  "fields": [
+    {
+      "name": "bill",
+      "label": "%bill%",
+      "type": "link",
+      "required": true,
+      "target": "purchase_bill",
+      "index": "plain",
+      "id": "fld_b2uc8w2wmw"
+    },
+    {
+      "name": "line_no",
+      "label": "%line_no%",
+      "type": "int",
+      "required": true,
+      "id": "fld_s25j7nl2uv"
+    },
+    {
+      "name": "po_line",
+      "label": "%po_line%",
+      "type": "link",
+      "required": true,
+      "target": "po_line",
+      "index": "plain",
+      "id": "fld_y4ew3470oh"
+    },
+    {
+      "name": "receipt_line",
+      "label": "%receipt_line%",
+      "type": "link",
+      "target": "purchase_receipt_line",
+      "id": "fld_5ex79uydwj"
+    },
+    {
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "id": "fld_2mqqfhbfay"
+    },
+    {
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "id": "fld_jis2dyz96w"
+    },
+    {
+      "name": "unit_price",
+      "label": "%unit_price%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "id": "fld_7ptby4uywv"
+    },
+    {
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true,
+      "id": "fld_vezd58k59u"
+    },
+    {
+      "name": "can_be_paid",
+      "label": "%can_be_paid%",
+      "type": "select",
+      "default": "exception",
+      "options": [
+        {
+          "id": "opt_g4u09xtma9",
+          "value": "yes",
+          "label": "%yes%"
+        },
+        {
+          "id": "opt_8zbz3izz7p",
+          "value": "no",
+          "label": "%no%"
+        },
+        {
+          "id": "opt_ohw9cj0w8c",
+          "value": "exception",
+          "label": "%exception%"
+        }
+      ],
+      "id": "fld_b0xb1j6vk8"
+    }
+  ],
+  "view": {
+    "list": [
+      "bill",
+      "line_no",
+      "item",
+      "qty",
+      "amount",
+      "can_be_paid"
+    ]
+  }
+}

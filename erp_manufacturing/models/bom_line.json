@@ -1,0 +1,90 @@
+{
+  "model_id": "mdl_nsttfg2uhp",
+  "name": "bom_line",
+  "label": "%bom_line%",
+  "plural_label": "%bom_lines%",
+  "icon": "list",
+  "title_field": "line_no",
+  "fields": [
+    {
+      "name": "bom",
+      "label": "%bom%",
+      "type": "link",
+      "required": true,
+      "target": "bom",
+      "index": "plain",
+      "id": "fld_tswb1np7nw"
+    },
+    {
+      "name": "line_no",
+      "label": "%line_no%",
+      "type": "int",
+      "required": true,
+      "id": "fld_w7fazbkpgp"
+    },
+    {
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain",
+      "id": "fld_ik8qocevc0"
+    },
+    {
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "help": "Per BOM output qty",
+      "id": "fld_m4gyxzhg7l"
+    },
+    {
+      "name": "uom",
+      "label": "%uom%",
+      "type": "link",
+      "required": true,
+      "target": "uom.uom",
+      "target_id": "mdl_gidmmkjdj5",
+      "id": "fld_0zufchizgz"
+    },
+    {
+      "name": "scrap_pct",
+      "label": "%scrap_pct%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0",
+      "help": "Extra percent consumed",
+      "id": "fld_xh2y3uc6w9"
+    },
+    {
+      "name": "is_byproduct",
+      "label": "%is_byproduct%",
+      "type": "bool",
+      "default": false,
+      "id": "fld_6351awxjvz"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_svndfmkv5j",
+      "fields": [
+        "bom",
+        "line_no"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "bom",
+      "line_no",
+      "item",
+      "qty",
+      "scrap_pct",
+      "is_byproduct"
+    ]
+  }
+}

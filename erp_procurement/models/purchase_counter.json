@@ -1,0 +1,54 @@
+{
+  "model_id": "mdl_9ze58s7tnt",
+  "name": "purchase_counter",
+  "label": "%purchase_counter%",
+  "plural_label": "%purchase_counters%",
+  "icon": "hash",
+  "title_field": "prefix",
+  "fields": [
+    {
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain",
+      "id": "fld_0lgw5ofeqv"
+    },
+    {
+      "name": "prefix",
+      "label": "%prefix%",
+      "type": "string",
+      "required": true,
+      "max_length": 20,
+      "id": "fld_tm0p6s6czn"
+    },
+    {
+      "name": "year",
+      "label": "%year%",
+      "type": "int",
+      "required": true,
+      "id": "fld_fkvzn5b6m2"
+    },
+    {
+      "name": "next",
+      "label": "%next%",
+      "type": "int",
+      "required": true,
+      "default": 1,
+      "id": "fld_c5i9x68dtf"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_9c5bge480p",
+      "fields": [
+        "company",
+        "prefix",
+        "year"
+      ],
+      "unique": true
+    }
+  ]
+}

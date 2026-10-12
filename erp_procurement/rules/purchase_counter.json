@@ -1,0 +1,53 @@
+{
+  "model": "purchase_counter",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "purchase_reader",
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "restrict": [
+    {
+      "name": "sealed",
+      "operations": [
+        "delete"
+      ],
+      "when": {
+        "next": {
+          "lt": 0
+        }
+      }
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "company",
+        "prefix",
+        "year",
+        "next"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

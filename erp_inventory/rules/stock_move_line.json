@@ -1,0 +1,61 @@
+{
+  "model": "stock_move_line",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "stock_reader",
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "create",
+      "roles": [
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "restrict": [
+    {
+      "name": "sealed",
+      "operations": [
+        "write",
+        "delete"
+      ],
+      "when": {
+        "line_no": {
+          "lt": 0
+        }
+      }
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "move",
+        "line_no",
+        "item",
+        "qty",
+        "uom",
+        "warehouse",
+        "warehouse_from",
+        "lot",
+        "unit_cost",
+        "value",
+        "valuation_method"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

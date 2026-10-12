@@ -1,0 +1,45 @@
+[plugin]
+name = "erp_item"
+icon_path = "assets/logo.svg"
+label = "Items"
+version = "0.1.0"
+description = "Stock and non-stock items with per-company valuation settings."
+long_description = """
+A lean item master: category tree, SKU, unit of measure, and whether the item is stocked.
+Per-company rows hold the valuation method; standard cost is an append-only dated rate table.
+Warehouses and the stock ledger live in the inventory plugin. Written in Rust.
+See docs/design.md in this plugin (erp_item/docs/design.md).
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["company", "uom"]
+capabilities = ["db::query", "db::mutate"]
+access_models = [
+  { name = "item_category", permissions = ["read", "write"] },
+  { name = "item", permissions = ["read", "write"] },
+  { name = "item_company", permissions = ["read", "write"] },
+  { name = "item_standard_cost", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "item_admin"
+label = "Item administrator"
+description = "Creates and changes categories, items and company settings."
+
+[[roles]]
+name = "item_reader"
+label = "Item reader"
+description = "Reads the item master."
+
+[app]
+icon = "package"
+route = "/erp/items"
+description = "Items and categories"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "erp"

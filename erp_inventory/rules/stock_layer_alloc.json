@@ -1,0 +1,55 @@
+{
+  "model": "stock_layer_alloc",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "stock_reader",
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "create",
+      "roles": [
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "restrict": [
+    {
+      "name": "sealed",
+      "operations": [
+        "write",
+        "delete"
+      ],
+      "when": {
+        "seq": {
+          "lt": 0
+        }
+      }
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "layer",
+        "move_line",
+        "qty",
+        "value",
+        "seq"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+[plugin]
+name = "erp_procurement"
+icon_path = "assets/logo.svg"
+label = "Procurement"
+version = "0.1.0"
+description = "RFQ, purchase orders, receipts into stock, bills and three-way match."
+long_description = """
+Request quotations, convert to a purchase order, receive into the stock ledger through
+erp_inventory, bill against received quantities, and keep explicit match rows for
+release-to-pay — without mutable billed-qty flags or a repost path. Written in Rust after
+
+See docs/design.md in this plugin (erp_procurement/docs/design.md).
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["erp_item", "erp_inventory", "company", "party", "uom", "currency"]
+capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call"]
+access_models = [
+  { name = "rfq", permissions = ["read", "write"] },
+  { name = "rfq_line", permissions = ["read", "write"] },
+  { name = "po", permissions = ["read", "write"] },
+  { name = "po_line", permissions = ["read", "write"] },
+  { name = "purchase_receipt", permissions = ["read", "write"] },
+  { name = "purchase_receipt_line", permissions = ["read", "write"] },
+  { name = "purchase_bill", permissions = ["read", "write"] },
+  { name = "purchase_bill_line", permissions = ["read", "write"] },
+  { name = "purchase_match", permissions = ["read", "write"] },
+  { name = "purchase_counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "purchase_admin"
+label = "Purchase administrator"
+description = "Full control of orders, receipts, bills and match."
+
+[[roles]]
+name = "purchase_user"
+label = "Buyer"
+description = "Creates and confirms orders, receives and bills."
+
+[[roles]]
+name = "purchase_reader"
+label = "Purchase reader"
+description = "Reads purchase documents."
+
+[[events]]
+name = "purchase_bill_approved"
+
+[app]
+icon = "shopping-cart"
+route = "/erp/procurement"
+description = "Purchase orders and bills"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "erp"

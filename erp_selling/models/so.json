@@ -1,0 +1,137 @@
+{
+  "model_id": "mdl_so00000001",
+  "name": "so",
+  "label": "%sales_order%",
+  "plural_label": "%sales_orders%",
+  "icon": "shopping-bag",
+  "title_field": "number",
+  "fields": [
+    {
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "max_length": 40,
+      "index": "plain",
+      "id": "fld_rbk5h7heek"
+    },
+    {
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain",
+      "id": "fld_rabs7dskp6"
+    },
+    {
+      "name": "customer",
+      "label": "%customer%",
+      "type": "link",
+      "required": true,
+      "target": "party.party",
+      "target_id": "mdl_mr76tss5ic",
+      "index": "plain",
+      "id": "fld_zxswnwv7j6"
+    },
+    {
+      "name": "deal",
+      "label": "%deal%",
+      "type": "string",
+      "max_length": 128,
+      "index": "plain",
+      "help": "CRM deal id when this order was created from a deal (string to avoid hard model cycle)",
+      "id": "fld_ilzyag2fvy"
+    },
+    {
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 8,
+      "id": "fld_vt5zz72lvl"
+    },
+    {
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "draft",
+      "index": "plain",
+      "options": [
+        {
+          "id": "opt_576uldjd74",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_d5oxewglyd",
+          "value": "confirmed",
+          "label": "%confirmed%"
+        },
+        {
+          "id": "opt_je3qz7myzi",
+          "value": "partially_delivered",
+          "label": "%partially_delivered%"
+        },
+        {
+          "id": "opt_tb77qdfeet",
+          "value": "delivered",
+          "label": "%delivered%"
+        },
+        {
+          "id": "opt_pc4xm6ezym",
+          "value": "closed",
+          "label": "%closed%"
+        },
+        {
+          "id": "opt_4xq63dqia7",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ],
+      "id": "fld_hdfqpumlca"
+    },
+    {
+      "name": "order_date",
+      "label": "%order_date%",
+      "type": "date",
+      "required": true,
+      "index": "plain",
+      "id": "fld_yfut6x4niv"
+    },
+    {
+      "name": "warehouse",
+      "label": "%default_warehouse%",
+      "type": "link",
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "id": "fld_ch7kvga3l3"
+    },
+    {
+      "name": "total",
+      "label": "%total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0",
+      "id": "fld_zpoozthccm"
+    },
+    {
+      "name": "notes",
+      "label": "%notes%",
+      "type": "string",
+      "max_length": 500,
+      "id": "fld_j6jsptg6is"
+    }
+  ],
+  "view": {
+    "list": [
+      "number",
+      "customer",
+      "deal",
+      "state",
+      "order_date",
+      "total"
+    ]
+  }
+}

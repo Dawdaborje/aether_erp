@@ -1,0 +1,46 @@
+{
+  "model": "purchase_bill",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "purchase_reader",
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "number",
+        "company",
+        "supplier",
+        "po",
+        "currency",
+        "state",
+        "bill_date",
+        "total",
+        "release_to_pay",
+        "source_version"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "model": "stock_counter",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "stock_reader",
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "create",
+      "roles": [
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "restrict": [
+    {
+      "name": "sealed",
+      "operations": [
+        "write",
+        "delete"
+      ],
+      "when": {
+        "next": {
+          "lt": 0
+        }
+      }
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "company",
+        "prefix",
+        "year",
+        "next"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

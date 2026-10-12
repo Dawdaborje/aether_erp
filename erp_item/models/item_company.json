@@ -1,0 +1,88 @@
+{
+  "model_id": "mdl_kgeuhbf6z4",
+  "name": "item_company",
+  "label": "%item_company%",
+  "plural_label": "%item_companies%",
+  "icon": "building-2",
+  "title_field": "item",
+  "fields": [
+    {
+      "id": "fld_k8urqcm3ls",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "item",
+      "index": "plain"
+    },
+    {
+      "id": "fld_k0a91lmkc3",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_dcricy9xlx",
+      "name": "valuation_method",
+      "label": "%valuation_method%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_iyqrbpc4fj",
+          "value": "fifo",
+          "label": "%fifo%"
+        },
+        {
+          "id": "opt_ppjeddru2q",
+          "value": "average",
+          "label": "%average%"
+        },
+        {
+          "id": "opt_wpvzid6roy",
+          "value": "standard",
+          "label": "%standard%"
+        }
+      ],
+      "required": true,
+      "default": "fifo"
+    },
+    {
+      "id": "fld_r6723e45f4",
+      "name": "standard_cost",
+      "label": "%standard_cost%",
+      "type": "decimal",
+      "scale": 6,
+      "default": "0",
+      "help": "Used when valuation_method is standard. Company currency."
+    },
+    {
+      "id": "fld_zki9ih5afg",
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_l4d2kmnn64",
+      "fields": [
+        "item",
+        "company"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "item",
+      "company",
+      "valuation_method",
+      "standard_cost"
+    ]
+  }
+}

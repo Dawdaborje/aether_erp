@@ -1,0 +1,45 @@
+{
+  "model": "purchase_bill_line",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "purchase_reader",
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "bill",
+        "line_no",
+        "po_line",
+        "receipt_line",
+        "item",
+        "qty",
+        "unit_price",
+        "amount",
+        "can_be_paid"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

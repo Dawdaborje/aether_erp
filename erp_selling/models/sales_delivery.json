@@ -1,0 +1,94 @@
+{
+  "model_id": "mdl_sdeliv0001",
+  "name": "sales_delivery",
+  "label": "%sales_delivery%",
+  "plural_label": "%sales_deliveries%",
+  "icon": "truck",
+  "title_field": "number",
+  "fields": [
+    {
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "max_length": 40,
+      "index": "plain",
+      "id": "fld_ggnresrgbz"
+    },
+    {
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "id": "fld_eji6y4ntct"
+    },
+    {
+      "name": "so",
+      "label": "%so%",
+      "type": "link",
+      "required": true,
+      "target": "so",
+      "index": "plain",
+      "id": "fld_ow3s5gsf7z"
+    },
+    {
+      "name": "customer",
+      "label": "%customer%",
+      "type": "link",
+      "required": true,
+      "target": "party.party",
+      "target_id": "mdl_mr76tss5ic",
+      "id": "fld_uvxxsuu2ey"
+    },
+    {
+      "name": "stock_move",
+      "label": "%stock_move%",
+      "type": "link",
+      "required": true,
+      "target": "erp_inventory.stock_move",
+      "target_id": "mdl_euypr4b86s",
+      "id": "fld_wbpmu7ywj4"
+    },
+    {
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "draft",
+      "options": [
+        {
+          "id": "opt_xxkz2k62ra",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_4afczozyeu",
+          "value": "posted",
+          "label": "%posted%"
+        },
+        {
+          "id": "opt_awaw2u6unv",
+          "value": "void",
+          "label": "%void%"
+        }
+      ],
+      "id": "fld_6wxkrva2lt"
+    },
+    {
+      "name": "delivery_date",
+      "label": "%delivery_date%",
+      "type": "date",
+      "required": true,
+      "id": "fld_apvfqn66m6"
+    }
+  ],
+  "view": {
+    "list": [
+      "number",
+      "so",
+      "state",
+      "delivery_date"
+    ]
+  }
+}

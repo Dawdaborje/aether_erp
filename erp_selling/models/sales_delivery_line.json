@@ -1,0 +1,68 @@
+{
+  "model_id": "mdl_sdline0001",
+  "name": "sales_delivery_line",
+  "label": "%sales_delivery_line%",
+  "plural_label": "%sales_delivery_lines%",
+  "icon": "list",
+  "title_field": "line_no",
+  "fields": [
+    {
+      "name": "delivery",
+      "label": "%delivery%",
+      "type": "link",
+      "required": true,
+      "target": "sales_delivery",
+      "index": "plain",
+      "id": "fld_tcwewqj2ir"
+    },
+    {
+      "name": "line_no",
+      "label": "%line_no%",
+      "type": "int",
+      "required": true,
+      "id": "fld_nkdlyuhq4s"
+    },
+    {
+      "name": "so_line",
+      "label": "%so_line%",
+      "type": "link",
+      "required": true,
+      "target": "so_line",
+      "id": "fld_ebdgnzvtzi"
+    },
+    {
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "id": "fld_5f3bshyjhz"
+    },
+    {
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "id": "fld_zeaowxpok6"
+    },
+    {
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "required": true,
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "id": "fld_pq6xy5d422"
+    }
+  ],
+  "view": {
+    "list": [
+      "delivery",
+      "line_no",
+      "item",
+      "qty"
+    ]
+  }
+}

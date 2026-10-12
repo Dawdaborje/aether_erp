@@ -1,0 +1,45 @@
+{
+  "model": "po",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "purchase_reader",
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "number",
+        "company",
+        "supplier",
+        "currency",
+        "state",
+        "order_date",
+        "warehouse",
+        "total",
+        "notes"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

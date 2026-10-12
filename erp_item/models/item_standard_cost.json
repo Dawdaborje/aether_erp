@@ -1,0 +1,65 @@
+{
+  "model_id": "mdl_itemstdcost1",
+  "name": "item_standard_cost",
+  "label": "%item_standard_cost%",
+  "plural_label": "%item_standard_costs%",
+  "icon": "coins",
+  "title_field": "effective_date",
+  "fields": [
+    {
+      "id": "fld_o2mimrea7m",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "item",
+      "index": "plain"
+    },
+    {
+      "id": "fld_sm5slytmfc",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_lyjlpb3js5",
+      "name": "effective_date",
+      "label": "%effective_date%",
+      "type": "date",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_mllhfeyckl",
+      "name": "rate",
+      "label": "%rate%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "help": "Standard cost in company currency from this date forward until the next rate."
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_ue6krkc33w",
+      "fields": [
+        "item",
+        "company",
+        "effective_date"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "item",
+      "company",
+      "effective_date",
+      "rate"
+    ]
+  }
+}

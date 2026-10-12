@@ -1,0 +1,56 @@
+[plugin]
+name = "erp_selling"
+icon_path = "assets/logo.svg"
+label = "Selling"
+version = "0.1.0"
+description = "Sales orders, deliveries from stock, and customer invoices."
+long_description = """
+Confirm a sales order, deliver through erp_inventory issues (with reservations), invoice the
+customer, and emit a ledger event for AR. Thin state machine over the stock ledger — same spine
+as procurement on the outbound side. Written in Rust.
+See docs/design.md in this plugin (erp_selling/docs/design.md).
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["erp_item", "erp_inventory", "company", "party", "uom", "currency", "crm_deal", "crm_customer"]
+capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call"]
+access_models = [
+  { name = "so", permissions = ["read", "write"] },
+  { name = "so_line", permissions = ["read", "write"] },
+  { name = "sales_delivery", permissions = ["read", "write"] },
+  { name = "sales_delivery_line", permissions = ["read", "write"] },
+  { name = "sales_invoice", permissions = ["read", "write"] },
+  { name = "sales_invoice_line", permissions = ["read", "write"] },
+  { name = "sales_counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "sales_admin"
+label = "Sales administrator"
+description = "Full control of orders, deliveries and invoices."
+
+[[roles]]
+name = "sales_user"
+label = "Sales user"
+description = "Creates and confirms orders, delivers and invoices."
+
+[[roles]]
+name = "sales_reader"
+label = "Sales reader"
+description = "Reads sales documents."
+
+[[events]]
+name = "sales_invoice_approved"
+
+[app]
+icon = "shopping-bag"
+route = "/erp/selling"
+description = "Sales orders and deliveries"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "erp"

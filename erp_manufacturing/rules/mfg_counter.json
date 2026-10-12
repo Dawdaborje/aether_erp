@@ -1,0 +1,40 @@
+{
+  "model": "mfg_counter",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "mfg_reader",
+        "mfg_user",
+        "mfg_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "mfg_user",
+        "mfg_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "company",
+        "prefix",
+        "year",
+        "next"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

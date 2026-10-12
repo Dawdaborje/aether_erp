@@ -1,0 +1,82 @@
+{
+  "model_id": "mdl_j1k3l8ksle",
+  "name": "stock_reservation",
+  "label": "%stock_reservation%",
+  "plural_label": "%stock_reservations%",
+  "icon": "bookmark",
+  "title_field": "seq",
+  "fields": [
+    {
+      "id": "fld_phorxi7ex2",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_uz0jw7d74a",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain"
+    },
+    {
+      "id": "fld_t6evf6embg",
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "required": true,
+      "target": "stock_warehouse",
+      "index": "plain"
+    },
+    {
+      "id": "fld_dho99ad7jt",
+      "name": "lot",
+      "label": "%lot%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_jlwj4jotme",
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "help": "Positive reserves; negative releases."
+    },
+    {
+      "id": "fld_tjhaizuc2a",
+      "name": "demand_kind",
+      "label": "%demand_kind%",
+      "type": "string",
+      "required": true,
+      "max_length": 80
+    },
+    {
+      "id": "fld_o3iy7w8gom",
+      "name": "demand_id",
+      "label": "%demand_id%",
+      "type": "string",
+      "required": true,
+      "max_length": 80,
+      "index": "plain"
+    },
+    {
+      "id": "fld_5bognsj5re",
+      "name": "seq",
+      "label": "%seq%",
+      "type": "int",
+      "required": true
+    }
+  ],
+  "view": {
+    "list": ["item", "warehouse", "qty", "demand_kind", "demand_id"]
+  }
+}

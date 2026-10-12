@@ -1,0 +1,114 @@
+{
+  "model_id": "mdl_rfq0000001",
+  "name": "rfq",
+  "label": "%request_for_quotation%",
+  "plural_label": "%requests_for_quotation%",
+  "icon": "file-question",
+  "title_field": "number",
+  "fields": [
+    {
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "max_length": 40,
+      "index": "plain",
+      "id": "fld_zfrd67xltl"
+    },
+    {
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain",
+      "id": "fld_vhnnjggnnm"
+    },
+    {
+      "name": "supplier",
+      "label": "%supplier%",
+      "type": "link",
+      "required": true,
+      "target": "party.party",
+      "target_id": "mdl_mr76tss5ic",
+      "index": "plain",
+      "id": "fld_cycklsavli"
+    },
+    {
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 8,
+      "id": "fld_lh6rtvpoka"
+    },
+    {
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "draft",
+      "index": "plain",
+      "options": [
+        {
+          "id": "opt_orrthzwjtl",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_6ranylu2w4",
+          "value": "sent",
+          "label": "%sent%"
+        },
+        {
+          "id": "opt_k7hotniocy",
+          "value": "awarded",
+          "label": "%awarded%"
+        },
+        {
+          "id": "opt_ubmh3vejh4",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ],
+      "id": "fld_x5kgx6ddve"
+    },
+    {
+      "name": "rfq_date",
+      "label": "%rfq_date%",
+      "type": "date",
+      "required": true,
+      "id": "fld_plntqxm5f3"
+    },
+    {
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "id": "fld_b2ng6vltuo"
+    },
+    {
+      "name": "po",
+      "label": "%purchase_order%",
+      "type": "link",
+      "target": "po",
+      "help": "Set when converted to a PO",
+      "id": "fld_skxnpbrx5u"
+    },
+    {
+      "name": "notes",
+      "label": "%notes%",
+      "type": "text",
+      "id": "fld_pyfks2dxkd"
+    }
+  ],
+  "view": {
+    "list": [
+      "number",
+      "supplier",
+      "state",
+      "rfq_date"
+    ]
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "model_id": "mdl_gmp0jv6h0t",
+  "name": "stock_counter",
+  "label": "%stock_counter%",
+  "plural_label": "%stock_counters%",
+  "icon": "hash",
+  "title_field": "prefix",
+  "fields": [
+    {
+      "id": "fld_91jap12r5v",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_rp63r1mao1",
+      "name": "prefix",
+      "label": "%prefix%",
+      "type": "string",
+      "required": true,
+      "max_length": 20
+    },
+    {
+      "id": "fld_ier3o8ynyg",
+      "name": "year",
+      "label": "%year%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_jl7x4ggoct",
+      "name": "next",
+      "label": "%next%",
+      "type": "int",
+      "required": true,
+      "default": 1
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_ecdc3tyu5h",
+      "fields": [
+        "company",
+        "prefix",
+        "year"
+      ],
+      "unique": true
+    }
+  ]
+}

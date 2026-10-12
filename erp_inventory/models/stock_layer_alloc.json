@@ -1,0 +1,55 @@
+{
+  "model_id": "mdl_444fjqim4w",
+  "name": "stock_layer_alloc",
+  "label": "%stock_layer_alloc%",
+  "plural_label": "%stock_layer_allocs%",
+  "icon": "link",
+  "title_field": "seq",
+  "fields": [
+    {
+      "id": "fld_0cm101t4dj",
+      "name": "layer",
+      "label": "%layer%",
+      "type": "link",
+      "required": true,
+      "target": "stock_layer",
+      "index": "plain"
+    },
+    {
+      "id": "fld_9cp5a1euct",
+      "name": "move_line",
+      "label": "%move_line%",
+      "type": "link",
+      "required": true,
+      "target": "stock_move_line",
+      "index": "plain"
+    },
+    {
+      "id": "fld_whl3455i5j",
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "help": "Positive consumes the layer; negative undoes a consume (void)."
+    },
+    {
+      "id": "fld_6jpq4evrsi",
+      "name": "value",
+      "label": "%value%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true
+    },
+    {
+      "id": "fld_5preu7teyg",
+      "name": "seq",
+      "label": "%seq%",
+      "type": "int",
+      "required": true
+    }
+  ],
+  "view": {
+    "list": ["layer", "move_line", "qty", "value"]
+  }
+}

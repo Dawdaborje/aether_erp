@@ -1,0 +1,57 @@
+{
+  "model": "stock_reservation",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "stock_reader",
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "create",
+      "roles": [
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "create"
+      ]
+    }
+  ],
+  "restrict": [
+    {
+      "name": "sealed",
+      "operations": [
+        "write",
+        "delete"
+      ],
+      "when": {
+        "seq": {
+          "lt": 0
+        }
+      }
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "company",
+        "item",
+        "warehouse",
+        "lot",
+        "qty",
+        "demand_kind",
+        "demand_id",
+        "seq"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

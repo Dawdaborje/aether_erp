@@ -1,0 +1,15 @@
+{
+  "model": "rfq_line",
+  "access": [
+    {
+      "name": "read",
+      "roles": ["purchase_reader", "purchase_user", "purchase_admin"],
+      "operations": ["read"]
+    },
+    {
+      "name": "write",
+      "roles": ["purchase_user", "purchase_admin"],
+      "operations": ["read", "create", "write"]
+    }
+  ]
+}

@@ -1,17 +1,22 @@
 [workspace]
 name = "erp"
-label = "Enterprise Resource Planner"
-version = "0.0.1"
+label = "Enterprise Resource Planning"
+version = "0.1.0"
 assets = "./assets"
-description = "This is an erp workspace"
+description = "Items, stock ledger, procurement, manufacturing and selling."
 long_description = """
-This is a software suite
+ERP addons for Aether. Inventory is an append-only stock ledger (quantity and value in one chain);
+financial posting goes through the accounting workspace's general ledger. Procurement, manufacturing
+and selling build on inventory.Written in Rust.
+See README.md and each plugin's docs/design.md.
 """
-group_label = "ERP Software Addons"
+group_label = "ERP"
 group_icon = "./assets/erp.svg"
 dependants = ["crm"]
 
-
-[[addons]]
-name = "accounts"
-path = "./accounts"
+[workspace.plugins]
+erp_item = { path = "./erp_item" }
+erp_inventory = { path = "./erp_inventory" }
+erp_procurement = { path = "./erp_procurement" }
+erp_manufacturing = { path = "./erp_manufacturing" }
+erp_selling = { path = "./erp_selling" }

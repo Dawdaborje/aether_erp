@@ -1,0 +1,27 @@
+{
+  "model": "stock_warehouse",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "stock_reader",
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "stock_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    }
+  ]
+}

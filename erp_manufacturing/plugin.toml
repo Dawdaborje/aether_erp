@@ -1,0 +1,54 @@
+[plugin]
+name = "erp_manufacturing"
+icon_path = "assets/logo.svg"
+label = "Manufacturing"
+version = "0.1.0"
+description = "Bills of materials and manufacturing orders on the stock ledger."
+long_description = """
+One manufacturing order: reserve materials, consume with a stock issue, produce with a stock receipt.
+BOM lines carry scrap percent and optional byproducts. No separate stock-entry document zoo — only
+erp_inventory moves. Written in Rust.
+See docs/design.md in this plugin (erp_manufacturing/docs/design.md).
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["erp_item", "erp_inventory", "company", "uom", "currency"]
+capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call"]
+access_models = [
+  { name = "bom", permissions = ["read", "write"] },
+  { name = "bom_line", permissions = ["read", "write"] },
+  { name = "mo", permissions = ["read", "write"] },
+  { name = "mo_component", permissions = ["read", "write"] },
+  { name = "mfg_counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "mfg_admin"
+label = "Manufacturing administrator"
+description = "BOMs and manufacturing orders."
+
+[[roles]]
+name = "mfg_user"
+label = "Production user"
+description = "Confirms, reserves and completes manufacturing orders."
+
+[[roles]]
+name = "mfg_reader"
+label = "Manufacturing reader"
+description = "Reads BOMs and orders."
+
+[[events]]
+name = "mo_completed"
+
+[app]
+icon = "factory"
+route = "/erp/manufacturing"
+description = "Bills of materials and production"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "erp"

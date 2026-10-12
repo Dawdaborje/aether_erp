@@ -1,0 +1,89 @@
+{
+  "model_id": "mdl_lcm0c20qu8",
+  "name": "purchase_match",
+  "label": "%purchase_match%",
+  "plural_label": "%purchase_matches%",
+  "icon": "git-compare",
+  "title_field": "seq",
+  "fields": [
+    {
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain",
+      "id": "fld_dweekt076k"
+    },
+    {
+      "name": "po_line",
+      "label": "%po_line%",
+      "type": "link",
+      "required": true,
+      "target": "po_line",
+      "index": "plain",
+      "id": "fld_inn66f8cix"
+    },
+    {
+      "name": "receipt_line",
+      "label": "%receipt_line%",
+      "type": "link",
+      "target": "purchase_receipt_line",
+      "index": "plain",
+      "id": "fld_rihyl224kd"
+    },
+    {
+      "name": "bill_line",
+      "label": "%bill_line%",
+      "type": "link",
+      "target": "purchase_bill_line",
+      "index": "plain",
+      "id": "fld_k0xy03vokr"
+    },
+    {
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "help": "Signed quantity linked by this match row",
+      "id": "fld_704pyd86ql"
+    },
+    {
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_qaak71c80p",
+          "value": "receive",
+          "label": "%receive%"
+        },
+        {
+          "id": "opt_7hh4d1hbsc",
+          "value": "bill",
+          "label": "%bill%"
+        }
+      ],
+      "id": "fld_2gkcwf3o5p"
+    },
+    {
+      "name": "seq",
+      "label": "%seq%",
+      "type": "int",
+      "required": true,
+      "id": "fld_2hf5fjh9sa"
+    }
+  ],
+  "view": {
+    "list": [
+      "po_line",
+      "kind",
+      "qty",
+      "receipt_line",
+      "bill_line"
+    ]
+  }
+}

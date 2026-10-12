@@ -1,0 +1,83 @@
+{
+  "model_id": "mdl_siline0001",
+  "name": "sales_invoice_line",
+  "label": "%sales_invoice_line%",
+  "plural_label": "%sales_invoice_lines%",
+  "icon": "list",
+  "title_field": "line_no",
+  "fields": [
+    {
+      "name": "invoice",
+      "label": "%invoice%",
+      "type": "link",
+      "required": true,
+      "target": "sales_invoice",
+      "index": "plain",
+      "id": "fld_xzaawtcw72"
+    },
+    {
+      "name": "line_no",
+      "label": "%line_no%",
+      "type": "int",
+      "required": true,
+      "id": "fld_d2nrf2h4yd"
+    },
+    {
+      "name": "so_line",
+      "label": "%so_line%",
+      "type": "link",
+      "required": true,
+      "target": "so_line",
+      "id": "fld_r5rai5dgcs"
+    },
+    {
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "id": "fld_vgfjaud4eb"
+    },
+    {
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "id": "fld_5oxlzuze5s"
+    },
+    {
+      "name": "unit_price",
+      "label": "%unit_price%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "id": "fld_stncfuvlw3"
+    },
+    {
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true,
+      "id": "fld_xi54dtazng"
+    },
+    {
+      "name": "delivery_line",
+      "label": "%delivery_line%",
+      "type": "link",
+      "target": "sales_delivery_line",
+      "id": "fld_f5yqqbyidm"
+    }
+  ],
+  "view": {
+    "list": [
+      "invoice",
+      "line_no",
+      "item",
+      "qty",
+      "amount"
+    ]
+  }
+}

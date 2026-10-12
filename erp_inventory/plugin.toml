@@ -1,0 +1,59 @@
+[plugin]
+name = "erp_inventory"
+icon_path = "assets/logo.svg"
+label = "Inventory"
+version = "0.1.0"
+description = "Append-only stock ledger: moves, layers and reservations."
+long_description = """
+Quantity and value live in one immutable chain. A posted move never changes; a mistake is a reversing
+move. FIFO, moving average (pooled layer) and standard cost are computed in pure functions and stored
+on layers and allocations. Stock history is append-only: no repost and no mutable on-hand rows. Written in Rust.
+See docs/design.md in this plugin (erp_inventory/docs/design.md).
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["erp_item", "company", "uom", "currency"]
+capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call"]
+access_models = [
+  { name = "stock_warehouse", permissions = ["read", "write"] },
+  { name = "stock_move", permissions = ["read", "write"] },
+  { name = "stock_move_line", permissions = ["read", "write"] },
+  { name = "stock_layer", permissions = ["read", "write"] },
+  { name = "stock_layer_alloc", permissions = ["read", "write"] },
+  { name = "stock_reservation", permissions = ["read", "write"] },
+  { name = "stock_counter", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "stock_admin"
+label = "Stock administrator"
+description = "Warehouses, voiding moves, full stock control."
+
+[[roles]]
+name = "stock_user"
+label = "Stock user"
+description = "Drafts and posts receipts, issues, transfers and adjustments."
+
+[[roles]]
+name = "stock_reader"
+label = "Stock reader"
+description = "Reads on-hand and the stock card."
+
+[[events]]
+name = "stock_posted"
+
+[[events]]
+name = "stock_voided"
+
+[app]
+icon = "warehouse"
+route = "/erp/inventory"
+description = "Stock ledger and warehouses"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "erp"

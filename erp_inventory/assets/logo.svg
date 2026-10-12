@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" role="img" aria-label="Inventory">
+  <rect width="64" height="64" rx="14" fill="#0E7490"/>
+  <g transform="translate(18 18) scale(1.1667)" stroke="#FFFFFF" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M18 21V10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v11" />
+  <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 1.132-1.803l7.95-3.974a2 2 0 0 1 1.837 0l7.948 3.974A2 2 0 0 1 22 8z" />
+  <path d="M6 13h12" />
+  <path d="M6 17h12" />
+  </g>
+</svg>

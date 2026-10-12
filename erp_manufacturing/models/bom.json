@@ -1,0 +1,92 @@
+{
+  "model_id": "mdl_q4zddrk8fw",
+  "name": "bom",
+  "label": "%bom%",
+  "plural_label": "%boms%",
+  "icon": "clipboard-list",
+  "title_field": "code",
+  "fields": [
+    {
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "plain",
+      "id": "fld_ni2aw0shpx"
+    },
+    {
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain",
+      "id": "fld_16ssftx0k4"
+    },
+    {
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain",
+      "help": "Finished good",
+      "id": "fld_h51skawnb1"
+    },
+    {
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "default": "1",
+      "help": "Output quantity this BOM makes",
+      "id": "fld_uhvk7ui33l"
+    },
+    {
+      "name": "uom",
+      "label": "%uom%",
+      "type": "link",
+      "required": true,
+      "target": "uom.uom",
+      "target_id": "mdl_gidmmkjdj5",
+      "id": "fld_evj3hpiw9n"
+    },
+    {
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true,
+      "id": "fld_zec0o16jbk"
+    },
+    {
+      "name": "version",
+      "label": "%version%",
+      "type": "int",
+      "default": 1,
+      "id": "fld_s9l7oundt8"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_irfrmy5mpe",
+      "fields": [
+        "company",
+        "code"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "code",
+      "item",
+      "qty",
+      "active",
+      "version"
+    ]
+  }
+}

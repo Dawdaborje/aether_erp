@@ -1,0 +1,46 @@
+{
+  "model": "mo",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "mfg_reader",
+        "mfg_user",
+        "mfg_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "mfg_user",
+        "mfg_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "number",
+        "company",
+        "bom",
+        "item",
+        "qty",
+        "warehouse",
+        "state",
+        "consume_move",
+        "produce_move",
+        "planned_date"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

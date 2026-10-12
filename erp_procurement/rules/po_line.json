@@ -1,0 +1,46 @@
+{
+  "model": "po_line",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "purchase_reader",
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "po",
+        "line_no",
+        "item",
+        "qty",
+        "uom",
+        "unit_price",
+        "amount",
+        "qty_received",
+        "qty_billed",
+        "warehouse"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "model_id": "mdl_kr9k4omxsp",
+  "name": "purchase_bill",
+  "label": "%purchase_bill%",
+  "plural_label": "%purchase_bills%",
+  "icon": "file-text",
+  "title_field": "number",
+  "fields": [
+    {
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "max_length": 40,
+      "index": "plain",
+      "id": "fld_05uoekqeqw"
+    },
+    {
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain",
+      "id": "fld_1honhx4kaf"
+    },
+    {
+      "name": "supplier",
+      "label": "%supplier%",
+      "type": "link",
+      "required": true,
+      "target": "party.party",
+      "target_id": "mdl_mr76tss5ic",
+      "index": "plain",
+      "id": "fld_zsoqcvb25l"
+    },
+    {
+      "name": "po",
+      "label": "%po%",
+      "type": "link",
+      "target": "po",
+      "index": "plain",
+      "id": "fld_k5h203nel5"
+    },
+    {
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 8,
+      "id": "fld_pwqwac8d1t"
+    },
+    {
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "draft",
+      "index": "plain",
+      "options": [
+        {
+          "id": "opt_xz0qfnz8ey",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_q7hrc7x25w",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_zbb3tbtdi8",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ],
+      "id": "fld_znfago2re0"
+    },
+    {
+      "name": "bill_date",
+      "label": "%bill_date%",
+      "type": "date",
+      "required": true,
+      "id": "fld_ure7szq12d"
+    },
+    {
+      "name": "total",
+      "label": "%total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0",
+      "id": "fld_umks6y443p"
+    },
+    {
+      "name": "release_to_pay",
+      "label": "%release_to_pay%",
+      "type": "select",
+      "default": "exception",
+      "options": [
+        {
+          "id": "opt_akl20a0ttx",
+          "value": "yes",
+          "label": "%yes%"
+        },
+        {
+          "id": "opt_3309vcmbfx",
+          "value": "no",
+          "label": "%no%"
+        },
+        {
+          "id": "opt_pfjgomr20l",
+          "value": "exception",
+          "label": "%exception%"
+        }
+      ],
+      "help": "yes: received covers billed; no: nothing received; exception: mismatch or price difference",
+      "id": "fld_ycsskues8u"
+    },
+    {
+      "name": "source_version",
+      "label": "%source_version%",
+      "type": "int",
+      "default": 1,
+      "id": "fld_10c4hbnm86"
+    }
+  ],
+  "view": {
+    "list": [
+      "number",
+      "supplier",
+      "state",
+      "bill_date",
+      "total",
+      "release_to_pay"
+    ]
+  }
+}

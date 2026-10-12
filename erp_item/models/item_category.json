@@ -1,0 +1,75 @@
+{
+  "model_id": "mdl_qeo4r928f6",
+  "name": "item_category",
+  "label": "%item_category%",
+  "plural_label": "%item_categories%",
+  "icon": "folder-tree",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_3izud6f9c7",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_7e4ft7dnev",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_f6z6pf3eeb",
+      "name": "parent",
+      "label": "%parent%",
+      "type": "link",
+      "target": "item_category",
+      "hierarchy": true
+    },
+    {
+      "id": "fld_09vcm7xjzu",
+      "name": "valuation_method",
+      "label": "%valuation_method%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_arpsl2zcnv",
+          "value": "fifo",
+          "label": "%fifo%"
+        },
+        {
+          "id": "opt_p2no2qbsox",
+          "value": "average",
+          "label": "%average%"
+        },
+        {
+          "id": "opt_bbby7ipkqa",
+          "value": "standard",
+          "label": "%standard%"
+        }
+      ],
+      "default": "fifo",
+      "help": "Default for items in this category when the company row has no override."
+    },
+    {
+      "id": "fld_mv2gwv74td",
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "code",
+      "name",
+      "valuation_method",
+      "active"
+    ]
+  }
+}

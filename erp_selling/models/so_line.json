@@ -1,0 +1,112 @@
+{
+  "model_id": "mdl_soline0001",
+  "name": "so_line",
+  "label": "%so_line%",
+  "plural_label": "%so_lines%",
+  "icon": "list",
+  "title_field": "line_no",
+  "fields": [
+    {
+      "name": "so",
+      "label": "%so%",
+      "type": "link",
+      "required": true,
+      "target": "so",
+      "index": "plain",
+      "id": "fld_tpcwmdjq4z"
+    },
+    {
+      "name": "line_no",
+      "label": "%line_no%",
+      "type": "int",
+      "required": true,
+      "id": "fld_yxvpqlzoj7"
+    },
+    {
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain",
+      "id": "fld_qjeemom7cv"
+    },
+    {
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "id": "fld_fjuvfbrzny"
+    },
+    {
+      "name": "uom",
+      "label": "%uom%",
+      "type": "link",
+      "required": true,
+      "target": "uom.uom",
+      "target_id": "mdl_gidmmkjdj5",
+      "id": "fld_hvdr7mxowh"
+    },
+    {
+      "name": "unit_price",
+      "label": "%unit_price%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "id": "fld_4y5jxtr2nf"
+    },
+    {
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true,
+      "id": "fld_dhipuv22uv"
+    },
+    {
+      "name": "qty_delivered",
+      "label": "%qty_delivered%",
+      "type": "decimal",
+      "scale": 6,
+      "default": "0",
+      "id": "fld_s6dyp3vfbe"
+    },
+    {
+      "name": "qty_invoiced",
+      "label": "%qty_invoiced%",
+      "type": "decimal",
+      "scale": 6,
+      "default": "0",
+      "id": "fld_geneuvmhyi"
+    },
+    {
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "id": "fld_p6pieeppf4"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_uagdu4neyo",
+      "fields": [
+        "so",
+        "line_no"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "so",
+      "line_no",
+      "item",
+      "qty",
+      "unit_price"
+    ]
+  }
+}

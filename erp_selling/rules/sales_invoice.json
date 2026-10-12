@@ -1,0 +1,15 @@
+{
+  "model": "sales_invoice",
+  "access": [
+    {
+      "name": "read",
+      "roles": ["sales_reader", "sales_user", "sales_admin"],
+      "operations": ["read"]
+    },
+    {
+      "name": "write",
+      "roles": ["sales_user", "sales_admin"],
+      "operations": ["read", "create", "write"]
+    }
+  ]
+}
