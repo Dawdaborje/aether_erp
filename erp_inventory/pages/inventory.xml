@@ -1,3 +1,3 @@
-<page route="/erp/inventory" title="Inventory">
+<page route="/erp/inventory" title="Inventory" icon="warehouse">
   <header title="Inventory"/>
 </page>
