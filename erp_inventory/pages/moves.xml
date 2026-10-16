@@ -1,0 +1,14 @@
+<page roles="stock_reader,stock_user,stock_admin" route="/erp/inventory/moves" title="Stock moves" model="stock_move" menu="false">
+  <view type="list" model="stock_move" source="list_moves">
+    <search/>
+    <columns>
+      <column field="number" label="Number"/>
+      <column field="kind" label="Kind" fieldType="badge"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="posting_date" label="Date"/>
+      <column field="total_value" label="Value"/>
+      <column field="source_kind" label="Source"/>
+    </columns>
+    <empty title="No moves yet" description="Receipts, issues, transfers and adjustments are listed here."/>
+  </view>
+</page>

@@ -1,0 +1,43 @@
+{
+  "model": "stock_landed_cost",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "stock_reader",
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "company",
+        "move",
+        "reference",
+        "basis",
+        "state",
+        "total",
+        "posted_on"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

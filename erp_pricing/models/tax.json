@@ -1,0 +1,137 @@
+{
+  "model_id": "mdl_shfete7izv",
+  "name": "tax",
+  "label": "%tax%",
+  "plural_label": "%taxs%",
+  "icon": "percent",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_hxhx86r94t",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 32,
+      "index": "unique"
+    },
+    {
+      "id": "fld_3u8iyz5n2u",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_pq34okde93",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_l1v3e3uiqn",
+          "value": "percent",
+          "label": "%percent%"
+        },
+        {
+          "id": "opt_yl69ur5oxm",
+          "value": "fixed",
+          "label": "%fixed%"
+        },
+        {
+          "id": "opt_1ljxj94kpi",
+          "value": "group",
+          "label": "%group%"
+        }
+      ],
+      "default": "percent",
+      "help": "A group has no rate of its own: it applies its components in order."
+    },
+    {
+      "id": "fld_liq7n0ebiz",
+      "name": "rate",
+      "label": "%rate%",
+      "type": "decimal",
+      "required": true,
+      "scale": 4,
+      "help": "Percent (e.g. 18) for percent taxes, amount per unit for fixed taxes."
+    },
+    {
+      "id": "fld_ce6xmbzkvu",
+      "name": "applies_to",
+      "label": "%applies_to%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_58824wwlra",
+          "value": "both",
+          "label": "%both%"
+        },
+        {
+          "id": "opt_o8zx4ene7o",
+          "value": "sales",
+          "label": "%sales%"
+        },
+        {
+          "id": "opt_olee44fug7",
+          "value": "purchase",
+          "label": "%purchase%"
+        }
+      ],
+      "default": "both"
+    },
+    {
+      "id": "fld_jgkb2j0iqp",
+      "name": "price_includes_tax",
+      "label": "%price_includes_tax%",
+      "type": "bool",
+      "default": false,
+      "help": "When true the unit price already contains this tax."
+    },
+    {
+      "id": "fld_5us93362r7",
+      "name": "account",
+      "label": "%account%",
+      "type": "string",
+      "max_length": 32,
+      "help": "Ledger account code the tax posts to (hint for posting rules)."
+    },
+    {
+      "id": "fld_xmzud7sr2e",
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "id": "fld_st7m3khczn",
+      "name": "is_withholding",
+      "label": "%is_withholding%",
+      "type": "bool",
+      "default": false,
+      "help": "Withheld from what is paid: the amount is negative on the document (owed to the tax authority, not to the supplier)."
+    },
+    {
+      "id": "fld_s2lzd4f7u5",
+      "name": "components",
+      "label": "%components%",
+      "type": "child",
+      "target": "tax_component",
+      "inverse": "group",
+      "order": "position"
+    }
+  ],
+  "view": {
+    "list": [
+      "code",
+      "name",
+      "kind",
+      "rate",
+      "applies_to",
+      "active"
+    ]
+  }
+}

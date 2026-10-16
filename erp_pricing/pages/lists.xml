@@ -1,0 +1,14 @@
+<page roles="pricing_reader,pricing_admin" route="/erp/pricing/lists" title="Price lists" model="price_list" menu="false">
+  <view type="list" model="price_list" source="list_price_lists" open="/erp/pricing/lists/{id}" create="/erp/pricing/lists/new" create_label="New price list">
+    <search/>
+    <columns>
+      <column field="code" label="Code"/>
+      <column field="name" label="Name"/>
+      <column field="kind" label="Kind" fieldType="badge"/>
+      <column field="currency" label="Currency"/>
+      <column field="is_default" label="Default" fieldType="boolean"/>
+      <column field="active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No price lists yet" description="Open a list to set item prices and quantity breaks."/>
+  </view>
+</page>

@@ -101,3 +101,40 @@ pub fn require_supplier(id: &str) -> Result<Record> {
     }
     Ok(party)
 }
+
+/// Amounts for one document line from `erp_pricing`: `gross`, `discount`, `net`, `tax`, `total`, `net_unit`.
+pub struct PricedLine {
+    pub net: Decimal,
+    pub tax: Decimal,
+    pub net_unit: Decimal,
+}
+
+pub fn price_line(qty: Decimal, unit_price: Decimal, discount_pct: Decimal, tax: Option<&str>) -> Result<PricedLine> {
+    let out: Value = plugins::call(
+        "erp_pricing",
+        "compute_line",
+        &json!({
+            "qty": qty,
+            "unit_price": unit_price,
+            "discount_pct": discount_pct,
+            "tax": tax,
+            "side": "purchase",
+        }),
+    )?;
+    Ok(PricedLine {
+        net: dec(&out, "net", MONEY_SCALE)?,
+        tax: dec(&out, "tax", MONEY_SCALE)?,
+        net_unit: dec(&out, "net_unit", PRICE_SCALE)?,
+    })
+}
+
+/// Sum `amount` and `tax_amount` over a document's lines: `(subtotal, tax_total)`.
+pub fn sum_lines(lines: &[Record]) -> Result<(Decimal, Decimal)> {
+    let mut subtotal = Decimal::zero(MONEY_SCALE);
+    let mut tax = Decimal::zero(MONEY_SCALE);
+    for line in lines {
+        subtotal = subtotal.checked_add(money_of(line, "amount")?)?;
+        tax = tax.checked_add(money_of(line, "tax_amount")?)?;
+    }
+    Ok((subtotal, tax))
+}

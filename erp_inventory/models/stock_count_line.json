@@ -1,0 +1,88 @@
+{
+  "model_id": "mdl_it1l9np6k4",
+  "name": "stock_count_line",
+  "label": "%stock_count_line%",
+  "plural_label": "%stock_count_lines%",
+  "icon": "list",
+  "title_field": "item",
+  "fields": [
+    {
+      "id": "fld_whce7czsf3",
+      "name": "count",
+      "label": "%count%",
+      "type": "link",
+      "required": true,
+      "target": "stock_count",
+      "index": "plain"
+    },
+    {
+      "id": "fld_yg665oovki",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain"
+    },
+    {
+      "id": "fld_4im4nvv2li",
+      "name": "lot",
+      "label": "%lot%",
+      "type": "string",
+      "max_length": 64
+    },
+    {
+      "id": "fld_n3mux2he7o",
+      "name": "counted_qty",
+      "label": "%counted_qty%",
+      "type": "decimal",
+      "required": true,
+      "scale": 6
+    },
+    {
+      "id": "fld_gqyle0xxf5",
+      "name": "system_qty",
+      "label": "%system_qty%",
+      "type": "decimal",
+      "scale": 6,
+      "help": "On hand when the count was posted."
+    },
+    {
+      "id": "fld_v55f96oq96",
+      "name": "difference",
+      "label": "%difference%",
+      "type": "decimal",
+      "scale": 6
+    },
+    {
+      "id": "fld_68e13c2nzz",
+      "name": "unit_cost",
+      "label": "%unit_cost%",
+      "type": "decimal",
+      "scale": 6,
+      "help": "Cost for a counted gain; default the latest layer cost."
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_95rh51g2zz",
+      "fields": [
+        "count",
+        "item",
+        "lot"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "count",
+      "item",
+      "lot",
+      "counted_qty",
+      "system_qty",
+      "difference"
+    ]
+  }
+}

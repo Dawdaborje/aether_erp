@@ -1,0 +1,10 @@
+<page roles="mfg_user,mfg_admin" route="/erp/manufacturing/boms/new" title="New BOM" model="bom" menu="false">
+  <view type="form" function="create_bom" submit="Create BOM" success="BOM created" redirect="/erp/manufacturing/boms">
+    <group title="BOM" cols="2">
+      <field name="company" label="Company" required="true" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="code" label="Code" required="true"/>
+      <field name="item" label="Finished item" required="true" source="erp_item.search_items" optionLabel="name" entity="items"/>
+      <field name="qty" label="Output quantity" fieldType="float"/>
+    </group>
+  </view>
+</page>

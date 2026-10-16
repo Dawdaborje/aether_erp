@@ -1,0 +1,100 @@
+{
+  "model_id": "mdl_i4u5h7ub7x",
+  "name": "item_supplier",
+  "label": "%item_supplier%",
+  "plural_label": "%item_suppliers%",
+  "icon": "truck",
+  "title_field": "supplier_sku",
+  "fields": [
+    {
+      "id": "fld_9cpzc350uy",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "item",
+      "index": "plain"
+    },
+    {
+      "id": "fld_xd4u5mg9qx",
+      "name": "supplier",
+      "label": "%supplier%",
+      "type": "link",
+      "required": true,
+      "target": "party.party",
+      "target_id": "mdl_mr76tss5ic",
+      "index": "plain"
+    },
+    {
+      "id": "fld_vbtvueg2dk",
+      "name": "supplier_sku",
+      "label": "%supplier_sku%",
+      "type": "string",
+      "max_length": 64,
+      "help": "The supplier's own code for this item."
+    },
+    {
+      "id": "fld_rkabdyzsv9",
+      "name": "min_qty",
+      "label": "%min_qty%",
+      "type": "decimal",
+      "scale": 6,
+      "min": "0",
+      "help": "Smallest quantity the supplier sells, in the item's unit."
+    },
+    {
+      "id": "fld_xfpgr7whei",
+      "name": "lead_days",
+      "label": "%lead_days%",
+      "type": "int",
+      "min": 0,
+      "help": "Days from order to receipt."
+    },
+    {
+      "id": "fld_2k40oy9oid",
+      "name": "is_preferred",
+      "label": "%is_preferred%",
+      "type": "bool",
+      "default": false,
+      "help": "Replenishment picks the preferred supplier first."
+    },
+    {
+      "id": "fld_2nrchnl7ei",
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "supplier",
+      "supplier_sku",
+      "min_qty",
+      "lead_days",
+      "is_preferred"
+    ]
+  },
+  "indexes": [
+    {
+      "fields": [
+        "item",
+        "supplier"
+      ],
+      "unique": true,
+      "id": "idx_ohkq0hb9jf"
+    }
+  ],
+  "unique_when": [
+    {
+      "fields": [
+        "item"
+      ],
+      "when": {
+        "is_preferred": true,
+        "active": true
+      },
+      "message": "an item has one preferred supplier"
+    }
+  ]
+}

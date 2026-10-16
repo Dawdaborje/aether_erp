@@ -2,7 +2,6 @@
 
 pub use aether_sdk::records::{id_of, require, text, today, Record};
 
-use aether_sdk::dates::{parse_date, Datelike};
 use aether_sdk::decimal::Decimal;
 use aether_sdk::prelude::*;
 
@@ -46,22 +45,12 @@ pub fn qty_of(record: &Record, field: &str) -> Result<Decimal> {
     dec(record, field, QTY_SCALE)
 }
 
-pub fn allocate_number(company_id: &str, prefix: &str, date: &str) -> Result<(String, i64, String)> {
-    let year = parse_date(date)?.year();
-    let existing: Option<Record> = db::find("mfg_counter")
-        .filter("company", company_id)
-        .filter("prefix", prefix)
-        .filter("year", year)
-        .first()?;
-    let (counter_id, next) = match existing {
-        Some(row) => (id_of(&row)?.to_string(), row.get("next").and_then(Value::as_i64).unwrap_or(1)),
-        None => {
-            let made: Record = db::create(
-                "mfg_counter",
-                &json!({ "company": company_id, "prefix": prefix, "year": year, "next": 1 }),
-            )?;
-            (id_of(&made)?.to_string(), 1)
-        }
-    };
-    Ok((format!("{prefix}-{year}-{next:05}"), next, counter_id))
+
+pub fn company_currency_code(company_id: &str) -> Result<String> {
+    let company = require("company.company", company_id, "company")?;
+    let currency_id = text(&company, "currency").ok_or_else(|| Error::msg("the company has no currency"))?;
+    let currency = require("currency.currency", currency_id, "currency")?;
+    text(&currency, "code")
+        .map(|c| c.to_string())
+        .ok_or_else(|| Error::msg("the currency has no code"))
 }

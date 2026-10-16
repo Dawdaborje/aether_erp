@@ -3,13 +3,26 @@
   "access": [
     {
       "name": "read",
-      "roles": ["purchase_reader", "purchase_user", "purchase_admin"],
-      "operations": ["read"]
+      "roles": [
+        "purchase_reader",
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "read"
+      ]
     },
     {
       "name": "write",
-      "roles": ["purchase_user", "purchase_admin"],
-      "operations": ["read", "create", "write"]
+      "roles": [
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
     }
   ]
 }

@@ -1,0 +1,12 @@
+<page roles="stock_reader,stock_user,stock_admin" route="/erp/inventory/stock" title="Stock on hand" model="stock_layer" menu="false">
+  <view type="list" model="stock_layer" source="list_stock">
+    <columns>
+      <column field="item" label="Item"/>
+      <column field="warehouse" label="Warehouse"/>
+      <column field="qty" label="On hand"/>
+      <column field="value" label="Value"/>
+      <column field="avg_cost" label="Average cost"/>
+    </columns>
+    <empty title="No stock" description="Stock appears once a receipt is posted."/>
+  </view>
+</page>

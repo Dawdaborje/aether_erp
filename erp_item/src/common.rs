@@ -39,4 +39,4 @@ pub fn require_reader() -> Result<()> {
 }
 
 pub const METHODS: &[&str] = &["fifo", "average", "standard"];
-pub const TRACKING: &[&str] = &["none", "lot"];
+pub const TRACKING: &[&str] = &["none", "lot", "serial"];

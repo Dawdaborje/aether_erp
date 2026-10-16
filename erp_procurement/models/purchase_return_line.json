@@ -1,0 +1,80 @@
+{
+  "model_id": "mdl_8j3ejytda0",
+  "name": "purchase_return_line",
+  "label": "%purchase_return_line%",
+  "plural_label": "%purchase_return_lines%",
+  "icon": "list",
+  "title_field": "line_no",
+  "fields": [
+    {
+      "id": "fld_4kk8rgdone",
+      "name": "return",
+      "label": "%return%",
+      "type": "link",
+      "required": true,
+      "target": "purchase_return",
+      "index": "plain"
+    },
+    {
+      "id": "fld_d3gy1s9b6w",
+      "name": "line_no",
+      "label": "%line_no%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_z5knl2y7w2",
+      "name": "po_line",
+      "label": "%po_line%",
+      "type": "link",
+      "required": true,
+      "target": "po_line",
+      "index": "plain"
+    },
+    {
+      "id": "fld_zefj4dypui",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain"
+    },
+    {
+      "id": "fld_9sbwhbj009",
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "required": true,
+      "scale": 6
+    },
+    {
+      "id": "fld_28tpf0o2el",
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "index": "plain"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_eck3uoysny",
+      "fields": [
+        "return",
+        "line_no"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "return",
+      "line_no",
+      "item",
+      "qty"
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+<page roles="item_admin" route="/erp/items/{id}/suppliers/new" title="Add supplier" model="item_supplier" menu="false">
+  <view type="form" function="set_item_supplier" submit="Save supplier" success="Supplier saved" redirect="/erp/items/{id}/suppliers">
+    <group title="Supplier" cols="2">
+      <field name="supplier" label="Supplier" required="true" source="party.list_parties" optionLabel="display_name" entity="parties"/>
+      <field name="supplier_sku" label="Supplier code"/>
+      <field name="min_qty" label="Minimum quantity" fieldType="float"/>
+      <field name="lead_days" label="Lead time (days)" fieldType="integer"/>
+      <field name="is_preferred" label="Preferred" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

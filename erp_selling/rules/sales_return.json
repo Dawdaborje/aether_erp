@@ -1,0 +1,44 @@
+{
+  "model": "sales_return",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "sales_reader",
+        "sales_user",
+        "sales_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "sales_user",
+        "sales_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "number",
+        "company",
+        "so",
+        "customer",
+        "stock_move",
+        "state",
+        "return_date",
+        "reason"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

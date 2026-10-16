@@ -101,6 +101,15 @@
       "label": "%notes%",
       "type": "text",
       "id": "fld_pyfks2dxkd"
+    },
+    {
+      "id": "fld_3wf0ybfd2c",
+      "name": "request_group",
+      "label": "%request_group%",
+      "type": "string",
+      "max_length": 64,
+      "index": "plain",
+      "help": "RFQs sent to several suppliers for the same need share a group."
     }
   ],
   "view": {

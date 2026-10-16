@@ -1,0 +1,12 @@
+<page roles="stock_user,stock_admin" route="/erp/inventory/lots/new" title="Set lot expiry" model="stock_lot" menu="false">
+  <view type="form" function="set_lot" submit="Save lot" success="Saved" redirect="/erp/inventory/lots">
+    <group title="Lot" cols="2">
+      <field name="company" label="Company" required="true" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="item" label="Item" required="true" source="erp_item.search_items" optionLabel="name" entity="items"/>
+      <field name="code" label="Lot or serial" required="true"/>
+      <field name="expiry_date" label="Expiry" fieldType="date"/>
+      <field name="mfg_date" label="Made on" fieldType="date"/>
+      <field name="note" label="Note"/>
+    </group>
+  </view>
+</page>

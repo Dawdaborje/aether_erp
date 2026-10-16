@@ -1,0 +1,175 @@
+{
+  "model_id": "mdl_y4kksieyjj",
+  "name": "quotation",
+  "label": "%quotation%",
+  "plural_label": "%quotations%",
+  "icon": "file-text",
+  "title_field": "number",
+  "fields": [
+    {
+      "id": "fld_s4s1u85j5n",
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_o8inf6gmtx",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_35pjyflldq",
+      "name": "customer",
+      "label": "%customer%",
+      "type": "link",
+      "required": true,
+      "target": "party.party",
+      "target_id": "mdl_mr76tss5ic",
+      "index": "plain"
+    },
+    {
+      "id": "fld_enh9g9k9cc",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "required": true,
+      "max_length": 8
+    },
+    {
+      "id": "fld_xh25s4w7o9",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_f0x6zswjl3",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_xxlofaqn3f",
+          "value": "sent",
+          "label": "%sent%"
+        },
+        {
+          "id": "opt_born8cb3sv",
+          "value": "accepted",
+          "label": "%accepted%"
+        },
+        {
+          "id": "opt_dmf7e2evi0",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_b6z2k69v6g",
+          "value": "expired",
+          "label": "%expired%"
+        },
+        {
+          "id": "opt_jgf9r7s1y1",
+          "value": "converted",
+          "label": "%converted%"
+        }
+      ],
+      "default": "draft"
+    },
+    {
+      "id": "fld_8s8eqpp689",
+      "name": "quote_date",
+      "label": "%quote_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_6rpj859dud",
+      "name": "valid_until",
+      "label": "%valid_until%",
+      "type": "date"
+    },
+    {
+      "id": "fld_sbddsg9577",
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "index": "plain"
+    },
+    {
+      "id": "fld_g8i8ce068v",
+      "name": "payment_term",
+      "label": "%payment_term%",
+      "type": "link",
+      "target": "erp_pricing.payment_term",
+      "target_id": "mdl_fkq90to5up",
+      "index": "plain"
+    },
+    {
+      "id": "fld_gt4fcgcti1",
+      "name": "price_list",
+      "label": "%price_list%",
+      "type": "link",
+      "target": "erp_pricing.price_list",
+      "target_id": "mdl_unkbz5sj7z",
+      "index": "plain"
+    },
+    {
+      "id": "fld_rr2kifrgg7",
+      "name": "subtotal",
+      "label": "%subtotal%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_ua2tttveqj",
+      "name": "tax_total",
+      "label": "%tax_total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_pqj0m8npzb",
+      "name": "total",
+      "label": "%total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_evizb22qbd",
+      "name": "notes",
+      "label": "%notes%",
+      "type": "string",
+      "max_length": 500
+    },
+    {
+      "id": "fld_2bjt6ox1h6",
+      "name": "so",
+      "label": "%so%",
+      "type": "link",
+      "target": "so",
+      "index": "plain"
+    }
+  ],
+  "view": {
+    "list": [
+      "number",
+      "customer",
+      "state",
+      "quote_date",
+      "valid_until",
+      "total"
+    ]
+  }
+}

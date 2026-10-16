@@ -12,9 +12,12 @@ release-to-pay — without mutable billed-qty flags or a repost path. Written in
 See docs/design.md in this plugin (erp_procurement/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
-dependencies = ["erp_item", "erp_inventory", "company", "party", "uom", "currency"]
+dependencies = ["erp_item", "erp_inventory", "company", "party", "uom", "currency", "erp_pricing"]
+optional_dependencies = ["erp_quality"]
 capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call"]
 access_models = [
+  { name = "material_request", permissions = ["read", "write"] },
+  { name = "material_request_line", permissions = ["read", "write"] },
   { name = "rfq", permissions = ["read", "write"] },
   { name = "rfq_line", permissions = ["read", "write"] },
   { name = "po", permissions = ["read", "write"] },
@@ -24,6 +27,9 @@ access_models = [
   { name = "purchase_bill", permissions = ["read", "write"] },
   { name = "purchase_bill_line", permissions = ["read", "write"] },
   { name = "purchase_match", permissions = ["read", "write"] },
+  { name = "purchase_setting", permissions = ["read", "write"] },
+  { name = "purchase_return", permissions = ["read", "write"] },
+  { name = "purchase_return_line", permissions = ["read", "write"] },
   { name = "purchase_counter", permissions = ["read", "write"] },
 ]
 is_builtin = false
@@ -47,7 +53,11 @@ description = "Reads purchase documents."
 [[events]]
 name = "purchase_bill_approved"
 
+[[events]]
+name = "purchase_debit_note_approved"
+
 [app]
+roles = ["purchase_reader", "purchase_user", "purchase_admin"]
 icon = "shopping-cart"
 route = "/erp/procurement"
 description = "Purchase orders and bills"

@@ -1,0 +1,8 @@
+<page roles="item_admin" route="/erp/items/{id}/customers/new" title="Add customer" model="item_customer" menu="false">
+  <view type="form" function="set_item_customer" submit="Save" success="Saved" redirect="/erp/items/{id}/customers">
+    <group title="Customer" cols="2">
+      <field name="customer" label="Customer" required="true" source="party.list_parties" optionLabel="display_name" entity="parties"/>
+      <field name="customer_sku" label="Customer code"/>
+    </group>
+  </view>
+</page>

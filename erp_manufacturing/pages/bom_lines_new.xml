@@ -1,0 +1,11 @@
+<page roles="mfg_user,mfg_admin" route="/erp/manufacturing/boms/{id}/new" title="Add component" model="bom_line" menu="false">
+  <view type="form" function="add_bom_line" submit="Add" success="Added" redirect="/erp/manufacturing/boms/{id}">
+    <group title="Component" cols="2">
+      <field name="item" label="Item" required="true" source="erp_item.search_items" optionLabel="name" entity="items"/>
+      <field name="qty" label="Quantity" required="true" fieldType="float"/>
+      <field name="scrap_pct" label="Scrap %" fieldType="float"/>
+      <field name="is_byproduct" label="Byproduct" fieldType="boolean"/>
+      <field name="sub_bom" label="Make from BOM" source="list_boms" optionLabel="code" entity="boms"/>
+    </group>
+  </view>
+</page>

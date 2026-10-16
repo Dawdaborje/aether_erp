@@ -1,0 +1,69 @@
+{
+  "model_id": "mdl_fkq90to5up",
+  "name": "payment_term",
+  "label": "%payment_term%",
+  "plural_label": "%payment_terms%",
+  "icon": "calendar",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_8w4b6zktpl",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 32,
+      "index": "unique"
+    },
+    {
+      "id": "fld_h9o21nx7gw",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_uuj9crse5l",
+      "name": "net_days",
+      "label": "%net_days%",
+      "type": "int",
+      "required": true,
+      "default": 0,
+      "help": "Days from document date until payment is due."
+    },
+    {
+      "id": "fld_weyxv6niyl",
+      "name": "discount_pct",
+      "label": "%discount_pct%",
+      "type": "decimal",
+      "scale": 4,
+      "default": "0",
+      "help": "Early-payment discount percent."
+    },
+    {
+      "id": "fld_zjhlhoeay3",
+      "name": "discount_days",
+      "label": "%discount_days%",
+      "type": "int",
+      "default": 0,
+      "help": "Days from document date the discount is available."
+    },
+    {
+      "id": "fld_h95r5zjia7",
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "code",
+      "name",
+      "net_days",
+      "discount_pct",
+      "discount_days"
+    ]
+  }
+}

@@ -1,0 +1,19 @@
+<page roles="purchase_reader,purchase_user,purchase_admin" route="/erp/procurement/bills" title="Bills &amp; debit notes" model="purchase_bill" menu="false">
+  <view type="list" model="purchase_bill" source="list_bills" open="/erp/procurement/bills/{id}">
+    <search/>
+    <columns>
+      <column field="number" label="Number"/>
+      <column field="kind" label="Kind" fieldType="badge"/>
+      <column field="supplier" label="Supplier"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="release_to_pay" label="Release" fieldType="badge"/>
+      <column field="bill_date" label="Date"/>
+      <column field="due_date" label="Due"/>
+      <column field="total" label="Total"/>
+    </columns>
+    <actions>
+      <action name="approve_bill" label="Approve" function="approve_bill" confirm="Approve this bill?"/>
+    </actions>
+    <empty title="No bills yet" description="Bills are created from received orders."/>
+  </view>
+</page>

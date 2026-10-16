@@ -1,0 +1,15 @@
+<page roles="replenish_reader,replenish_admin" route="/erp/replenishment/rules" title="Reorder rules" model="reorder_rule" icon="sliders" sort="34">
+  <view type="list" model="reorder_rule" source="list_rules" create="/erp/replenishment/rules/new" create_label="New rule">
+    <search/>
+    <columns>
+      <column field="item" label="Item"/>
+      <column field="warehouse" label="Warehouse"/>
+      <column field="min_qty" label="Min"/>
+      <column field="max_qty" label="Max"/>
+      <column field="multiple" label="Multiple"/>
+      <column field="route" label="Route" fieldType="badge"/>
+      <column field="active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No reorder rules" description="A rule keeps an item between a minimum and maximum."/>
+  </view>
+</page>

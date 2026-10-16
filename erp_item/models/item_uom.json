@@ -1,0 +1,87 @@
+{
+  "model_id": "mdl_luf6qh01an",
+  "name": "item_uom",
+  "label": "%item_uom%",
+  "plural_label": "%item_uoms%",
+  "icon": "scale",
+  "title_field": "uom",
+  "fields": [
+    {
+      "id": "fld_1ardgwrwtg",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "item",
+      "index": "plain"
+    },
+    {
+      "id": "fld_qn2dqnyhgh",
+      "name": "uom",
+      "label": "%uom%",
+      "type": "link",
+      "required": true,
+      "target": "uom.uom",
+      "target_id": "mdl_gidmmkjdj5",
+      "index": "plain"
+    },
+    {
+      "id": "fld_18ssnutcvf",
+      "name": "factor",
+      "label": "%factor%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "min": "0.000001",
+      "help": "How many of the item's own unit one of this unit holds (a case of 12: 12)."
+    },
+    {
+      "id": "fld_kzid7n3opk",
+      "name": "use_for",
+      "label": "%use_for%",
+      "type": "select",
+      "default": "both",
+      "options": [
+        {
+          "id": "opt_o494afzvrq",
+          "value": "both",
+          "label": "%both%"
+        },
+        {
+          "id": "opt_ztqefkol8g",
+          "value": "purchase",
+          "label": "%purchase%"
+        },
+        {
+          "id": "opt_q1aclwjgg5",
+          "value": "sales",
+          "label": "%sales%"
+        }
+      ]
+    },
+    {
+      "id": "fld_axu43tdztk",
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "uom",
+      "factor",
+      "use_for"
+    ]
+  },
+  "indexes": [
+    {
+      "fields": [
+        "item",
+        "uom"
+      ],
+      "unique": true,
+      "id": "idx_xdl4pwsc5x"
+    }
+  ]
+}

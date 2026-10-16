@@ -1,0 +1,13 @@
+<page roles="sales_reader,sales_user,sales_admin" route="/erp/selling/deliveries" title="Deliveries" model="sales_delivery" menu="false">
+  <view type="list" model="sales_delivery" source="list_deliveries">
+    <search/>
+    <columns>
+      <column field="number" label="Number"/>
+      <column field="so" label="Order"/>
+      <column field="customer" label="Customer"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="delivery_date" label="Date"/>
+    </columns>
+    <empty title="No deliveries yet" description="Deliver goods against a confirmed order."/>
+  </view>
+</page>

@@ -1,0 +1,19 @@
+<page roles="quality_reader,quality_user,quality_admin" route="/erp/quality" title="Quality" model="quality_inspection" icon="clipboard-check" sort="35">
+  <view type="list" model="quality_inspection" source="list_inspections" open="/erp/quality/{id}" create="/erp/quality/new" create_label="New inspection">
+    <search/>
+    <columns>
+      <column field="number" label="Number"/>
+      <column field="item" label="Item"/>
+      <column field="source_kind" label="Document"/>
+      <column field="lot" label="Lot"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="inspected_on" label="Inspected"/>
+    </columns>
+    <actions>
+      <action name="complete" label="Decide" function="complete_inspection" confirm="Accept or reject from the readings?"/>
+      <action name="cancel" label="Cancel" function="cancel_inspection" confirm="Cancel this inspection?" danger="true"/>
+      <action name="reopen" label="Reopen" function="reopen_inspection" confirm="Reopen to change readings?"/>
+    </actions>
+    <empty title="No inspections" description="Start one from a template for received, delivered or produced goods."/>
+  </view>
+</page>

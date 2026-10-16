@@ -1,0 +1,13 @@
+<page roles="quality_user,quality_admin" route="/erp/quality/new" title="New inspection" model="quality_inspection" menu="false">
+  <view type="form" function="create_inspection" submit="Start inspection" success="Inspection started" redirect="/erp/quality">
+    <group title="Inspection" cols="2">
+      <field name="company" label="Company" required="true" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="template" label="Template" required="true" source="list_templates" optionLabel="name" entity="templates"/>
+      <field name="item" label="Item (if the template has none)" source="erp_item.search_items" optionLabel="name" entity="items"/>
+      <field name="source_kind" label="Document type"/>
+      <field name="source_id" label="Document id"/>
+      <field name="lot" label="Lot / serial"/>
+      <field name="qty" label="Quantity" fieldType="float"/>
+    </group>
+  </view>
+</page>

@@ -1,0 +1,13 @@
+<page roles="pricing_admin" route="/erp/pricing/taxes/new" title="New tax" model="tax" menu="false">
+  <view type="form" function="create_tax" submit="Add tax" success="Tax added" redirect="/erp/pricing/taxes">
+    <group title="Tax" cols="2">
+      <field name="code" label="Code" required="true"/>
+      <field name="name" label="Name" required="true"/>
+      <field name="kind" label="Kind" fieldType="selection" options="percent, fixed"/>
+      <field name="rate" label="Rate" required="true" fieldType="float"/>
+      <field name="applies_to" label="Applies to" fieldType="selection" options="both, sales, purchase"/>
+      <field name="price_includes_tax" label="Price includes tax" fieldType="boolean"/>
+      <field name="account" label="Ledger account code"/>
+    </group>
+  </view>
+</page>

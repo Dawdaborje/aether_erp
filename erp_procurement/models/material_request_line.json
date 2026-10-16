@@ -1,0 +1,79 @@
+{
+  "model_id": "mdl_vc7zm7d85p",
+  "name": "material_request_line",
+  "label": "%material_request_line%",
+  "plural_label": "%material_request_lines%",
+  "icon": "list",
+  "title_field": "item",
+  "fields": [
+    {
+      "id": "fld_v49oh9zkm3",
+      "name": "request",
+      "label": "%request%",
+      "type": "link",
+      "required": true,
+      "target": "material_request",
+      "index": "plain"
+    },
+    {
+      "id": "fld_i7jje0cnuh",
+      "name": "position",
+      "label": "%position%",
+      "type": "int"
+    },
+    {
+      "id": "fld_gcva4pumyf",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain"
+    },
+    {
+      "id": "fld_rcuf3c92ci",
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "min": "0.000001",
+      "help": "In the item's own unit."
+    },
+    {
+      "id": "fld_4df4bobw5i",
+      "name": "supplier",
+      "label": "%supplier%",
+      "type": "link",
+      "target": "party.party",
+      "target_id": "mdl_mr76tss5ic",
+      "help": "Overrides the item's preferred supplier."
+    },
+    {
+      "id": "fld_ge4ebviake",
+      "name": "po",
+      "label": "%po%",
+      "type": "link",
+      "target": "po",
+      "help": "The purchase order this line was ordered on."
+    },
+    {
+      "id": "fld_htpgl5agrq",
+      "name": "unit_price",
+      "label": "%unit_price%",
+      "type": "decimal",
+      "scale": 6,
+      "min": "0",
+      "help": "Expected price per item unit. Ordering uses it; without one the buy price list is used."
+    }
+  ],
+  "view": {
+    "list": [
+      "item",
+      "qty",
+      "supplier",
+      "po"
+    ]
+  }
+}

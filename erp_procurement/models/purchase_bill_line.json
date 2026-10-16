@@ -94,6 +94,39 @@
         }
       ],
       "id": "fld_b0xb1j6vk8"
+    },
+    {
+      "id": "fld_vhdbcmro9i",
+      "name": "discount_pct",
+      "label": "%discount_pct%",
+      "type": "decimal",
+      "scale": 4,
+      "default": "0"
+    },
+    {
+      "id": "fld_mb1po90cr4",
+      "name": "tax",
+      "label": "%tax%",
+      "type": "link",
+      "target": "erp_pricing.tax",
+      "target_id": "mdl_shfete7izv",
+      "index": "plain"
+    },
+    {
+      "id": "fld_p0i7dlbk31",
+      "name": "tax_amount",
+      "label": "%tax_amount%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_rfm065k8jn",
+      "name": "reverses_line",
+      "label": "%reverses_line%",
+      "type": "link",
+      "target": "purchase_bill_line",
+      "index": "plain"
     }
   ],
   "view": {

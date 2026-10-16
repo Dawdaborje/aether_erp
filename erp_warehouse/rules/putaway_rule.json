@@ -1,0 +1,39 @@
+{
+  "model": "putaway_rule",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "wh_reader",
+        "wh_user",
+        "wh_admin",
+        "via:*"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "wh_user",
+        "wh_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "wh_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write",
+        "delete"
+      ]
+    }
+  ]
+}

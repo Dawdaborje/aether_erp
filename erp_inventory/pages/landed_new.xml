@@ -1,0 +1,10 @@
+<page roles="stock_user,stock_admin" route="/erp/inventory/landed/new" title="New landed cost" model="stock_landed_cost" menu="false">
+  <view type="form" function="create_landed_cost" submit="Create" success="Created" redirect="/erp/inventory/landed">
+    <group title="Landed cost" cols="2">
+      <field name="company" label="Company" required="true" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="move" label="Receipt move" required="true" source="list_moves" entity="moves"/>
+      <field name="reference" label="Reference"/>
+      <field name="basis" label="Share by" fieldType="selection" options="value, qty"/>
+    </group>
+  </view>
+</page>

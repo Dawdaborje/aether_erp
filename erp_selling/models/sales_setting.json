@@ -1,0 +1,67 @@
+{
+  "model_id": "mdl_ot58avk9rr",
+  "name": "sales_setting",
+  "label": "%sales_setting%",
+  "plural_label": "%sales_settings%",
+  "icon": "settings",
+  "title_field": "company",
+  "fields": [
+    {
+      "id": "fld_wq21ma1eic",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "unique"
+    },
+    {
+      "id": "fld_yu74bvv7j1",
+      "name": "enforce_credit_limit",
+      "label": "%enforce_credit_limit%",
+      "type": "bool",
+      "default": false
+    },
+    {
+      "id": "fld_n68kgr3n6d",
+      "name": "default_payment_term",
+      "label": "%default_payment_term%",
+      "type": "link",
+      "target": "erp_pricing.payment_term",
+      "target_id": "mdl_fkq90to5up",
+      "index": "plain"
+    },
+    {
+      "id": "fld_ik7cil0ciq",
+      "name": "default_price_list",
+      "label": "%default_price_list%",
+      "type": "link",
+      "target": "erp_pricing.price_list",
+      "target_id": "mdl_unkbz5sj7z",
+      "index": "plain"
+    },
+    {
+      "id": "fld_cwgv6rfgu7",
+      "name": "quote_valid_days",
+      "label": "%quote_valid_days%",
+      "type": "int",
+      "default": 30
+    },
+    {
+      "id": "fld_4k6642wt7i",
+      "name": "require_inspection",
+      "label": "%require_inspection%",
+      "type": "bool",
+      "default": false,
+      "help": "With the quality plugin installed, goods are only received (or delivered) against an accepted inspection of the order."
+    }
+  ],
+  "view": {
+    "list": [
+      "company",
+      "enforce_credit_limit",
+      "quote_valid_days"
+    ]
+  }
+}

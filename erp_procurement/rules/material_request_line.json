@@ -1,0 +1,39 @@
+{
+  "model": "material_request_line",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "purchase_reader",
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write",
+        "delete"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "po"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

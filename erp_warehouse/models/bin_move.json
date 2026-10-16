@@ -1,0 +1,152 @@
+{
+  "name": "bin_move",
+  "icon": "move",
+  "title_field": "moved_on",
+  "fields": [
+    {
+      "id": "fld_o1wmtxp0op",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_18zdipdhdz",
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "index": "plain",
+      "required": true
+    },
+    {
+      "id": "fld_i39tqgpdwd",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain",
+      "required": true
+    },
+    {
+      "id": "fld_jnrbuju9q3",
+      "name": "lot",
+      "label": "%lot%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_cbbpt74ahd",
+      "name": "from_bin",
+      "label": "%from_bin%",
+      "type": "link",
+      "target": "wh_bin",
+      "index": "plain"
+    },
+    {
+      "id": "fld_omwcrt8dxr",
+      "name": "to_bin",
+      "label": "%to_bin%",
+      "type": "link",
+      "target": "wh_bin",
+      "index": "plain"
+    },
+    {
+      "id": "fld_dzl83em7rm",
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "min": "0.000001"
+    },
+    {
+      "id": "fld_xyn97tl3z0",
+      "name": "moved_on",
+      "label": "%moved_on%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_fmd35vjejk",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "select",
+      "required": true,
+      "default": "transfer",
+      "options": [
+        {
+          "id": "opt_5popijx3v8",
+          "value": "putaway",
+          "label": "%putaway%"
+        },
+        {
+          "id": "opt_m7kotu6yns",
+          "value": "transfer",
+          "label": "%transfer%"
+        },
+        {
+          "id": "opt_f55sh10flq",
+          "value": "pick",
+          "label": "%pick%"
+        },
+        {
+          "id": "opt_gm58sdrpu4",
+          "value": "adjust",
+          "label": "%adjust%"
+        }
+      ]
+    },
+    {
+      "id": "fld_iieuubz9lf",
+      "name": "source_kind",
+      "label": "%source_kind%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_tsweeld5v6",
+      "name": "source_id",
+      "label": "%source_id%",
+      "type": "string",
+      "max_length": 80
+    }
+  ],
+  "checks": [
+    {
+      "require": {
+        "or": [
+          {
+            "from_bin": {
+              "null": false
+            }
+          },
+          {
+            "to_bin": {
+              "null": false
+            }
+          }
+        ]
+      },
+      "message": "a move needs a bin to leave or a bin to enter"
+    }
+  ],
+  "view": {
+    "list": [
+      "moved_on",
+      "item",
+      "from_bin",
+      "to_bin",
+      "qty",
+      "reason"
+    ]
+  },
+  "model_id": "mdl_c27jsyrldn",
+  "label": "%bin_move%",
+  "plural_label": "%bin_moves%"
+}

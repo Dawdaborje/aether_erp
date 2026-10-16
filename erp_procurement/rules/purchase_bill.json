@@ -36,7 +36,14 @@
         "bill_date",
         "total",
         "release_to_pay",
-        "source_version"
+        "source_version",
+        "subtotal",
+        "tax_total",
+        "payment_term",
+        "due_date",
+        "kind",
+        "reverses",
+        "reason"
       ],
       "write_roles": [
         "via:self"

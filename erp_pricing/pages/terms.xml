@@ -1,0 +1,13 @@
+<page roles="pricing_reader,pricing_admin" route="/erp/pricing/terms" title="Payment terms" model="payment_term" menu="false">
+  <view type="list" model="payment_term" source="list_payment_terms" create="/erp/pricing/terms/new" create_label="New term">
+    <search/>
+    <columns>
+      <column field="code" label="Code"/>
+      <column field="name" label="Name"/>
+      <column field="net_days" label="Net days"/>
+      <column field="discount_pct" label="Early discount %"/>
+      <column field="discount_days" label="Discount days"/>
+    </columns>
+    <empty title="No payment terms yet" description="Terms give documents a due date."/>
+  </view>
+</page>

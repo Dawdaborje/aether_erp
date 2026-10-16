@@ -1,3 +1,20 @@
-<page route="/erp/selling" title="Selling" icon="shopping-bag">
-  <header title="Selling"/>
+<page roles="sales_reader,sales_user,sales_admin" route="/erp/selling" title="Selling" icon="badge-dollar-sign" sort="31">
+  <header title="Selling" subtitle="Quote, order, deliver and invoice what you sell."/>
+  <view type="dashboard" source="sales_dashboard">
+    <stat label="Open orders" field="open_orders"/>
+    <stat label="Open value" field="open_value"/>
+    <stat label="Not yet invoiced" field="uninvoiced_value"/>
+    <stat label="Open quotations" field="open_quotations"/>
+    <stat label="Quotation win %" field="quotation_win_pct"/>
+    <stat label="Draft invoices" field="draft_invoices"/>
+    <chart type="bar" title="Sales by customer" field="sales_by_customer" category="name" value="value"/>
+  </view>
+  <buttonbox>
+    <button label="Quotations" href="/erp/selling/quotations" variant="secondary"/>
+    <button label="Sales orders" href="/erp/selling/sos" variant="secondary"/>
+    <button label="Invoices &amp; credit notes" href="/erp/selling/invoices" variant="secondary"/>
+    <button label="Deliveries" href="/erp/selling/deliveries" variant="secondary"/>
+    <button label="Returns" href="/erp/selling/returns" variant="secondary"/>
+    <button label="Credit limits" href="/erp/selling/credit" variant="outline"/>
+  </buttonbox>
 </page>

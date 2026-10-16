@@ -56,6 +56,11 @@
           "id": "opt_rjsxey3k4e",
           "value": "lot",
           "label": "%lot%"
+        },
+        {
+          "id": "opt_8syocclwi9",
+          "value": "serial",
+          "label": "%serial%"
         }
       ],
       "default": "none",
@@ -75,6 +80,13 @@
       "label": "%active%",
       "type": "bool",
       "default": true
+    },
+    {
+      "id": "fld_mkrzav2bly",
+      "name": "expiry_days",
+      "label": "%expiry_days%",
+      "type": "int",
+      "help": "Shelf life in days from receipt; sets the lot expiry when none is given."
     }
   ],
   "view": {

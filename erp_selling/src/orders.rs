@@ -5,8 +5,8 @@ use aether_sdk::decimal::Decimal;
 use aether_sdk::prelude::*;
 
 use crate::common::{
-    allocate_number, company_currency_code, id_of, line_amount, money_of, price_of, qty_of, require, require_customer,
-    require_reader, require_user, text, today, Record, MONEY_SCALE, PRICE_SCALE, QTY_SCALE,
+    allocate_number, company_currency_code, dec, id_of, money_of, price_line, price_of, qty_of, require, require_customer,
+    require_reader, require_user, sum_lines, text, today, Record, MONEY_SCALE, PRICE_SCALE, QTY_SCALE,
 };
 
 #[derive(Deserialize)]
@@ -23,6 +23,10 @@ struct CreateSo {
     notes: Option<String>,
     #[serde(default)]
     deal: Option<String>,
+    #[serde(default)]
+    payment_term: Option<String>,
+    #[serde(default)]
+    price_list: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -36,12 +40,22 @@ struct CreateSoFromDeal {
 
 #[derive(Deserialize)]
 struct AddSoLine {
+    #[serde(alias = "id")]
     so: String,
     item: String,
     qty: Decimal,
-    unit_price: Decimal,
+    /// Omit to take the price from the order's (or the default) sell price list.
+    #[serde(default)]
+    unit_price: Option<Decimal>,
+    #[serde(default)]
+    discount_pct: Option<Decimal>,
+    #[serde(default)]
+    tax: Option<String>,
     #[serde(default)]
     warehouse: Option<String>,
+    /// Unit the quantity and price are given in (a case); default the item's own unit.
+    #[serde(default)]
+    uom: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -89,7 +103,7 @@ fn so_lines(so_id: &str) -> Result<Vec<Record>> {
     Ok(rows)
 }
 
-fn refresh_so_state(so_id: &str) -> Result<Record> {
+pub(crate) fn refresh_so_state(so_id: &str) -> Result<Record> {
     let so = require("so", so_id, "sales order")?;
     if matches!(text(&so, "state"), Some("cancelled" | "closed" | "draft")) {
         return Ok(so);
@@ -154,6 +168,16 @@ fn do_create_so(input: CreateSo) -> Result<Record> {
     if let Some(deal) = input.deal.filter(|d| !d.is_empty()) {
         data["deal"] = json!(deal.trim());
     }
+    if let Some(term) = input.payment_term.filter(|t| !t.is_empty()) {
+        let _ = require("erp_pricing.payment_term", &term, "payment term")?;
+        data["payment_term"] = json!(term);
+    }
+    if let Some(list) = input.price_list.filter(|l| !l.is_empty()) {
+        let _ = require("erp_pricing.price_list", &list, "price list")?;
+        data["price_list"] = json!(list);
+    }
+    data["subtotal"] = json!(Decimal::zero(MONEY_SCALE));
+    data["tax_total"] = json!(Decimal::zero(MONEY_SCALE));
     db::create("so", &data).map_err(|e| e.or("could not create the sales order"))
 }
 
@@ -195,6 +219,8 @@ fn do_create_so_from_deal(input: CreateSoFromDeal) -> Result<Record> {
         warehouse: input.warehouse,
         notes,
         deal: Some(id_of(&deal)?.to_string()),
+        payment_term: None,
+        price_list: None,
     })
 }
 
@@ -205,19 +231,45 @@ fn do_add_so_line(input: AddSoLine) -> Result<Record> {
         return Err(Error::msg("lines can only be added while the order is a draft"));
     }
     let qty = input.qty.with_scale(QTY_SCALE)?;
-    let unit_price = input.unit_price.with_scale(PRICE_SCALE)?;
     if qty.is_zero() || qty.is_negative() {
         return Err(Error::msg("quantity must be greater than zero"));
-    }
-    if unit_price.is_negative() {
-        return Err(Error::msg("unit price must not be negative"));
     }
     let item: Record = plugins::call("erp_item", "get_item", &json!({ "id": input.item }))?;
     if item.get("active") == Some(&json!(false)) {
         return Err(Error::msg("the item is not active"));
     }
-    let uom = text(&item, "uom").ok_or_else(|| Error::msg("the item has no unit"))?;
-    let amount = line_amount(qty, unit_price)?;
+    let item_uom = text(&item, "uom").ok_or_else(|| Error::msg("the item has no unit"))?.to_string();
+    // A line may be entered in another unit (a case): `qty` and `unit_price` are kept per item unit.
+    let order_uom = input.uom.clone().filter(|u| !u.is_empty() && *u != item_uom);
+    let entered_qty = qty;
+    let mut factor = Decimal::whole(1, 6)?;
+    let mut qty = qty;
+    if let Some(u) = &order_uom {
+        let converted: Value = plugins::call(
+            "erp_item",
+            "convert_qty",
+            &json!({ "item": id_of(&item)?, "qty": entered_qty, "from_uom": u, "context": "sales" }),
+        )?;
+        qty = crate::common::dec(&converted, "base_qty", QTY_SCALE)?;
+        if qty.is_zero() {
+            return Err(Error::msg("the quantity is too small in the item's unit"));
+        }
+        factor = qty.div(entered_qty, 6)?;
+    }
+    let entered_price = input.unit_price.clone();
+    let input_unit_price = match (&order_uom, &entered_price) {
+        (Some(_), Some(p)) => Some(p.clone().div(factor, PRICE_SCALE)?),
+        _ => entered_price.clone(),
+    };
+    let uom = item_uom.as_str();
+    let (unit_price, list_discount) =
+        crate::common::resolve_sell_price(&so, "order_date", id_of(&item)?, qty, input_unit_price)?;
+    if unit_price.is_negative() {
+        return Err(Error::msg("unit price must not be negative"));
+    }
+    let discount_pct = input.discount_pct.unwrap_or(list_discount).with_scale(4)?;
+    let tax = input.tax.filter(|t| !t.is_empty());
+    let priced = price_line(qty, unit_price, discount_pct, tax.as_deref())?;
     let existing = so_lines(id_of(&so)?)?;
     let line_no = existing.iter().map(|r| r.get("line_no").and_then(Value::as_i64).unwrap_or(0)).max().unwrap_or(0) + 1;
     let mut data = json!({
@@ -227,18 +279,33 @@ fn do_add_so_line(input: AddSoLine) -> Result<Record> {
         "qty": qty,
         "uom": uom,
         "unit_price": unit_price,
-        "amount": amount,
+        "discount_pct": discount_pct,
+        "amount": priced.net,
+        "tax_amount": priced.tax,
         "qty_delivered": Decimal::zero(QTY_SCALE),
         "qty_invoiced": Decimal::zero(QTY_SCALE),
     });
+    if let Some(u) = &order_uom {
+        data["order_uom"] = json!(u);
+        data["order_qty"] = json!(entered_qty);
+        data["order_unit_price"] = json!(match &entered_price {
+            Some(p) => p.clone().with_scale(PRICE_SCALE)?,
+            None => unit_price.times(factor, PRICE_SCALE)?,
+        });
+    }
+    if let Some(t) = &tax {
+        data["tax"] = json!(t);
+    }
     if let Some(wh) = input.warehouse.or_else(|| text(&so, "warehouse").map(str::to_string)) {
         data["warehouse"] = json!(wh);
     }
     let line = db::create("so_line", &data).map_err(|e| e.or("could not add the line"))?;
-    let total = existing
-        .iter()
-        .try_fold(amount, |acc, r| acc.checked_add(money_of(r, "amount")?))?;
-    let _: Option<Record> = db::update("so", id_of(&so)?, &json!({ "total": total }))?;
+    let (subtotal, tax_total) = sum_lines(&so_lines(id_of(&so)?)?)?;
+    let _: Option<Record> = db::update(
+        "so",
+        id_of(&so)?,
+        &json!({ "subtotal": subtotal, "tax_total": tax_total, "total": subtotal.checked_add(tax_total)? }),
+    )?;
     Ok(line)
 }
 
@@ -251,6 +318,7 @@ fn do_confirm_so(input: Id) -> Result<Record> {
     if so_lines(&input.id)?.is_empty() {
         return Err(Error::msg("add at least one line before confirming"));
     }
+    crate::quotes::enforce_credit(&so)?;
     let company_id = text(&so, "company").unwrap_or_default();
     let date = text(&so, "order_date").unwrap_or_default();
     let (number, next, counter_id) = allocate_number(company_id, "SO", date)?;
@@ -270,6 +338,7 @@ fn do_deliver_so(input: DeliverSo) -> Result<Value> {
     if input.lines.is_empty() {
         return Err(Error::msg("name what to deliver"));
     }
+    crate::quotes::require_accepted_inspection(&so)?;
     let company_id = text(&so, "company").unwrap_or_default().to_string();
     let customer_id = text(&so, "customer").unwrap_or_default().to_string();
     let delivery_date = match input.delivery_date {
@@ -411,12 +480,20 @@ fn do_create_invoice(input: CreateInvoice) -> Result<Record> {
             "state": "draft",
             "invoice_date": invoice_date,
             "total": Decimal::zero(MONEY_SCALE),
+            "subtotal": Decimal::zero(MONEY_SCALE),
+            "tax_total": Decimal::zero(MONEY_SCALE),
             "source_version": 1,
             "number": number,
         }),
     )?;
     let invoice_id = id_of(&invoice)?.to_string();
-    let mut total = Decimal::zero(MONEY_SCALE);
+    if let Some(term) = text(&so, "payment_term") {
+        let due: Value = plugins::call("erp_pricing", "due_date_for", &json!({ "term": term, "date": invoice_date }))?;
+        let _: Option<Record> =
+            db::update("sales_invoice", &invoice_id, &json!({ "payment_term": term, "due_date": due["due_date"] }))?;
+    }
+    let mut subtotal = Decimal::zero(MONEY_SCALE);
+    let mut tax_total = Decimal::zero(MONEY_SCALE);
     let mut line_no = 0i64;
     for spec in &input.lines {
         let so_line = require("so_line", &spec.so_line, "order line")?;
@@ -436,8 +513,11 @@ fn do_create_invoice(input: CreateInvoice) -> Result<Record> {
             )));
         }
         let unit_price = spec.unit_price.unwrap_or(price_of(&so_line, "unit_price")?).with_scale(PRICE_SCALE)?;
-        let amount = line_amount(qty, unit_price)?;
-        total = total.checked_add(amount)?;
+        let discount_pct = dec(&so_line, "discount_pct", 4)?;
+        let tax = text(&so_line, "tax").map(str::to_string);
+        let priced = price_line(qty, unit_price, discount_pct, tax.as_deref())?;
+        subtotal = subtotal.checked_add(priced.net)?;
+        tax_total = tax_total.checked_add(priced.tax)?;
         line_no += 1;
         let mut data = json!({
             "invoice": invoice_id,
@@ -446,8 +526,13 @@ fn do_create_invoice(input: CreateInvoice) -> Result<Record> {
             "item": text(&so_line, "item"),
             "qty": qty,
             "unit_price": unit_price,
-            "amount": amount,
+            "discount_pct": discount_pct,
+            "amount": priced.net,
+            "tax_amount": priced.tax,
         });
+        if let Some(t) = &tax {
+            data["tax"] = json!(t);
+        }
         if let Some(dl) = &spec.delivery_line {
             let _ = require("sales_delivery_line", dl, "delivery line")?;
             data["delivery_line"] = json!(dl);
@@ -458,9 +543,37 @@ fn do_create_invoice(input: CreateInvoice) -> Result<Record> {
     }
     db::transaction()
         .update("sales_counter", &counter_id, &json!({ "next": next + 1 }))
-        .update("sales_invoice", &invoice_id, &json!({ "total": total }))
+        .update(
+            "sales_invoice",
+            &invoice_id,
+            &json!({ "subtotal": subtotal, "tax_total": tax_total, "total": subtotal.checked_add(tax_total)? }),
+        )
         .run()?;
     require("sales_invoice", &invoice_id, "invoice")
+}
+
+/// A credit note reduces what the customer owes: it mirrors the invoice's ledger lines.
+fn emit_credit_note(id: &str, approved: Record) -> Result<Record> {
+    let total = money_of(&approved, "total")?;
+    events::emit(
+        "sales_credit_note_approved",
+        &json!({
+            "invoice": id,
+            "number": text(&approved, "number"),
+            "company": text(&approved, "company"),
+            "customer": text(&approved, "customer"),
+            "currency": text(&approved, "currency"),
+            "invoice_date": text(&approved, "invoice_date"),
+            "total": approved.get("total"),
+            "ar_total": total,
+            "revenue": money_of(&approved, "subtotal")?,
+            "tax_total": money_of(&approved, "tax_total")?,
+            "reverses": text(&approved, "reverses"),
+            "so": text(&approved, "so"),
+            "source_version": approved.get("source_version").and_then(Value::as_i64).unwrap_or(1),
+        }),
+    )?;
+    Ok(approved)
 }
 
 fn do_approve_invoice(input: Id) -> Result<Record> {
@@ -471,7 +584,14 @@ fn do_approve_invoice(input: Id) -> Result<Record> {
     }
     let approved = db::update("sales_invoice", &input.id, &json!({ "state": "approved" }))?
         .ok_or_else(|| Error::msg("the invoice is gone"))?;
+    if text(&approved, "kind") == Some("credit_note") {
+        return emit_credit_note(&input.id, approved);
+    }
     let total = money_of(&approved, "total")?;
+    let subtotal = money_of(&approved, "subtotal")?;
+    let tax_total = money_of(&approved, "tax_total")?;
+    // Invoices written before taxes existed carry only a total: treat it all as revenue.
+    let revenue = if subtotal.is_zero() && tax_total.is_zero() { total } else { subtotal };
     events::emit(
         "sales_invoice_approved",
         &json!({
@@ -483,7 +603,9 @@ fn do_approve_invoice(input: Id) -> Result<Record> {
             "invoice_date": text(&approved, "invoice_date"),
             "total": approved.get("total"),
             "ar_total": total,
-            "revenue": total,
+            "revenue": revenue,
+            "tax_total": tax_total,
+            "due_date": text(&approved, "due_date"),
             "so": text(&approved, "so"),
             "source_version": approved.get("source_version").and_then(Value::as_i64).unwrap_or(1),
         }),
@@ -509,6 +631,15 @@ fn do_cancel_so(input: Id) -> Result<Record> {
         return Err(Error::msg("cancel only when nothing has been delivered"));
     }
     db::update("so", &input.id, &json!({ "state": "cancelled" }))?.ok_or_else(|| Error::msg("the order is gone"))
+}
+
+/// In-crate entry points so quotations can open orders without crossing the handler boundary.
+pub(crate) fn api_create_so(input: Value) -> Result<Record> {
+    do_create_so(serde_json::from_value(input).map_err(|e| Error::msg(format!("order: {e}")))?)
+}
+
+pub(crate) fn api_add_so_line(input: Value) -> Result<Record> {
+    do_add_so_line(serde_json::from_value(input).map_err(|e| Error::msg(format!("line: {e}")))?)
 }
 
 handler! {

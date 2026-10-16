@@ -1,0 +1,49 @@
+{
+  "model": "replenish_request",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "replenish_reader",
+        "replenish_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "replenish_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "company",
+        "item",
+        "warehouse",
+        "qty",
+        "route",
+        "state",
+        "reason",
+        "rule",
+        "supplier",
+        "demand_kind",
+        "demand_id",
+        "needed_by",
+        "result_kind",
+        "result_id",
+        "note"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

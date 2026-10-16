@@ -1,3 +1,14 @@
-<page route="/erp/items" title="Items" icon="package">
-  <header title="Items"/>
+<page roles="item_reader,item_admin" route="/erp/items" title="Items" model="item" icon="package" sort="10">
+  <view type="list" model="item" source="search_items" open="/erp/items/{id}" create="/erp/items/new" create_label="New item">
+    <search/>
+    <columns>
+      <column field="code" label="Code"/>
+      <column field="name" label="Name"/>
+      <column field="uom" label="Unit"/>
+      <column field="tracking" label="Tracking" fieldType="badge"/>
+      <column field="is_stocked" label="Stocked" fieldType="boolean"/>
+      <column field="active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No items yet" description="Use New to add a stocked or non-stocked item."/>
+  </view>
 </page>

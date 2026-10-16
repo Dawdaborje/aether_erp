@@ -4,7 +4,7 @@ use aether_sdk::dates::parse_date;
 use aether_sdk::decimal::Decimal;
 use aether_sdk::prelude::*;
 
-use crate::common::{allocate_number, id_of, qty_of, require, require_reader, require_user, text, today, Record, PCT_SCALE, QTY_SCALE, VALUE_SCALE};
+use crate::common::{id_of, qty_of, require, require_reader, require_user, text, today, Record, PCT_SCALE, QTY_SCALE, VALUE_SCALE};
 use crate::rules::{explode, BomComponent};
 
 #[derive(Deserialize)]
@@ -18,6 +18,7 @@ struct CreateBom {
 
 #[derive(Deserialize)]
 struct AddBomLine {
+    #[serde(alias = "id")]
     bom: String,
     item: String,
     qty: Decimal,
@@ -25,6 +26,9 @@ struct AddBomLine {
     scrap_pct: Option<Decimal>,
     #[serde(default)]
     is_byproduct: Option<bool>,
+    /// Make this component from another BOM (multi-level).
+    #[serde(default)]
+    sub_bom: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -42,13 +46,13 @@ struct Id {
     id: String,
 }
 
-fn bom_lines(bom_id: &str) -> Result<Vec<Record>> {
+pub(crate) fn bom_lines(bom_id: &str) -> Result<Vec<Record>> {
     let mut rows: Vec<Record> = db::find("bom_line").filter("bom", bom_id).limit(500).all()?;
     rows.sort_by_key(|r| r.get("line_no").and_then(Value::as_i64).unwrap_or(0));
     Ok(rows)
 }
 
-fn components_of(bom_id: &str) -> Result<Vec<BomComponent>> {
+pub(crate) fn components_of(bom_id: &str) -> Result<Vec<BomComponent>> {
     bom_lines(bom_id)?
         .into_iter()
         .map(|row| {
@@ -62,7 +66,7 @@ fn components_of(bom_id: &str) -> Result<Vec<BomComponent>> {
         .collect()
 }
 
-fn mo_components(mo_id: &str) -> Result<Vec<Record>> {
+pub(crate) fn mo_components(mo_id: &str) -> Result<Vec<Record>> {
     let mut rows: Vec<Record> = db::find("mo_component").filter("mo", mo_id).limit(500).all()?;
     rows.sort_by_key(|r| r.get("line_no").and_then(Value::as_i64).unwrap_or(0));
     Ok(rows)
@@ -82,7 +86,7 @@ fn snapshot_components(mo_id: &str) -> Result<Vec<BomComponent>> {
         .collect()
 }
 
-fn exploded_for_mo(mo: &Record) -> Result<Vec<crate::rules::ExplodedLine>> {
+pub(crate) fn exploded_for_mo(mo: &Record) -> Result<Vec<crate::rules::ExplodedLine>> {
     let bom_qty = match qty_of(mo, "bom_qty") {
         Ok(q) if !q.is_zero() => q,
         _ => {
@@ -142,19 +146,29 @@ fn do_add_bom_line(input: AddBomLine) -> Result<Record> {
     let uom = text(&item, "uom").ok_or_else(|| Error::msg("the item has no unit"))?;
     let existing = bom_lines(id_of(&bom)?)?;
     let line_no = existing.iter().map(|r| r.get("line_no").and_then(Value::as_i64).unwrap_or(0)).max().unwrap_or(0) + 1;
-    db::create(
-        "bom_line",
-        &json!({
-            "bom": id_of(&bom)?,
-            "line_no": line_no,
-            "item": id_of(&item)?,
-            "qty": qty,
-            "uom": uom,
-            "scrap_pct": scrap,
-            "is_byproduct": input.is_byproduct.unwrap_or(false),
-        }),
-    )
-    .map_err(|e| e.or("could not add the BOM line"))
+    let mut data = json!({
+        "bom": id_of(&bom)?,
+        "line_no": line_no,
+        "item": id_of(&item)?,
+        "qty": qty,
+        "uom": uom,
+        "scrap_pct": scrap,
+        "is_byproduct": input.is_byproduct.unwrap_or(false),
+    });
+    if let Some(sub_id) = input.sub_bom.filter(|s| !s.is_empty()) {
+        if input.is_byproduct == Some(true) {
+            return Err(Error::msg("a byproduct cannot be made from a BOM"));
+        }
+        let sub = require("bom", &sub_id, "sub-assembly BOM")?;
+        if text(&sub, "item") != Some(id_of(&item)?) {
+            return Err(Error::msg("the sub-assembly BOM makes a different item than this line"));
+        }
+        if crate::multilevel::reaches(&sub_id, id_of(&bom)?)? {
+            return Err(Error::msg("a BOM cannot contain itself, directly or through its sub-assemblies"));
+        }
+        data["sub_bom"] = json!(sub_id);
+    }
+    db::create("bom_line", &data).map_err(|e| e.or("could not add the BOM line"))
 }
 
 fn do_create_mo(input: CreateMo) -> Result<Record> {
@@ -218,16 +232,9 @@ fn do_confirm_mo(input: Id) -> Result<Record> {
             }),
         )?;
     }
-    let company_id = text(&mo, "company").unwrap_or_default();
-    let date = match text(&mo, "planned_date").filter(|d| !d.is_empty()) {
-        Some(d) => d.to_string(),
-        None => today()?,
-    };
-    let (number, next, counter_id) = allocate_number(company_id, "MO", &date)?;
-    db::transaction()
-        .update("mfg_counter", &counter_id, &json!({ "next": next + 1 }))
-        .update("mo", &input.id, &json!({ "state": "confirmed", "number": number, "bom_qty": bom_qty }))
-        .run()?;
+    crate::routing::snapshot_operations(&input.id, id_of(&bom)?, qty_of(&mo, "qty")?, bom_qty)?;
+    // The kernel numbers the order as it enters `confirmed` (see `sequence` on `mo.number`).
+    let _: Option<Record> = db::update("mo", &input.id, &json!({ "state": "confirmed", "bom_qty": bom_qty }))?;
     require("mo", &input.id, "manufacturing order")
 }
 
@@ -294,6 +301,8 @@ fn do_complete_mo(input: Id) -> Result<Value> {
     if !matches!(text(&mo, "state"), Some("confirmed" | "reserved" | "in_progress")) {
         return Err(Error::msg("complete a confirmed or reserved order"));
     }
+    crate::multilevel::assert_children_done(&input.id)?;
+    let labour_cost = crate::routing::labour_cost(&input.id)?;
     let mo_qty = qty_of(&mo, "qty")?;
     let exploded = exploded_for_mo(&mo)?;
     let company = text(&mo, "company").unwrap_or_default().to_string();
@@ -351,10 +360,11 @@ fn do_complete_mo(input: Id) -> Result<Value> {
         }
         _ => return Err(Error::msg("consume value missing")),
     };
+    // Finished goods carry materials plus the labour and overhead absorbed by the operations.
     let unit_cost = if mo_qty.is_zero() {
         Decimal::zero(VALUE_SCALE)
     } else {
-        consume_value.div(mo_qty, VALUE_SCALE)?
+        consume_value.checked_add(labour_cost)?.div(mo_qty, VALUE_SCALE)?
     };
 
     let produce: Record = plugins::call(
@@ -421,6 +431,7 @@ fn do_complete_mo(input: Id) -> Result<Value> {
             "state": "done",
             "consume_move": consume_id,
             "produce_move": produce_id,
+            "labour_cost": labour_cost,
         }),
     )?
     .ok_or_else(|| Error::msg("the order is gone"))?;
@@ -436,6 +447,10 @@ fn do_complete_mo(input: Id) -> Result<Value> {
             "consume_move": consume_id,
             "produce_move": produce_id,
             "consume_value": consume_value,
+            "labour_cost": labour_cost,
+            "currency": crate::common::company_currency_code(&company)?,
+            "posting_date": posting_date,
+            "source_version": 1,
         }),
     )?;
 

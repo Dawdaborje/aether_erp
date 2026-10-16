@@ -1,0 +1,9 @@
+<page roles="item_admin" route="/erp/items/{id}/units/new" title="Add unit" model="item_uom" menu="false">
+  <view type="form" function="set_item_uom" submit="Save unit" success="Unit saved" redirect="/erp/items/{id}/units">
+    <group title="Unit" cols="2">
+      <field name="uom" label="Unit" required="true" source="uom.list_units" optionLabel="code" entity="units"/>
+      <field name="factor" label="Holds (item units)" required="true" fieldType="float"/>
+      <field name="use_for" label="Used for" fieldType="selection" options="both, purchase, sales"/>
+    </group>
+  </view>
+</page>

@@ -36,7 +36,12 @@
         "amount",
         "qty_received",
         "qty_billed",
-        "warehouse"
+        "warehouse",
+        "discount_pct",
+        "tax",
+        "tax_amount",
+        "net_unit_price",
+        "qty_returned"
       ],
       "write_roles": [
         "via:self"

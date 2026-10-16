@@ -1,0 +1,8 @@
+<page roles="pricing_reader,pricing_admin" route="/erp/pricing" title="Pricing &amp; taxes" icon="percent">
+  <header title="Pricing &amp; taxes" subtitle="Taxes, payment terms and price lists used by buying and selling."/>
+  <buttonbox>
+    <button label="Taxes" href="/erp/pricing/taxes" variant="secondary"/>
+    <button label="Payment terms" href="/erp/pricing/terms" variant="secondary"/>
+    <button label="Price lists" href="/erp/pricing/lists" variant="secondary"/>
+  </buttonbox>
+</page>

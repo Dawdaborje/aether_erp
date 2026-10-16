@@ -35,7 +35,11 @@
         "order_date",
         "warehouse",
         "total",
-        "notes"
+        "notes",
+        "subtotal",
+        "tax_total",
+        "payment_term",
+        "price_list"
       ],
       "write_roles": [
         "via:self"

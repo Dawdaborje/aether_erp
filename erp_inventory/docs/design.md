@@ -21,6 +21,9 @@ Soft call to `gl.list_periods` when accounting is installed (closed period refus
 | `stock_layer_alloc` | Append-only qty/value taken from a layer by a move line |
 | `stock_reservation` | Soft hold: demand `(kind, id)`, qty (release = negative-sense rows via API) |
 | `stock_counter` | Per company/prefix/year document numbers |
+| `stock_lot` | Lot / serial master per `(company, item, code)`: `expiry_date`, `mfg_date` |
+| `stock_count` / `stock_count_line` | Physical count: counted vs system qty, gains and losses posted as adjustments |
+| `stock_landed_cost` / `stock_landed_charge` / `stock_landed_alloc` | Freight/duty added to a posted receipt; append-only allocation per receipt line |
 
 Move kinds: `receipt`, `issue`, `transfer`, `adjust`, `manufacture_consume`, `manufacture_produce`, `void`.
 
@@ -31,7 +34,19 @@ Move kinds: `receipt`, `issue`, `transfer`, `adjust`, `manufacture_consume`, `ma
 - **Valuation:** pure functions in `rules.rs` (`receive`, `receive_average`, `issue`, `standard_variance`). Method/standard cost from `erp_item.valuation_for`. Standard receipts store variance on the event payload for GL.
 - **Reservations:** available = on-hand − reserved. Outbound posting may consume reservations when `source_kind` / `source_id` match a demand.
 - **Idempotency:** draft by `idem_key` returns the existing move. Manufacture consume/produce post as a pair (`post_manufacture_pair`).
--Designed so stock history is never rewritten: no repost and no mutable on-hand rows.
+- **Returns:** a move whose `source_kind` is `erp_procurement.return` (an issue) posts to GRNI clearing instead of COGS; `erp_selling.return` (a receipt) credits COGS instead of clearing. Same layers and valuation; only the event amounts are reclassified.
+- Designed so stock history is never rewritten: no repost and no mutable on-hand rows.
+
+## Tracking, counts and landed cost
+
+- **Serials:** `tracking = serial` items take one line per unit, with the serial as the lot; a serial that still has quantity on hand cannot be received again. Lots and serials get a `stock_lot` master row on first receipt; the expiry is the line's `expiry_date`, else the item's `expiry_days` from the move date.
+- **Expiry:** an expired lot cannot be issued or consumed. `suggest_lots` returns on-hand lots and a first-expired-first-out picking plan; `expiring_lots` lists what expires within a window.
+- **Counts:** `post_count` compares counted with on-hand per `(item, lot)` and posts gains and losses as two adjustments (gains cost from the line, else the newest layer, else standard). Uncounted items are untouched.
+- **Landed cost:** `post_landed_cost` shares the charges over the receipt's lines (by value or qty), adds the part still on hand to the open layers' value and unit cost, and takes the part for goods already issued to cost of sales (standard-cost layers take it as variance). It emits `stock_revalued`. A receipt with posted landed cost cannot be voided. History rows (`value_in`, line values) are not rewritten.
+
+## Scrap
+
+`scrap_stock` writes damaged or spoiled stock off: an `adjust` move that removes stock, with `source_kind` `erp_inventory.scrap` and a required reason. It values the removal from the layers like any issue, may remove an expired lot (the main use), and the event reaches `gl_erp` as an adjustment loss. Retry with the same `idem_key` to avoid a second write-off.
 
 ## Functions, commands, events
 
@@ -41,7 +56,15 @@ Move kinds: `receipt`, `issue`, `transfer`, `adjust`, `manufacture_consume`, `ma
 
 **Reservations:** `reserve`, `release`, `reserved`
 
-**Emit:** `stock_posted`, `stock_voided` (payload includes inventory/COGS/variance amounts for `gl_erp`)
+**Scrap:** `scrap_stock`
+
+**Lots:** `set_lot`, `get_lot`, `suggest_lots`, `expiring_lots`
+
+**Counts:** `create_count`, `set_count_line`, `post_count`, `cancel_count`
+
+**Landed cost:** `create_landed_cost`, `add_landed_charge`, `post_landed_cost`, `get_landed_cost`
+
+**Emit:** `stock_posted`, `stock_voided`, `stock_revalued` (payload includes inventory/COGS/variance amounts for `gl_erp`)
 
 ## Roles
 

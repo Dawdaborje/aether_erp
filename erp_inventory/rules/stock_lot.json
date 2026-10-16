@@ -1,0 +1,42 @@
+{
+  "model": "stock_lot",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "stock_reader",
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "company",
+        "item",
+        "code",
+        "expiry_date",
+        "mfg_date",
+        "note"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

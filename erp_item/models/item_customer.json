@@ -1,0 +1,60 @@
+{
+  "model_id": "mdl_jh34jpit6v",
+  "name": "item_customer",
+  "label": "%item_customer%",
+  "plural_label": "%item_customers%",
+  "icon": "users",
+  "title_field": "customer_sku",
+  "fields": [
+    {
+      "id": "fld_oafs5s8e17",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "item",
+      "index": "plain"
+    },
+    {
+      "id": "fld_9g7y29s1ei",
+      "name": "customer",
+      "label": "%customer%",
+      "type": "link",
+      "required": true,
+      "target": "party.party",
+      "target_id": "mdl_mr76tss5ic",
+      "index": "plain"
+    },
+    {
+      "id": "fld_cfow9b3wc8",
+      "name": "customer_sku",
+      "label": "%customer_sku%",
+      "type": "string",
+      "max_length": 64,
+      "help": "The customer's own code for this item."
+    },
+    {
+      "id": "fld_6iqhnoshiv",
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "customer",
+      "customer_sku"
+    ]
+  },
+  "indexes": [
+    {
+      "fields": [
+        "item",
+        "customer"
+      ],
+      "unique": true,
+      "id": "idx_2khm0h18fj"
+    }
+  ]
+}

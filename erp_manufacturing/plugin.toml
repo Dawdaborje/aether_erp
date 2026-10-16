@@ -19,6 +19,11 @@ access_models = [
   { name = "mo", permissions = ["read", "write"] },
   { name = "mo_component", permissions = ["read", "write"] },
   { name = "mfg_counter", permissions = ["read", "write"] },
+  { name = "work_center", permissions = ["read", "write"] },
+  { name = "bom_operation", permissions = ["read", "write"] },
+  { name = "mo_operation", permissions = ["read", "write"] },
+  { name = "mo_time_log", permissions = ["read", "write"] },
+  { name = "mo_unbuild", permissions = ["read", "write"] },
 ]
 is_builtin = false
 wasm_file = "out/plugin.wasm"
@@ -42,6 +47,7 @@ description = "Reads BOMs and orders."
 name = "mo_completed"
 
 [app]
+roles = ["mfg_reader", "mfg_user", "mfg_admin"]
 icon = "factory"
 route = "/erp/manufacturing"
 description = "Bills of materials and production"

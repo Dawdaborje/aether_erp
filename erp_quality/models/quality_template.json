@@ -1,0 +1,107 @@
+{
+  "name": "quality_template",
+  "icon": "clipboard-check",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_j6ow4xip9b",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_gl1ljif0v6",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_rt80ndp6gp",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain",
+      "help": "Leave empty for a template that applies to any item."
+    },
+    {
+      "id": "fld_qh6cbzixin",
+      "name": "applies_to",
+      "label": "%applies_to%",
+      "type": "select",
+      "required": true,
+      "default": "any",
+      "options": [
+        {
+          "id": "opt_zt254bxkug",
+          "value": "any",
+          "label": "%any%"
+        },
+        {
+          "id": "opt_6xvf2bjnt3",
+          "value": "receipt",
+          "label": "%receipt%"
+        },
+        {
+          "id": "opt_28t1acyfbt",
+          "value": "delivery",
+          "label": "%delivery%"
+        },
+        {
+          "id": "opt_ogf5ojwe22",
+          "value": "production",
+          "label": "%production%"
+        }
+      ]
+    },
+    {
+      "id": "fld_ubykacc72m",
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "id": "fld_44za62nguu",
+      "name": "parameters",
+      "label": "%parameters%",
+      "type": "child",
+      "target": "quality_parameter",
+      "inverse": "template",
+      "order": "position"
+    }
+  ],
+  "unique_when": [
+    {
+      "fields": [
+        "item",
+        "applies_to"
+      ],
+      "when": {
+        "active": true,
+        "item": {
+          "null": false
+        }
+      },
+      "message": "an item has one active template for each stage"
+    }
+  ],
+  "view": {
+    "list": [
+      "code",
+      "name",
+      "item",
+      "applies_to",
+      "active"
+    ]
+  },
+  "model_id": "mdl_3s1ufv4j29",
+  "label": "%quality_template%",
+  "plural_label": "%quality_templates%"
+}

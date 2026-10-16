@@ -19,12 +19,20 @@
         "erp_selling.sales_user",
         "erp_selling.sales_admin"
       ],
-      "operations": ["read"]
+      "operations": [
+        "read"
+      ]
     },
     {
       "name": "admin",
-      "roles": ["item_admin"],
-      "operations": ["read", "create", "write"]
+      "roles": [
+        "item_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
     }
   ]
 }

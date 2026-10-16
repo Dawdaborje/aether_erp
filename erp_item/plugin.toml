@@ -11,16 +11,26 @@ Warehouses and the stock ledger live in the inventory plugin. Written in Rust.
 See docs/design.md in this plugin (erp_item/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
-dependencies = ["company", "uom"]
+dependencies = ["company", "uom", "party"]
 capabilities = ["db::query", "db::mutate"]
 access_models = [
   { name = "item_category", permissions = ["read", "write"] },
   { name = "item", permissions = ["read", "write"] },
   { name = "item_company", permissions = ["read", "write"] },
   { name = "item_standard_cost", permissions = ["read", "write"] },
+  { name = "item_supplier", permissions = ["read", "write"] },
+  { name = "item_customer", permissions = ["read", "write"] },
+  { name = "item_uom", permissions = ["read", "write"] },
 ]
 is_builtin = false
 wasm_file = "out/plugin.wasm"
+
+[[command]]
+name = "seed"
+function = "seed_items"
+help = "Create starter item categories (idempotent)"
+on_install = true
+on_upgrade = true
 
 [[roles]]
 name = "item_admin"
@@ -33,6 +43,7 @@ label = "Item reader"
 description = "Reads the item master."
 
 [app]
+roles = ["item_reader", "item_admin"]
 icon = "package"
 route = "/erp/items"
 description = "Items and categories"

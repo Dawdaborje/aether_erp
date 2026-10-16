@@ -35,7 +35,11 @@
         "qty",
         "unit_price",
         "amount",
-        "can_be_paid"
+        "can_be_paid",
+        "discount_pct",
+        "tax",
+        "tax_amount",
+        "reverses_line"
       ],
       "write_roles": [
         "via:self"

@@ -1,0 +1,85 @@
+{
+  "model": "quality_inspection",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "quality_reader",
+        "quality_user",
+        "quality_admin",
+        "via:*"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "quality_user",
+        "quality_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "workflow": {
+    "field": "state",
+    "initial": [
+      "draft"
+    ],
+    "transitions": [
+      {
+        "name": "accept",
+        "label": "Accept",
+        "from": [
+          "draft"
+        ],
+        "to": "accepted",
+        "roles": [
+          "quality_user",
+          "quality_admin"
+        ]
+      },
+      {
+        "name": "reject",
+        "label": "Reject",
+        "from": [
+          "draft"
+        ],
+        "to": "rejected",
+        "roles": [
+          "quality_user",
+          "quality_admin"
+        ]
+      },
+      {
+        "name": "cancel",
+        "label": "Cancel",
+        "from": [
+          "draft"
+        ],
+        "to": "cancelled",
+        "roles": [
+          "quality_user",
+          "quality_admin"
+        ]
+      },
+      {
+        "name": "reopen",
+        "label": "Reopen",
+        "from": [
+          "accepted",
+          "rejected"
+        ],
+        "to": "draft",
+        "roles": [
+          "quality_admin"
+        ]
+      }
+    ]
+  }
+}

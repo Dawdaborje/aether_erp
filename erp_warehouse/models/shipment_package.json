@@ -1,0 +1,55 @@
+{
+  "name": "shipment_package",
+  "icon": "package",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_xv2z4r5ltj",
+      "name": "shipment",
+      "label": "%shipment%",
+      "type": "link",
+      "required": true,
+      "target": "shipment",
+      "index": "plain"
+    },
+    {
+      "id": "fld_pmbe9rq4yp",
+      "name": "position",
+      "label": "%position%",
+      "type": "int"
+    },
+    {
+      "id": "fld_n9h54u6d9z",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 60
+    },
+    {
+      "id": "fld_ieewxvcmq0",
+      "name": "weight_kg",
+      "label": "%weight_kg%",
+      "type": "decimal",
+      "scale": 3,
+      "min": "0"
+    },
+    {
+      "id": "fld_m8srt53c6j",
+      "name": "note",
+      "label": "%note%",
+      "type": "string",
+      "max_length": 200
+    }
+  ],
+  "view": {
+    "list": [
+      "code",
+      "weight_kg",
+      "note"
+    ]
+  },
+  "model_id": "mdl_d0s1565s35",
+  "label": "%shipment_package%",
+  "plural_label": "%shipment_packages%"
+}

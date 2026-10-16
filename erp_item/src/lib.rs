@@ -2,3 +2,4 @@
 
 mod common;
 mod items;
+mod partners;

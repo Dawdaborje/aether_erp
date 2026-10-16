@@ -1,0 +1,73 @@
+{
+  "model": "shipment",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "wh_reader",
+        "wh_user",
+        "wh_admin",
+        "via:*"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "wh_user",
+        "wh_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "workflow": {
+    "field": "state",
+    "initial": [
+      "draft"
+    ],
+    "transitions": [
+      {
+        "name": "ship",
+        "label": "Ship",
+        "from": [
+          "draft"
+        ],
+        "to": "shipped",
+        "roles": [
+          "wh_user",
+          "wh_admin"
+        ]
+      },
+      {
+        "name": "deliver",
+        "label": "Delivered",
+        "from": [
+          "shipped"
+        ],
+        "to": "delivered",
+        "roles": [
+          "wh_user",
+          "wh_admin"
+        ]
+      },
+      {
+        "name": "cancel",
+        "label": "Cancel",
+        "from": [
+          "draft"
+        ],
+        "to": "cancelled",
+        "roles": [
+          "wh_user",
+          "wh_admin"
+        ]
+      }
+    ]
+  }
+}

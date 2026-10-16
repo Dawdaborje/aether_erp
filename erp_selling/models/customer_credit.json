@@ -1,0 +1,65 @@
+{
+  "model_id": "mdl_zeunve2yhs",
+  "name": "customer_credit",
+  "label": "%customer_credit%",
+  "plural_label": "%customer_credits%",
+  "icon": "shield",
+  "title_field": "customer",
+  "fields": [
+    {
+      "id": "fld_hcljrtf83o",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_t9m4ps2kbf",
+      "name": "customer",
+      "label": "%customer%",
+      "type": "link",
+      "required": true,
+      "target": "party.party",
+      "target_id": "mdl_mr76tss5ic",
+      "index": "plain"
+    },
+    {
+      "id": "fld_f4h9w34dn4",
+      "name": "credit_limit",
+      "label": "%credit_limit%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2,
+      "help": "Open exposure above this holds new orders; 0 means no credit."
+    },
+    {
+      "id": "fld_6o5dwxy4ex",
+      "name": "on_hold",
+      "label": "%on_hold%",
+      "type": "bool",
+      "default": false,
+      "help": "Refuse new orders regardless of the limit."
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_zl4ajmicj2",
+      "fields": [
+        "company",
+        "customer"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "customer",
+      "company",
+      "credit_limit",
+      "on_hold"
+    ]
+  }
+}

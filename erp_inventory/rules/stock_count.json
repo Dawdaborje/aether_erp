@@ -1,0 +1,43 @@
+{
+  "model": "stock_count",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "stock_reader",
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "company",
+        "warehouse",
+        "count_date",
+        "state",
+        "note",
+        "move_up",
+        "move_down"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

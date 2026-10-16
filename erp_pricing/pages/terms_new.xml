@@ -1,0 +1,11 @@
+<page roles="pricing_admin" route="/erp/pricing/terms/new" title="New payment term" model="payment_term" menu="false">
+  <view type="form" function="create_payment_term" submit="Add term" success="Term added" redirect="/erp/pricing/terms">
+    <group title="Term" cols="2">
+      <field name="code" label="Code" required="true"/>
+      <field name="name" label="Name" required="true"/>
+      <field name="net_days" label="Net days" required="true" fieldType="integer"/>
+      <field name="discount_pct" label="Early discount %" fieldType="float"/>
+      <field name="discount_days" label="Discount days" fieldType="integer"/>
+    </group>
+  </view>
+</page>

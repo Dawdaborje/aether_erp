@@ -1,3 +1,18 @@
-<page route="/erp/inventory" title="Inventory" icon="warehouse">
-  <header title="Inventory"/>
+<page roles="stock_reader,stock_user,stock_admin" route="/erp/inventory" title="Inventory" icon="warehouse" sort="20">
+  <header title="Inventory" subtitle="Stock on hand, movements, counts and landed cost."/>
+  <view type="dashboard" source="inventory_dashboard">
+    <stat label="Stock value" field="total_value"/>
+    <stat label="Items in stock" field="items_in_stock"/>
+    <stat label="Lots expiring in 30 days" field="lots_expiring_30d"/>
+    <stat label="Draft moves" field="draft_moves"/>
+    <chart type="bar" title="Value by warehouse" field="by_warehouse" category="name" value="value"/>
+  </view>
+  <buttonbox>
+    <button label="Stock" href="/erp/inventory/stock" variant="secondary"/>
+    <button label="Moves" href="/erp/inventory/moves" variant="secondary"/>
+    <button label="Warehouses" href="/erp/inventory/warehouses" variant="secondary"/>
+    <button label="Lots" href="/erp/inventory/lots" variant="secondary"/>
+    <button label="Counts" href="/erp/inventory/counts" variant="secondary"/>
+    <button label="Landed cost" href="/erp/inventory/landed" variant="secondary"/>
+  </buttonbox>
 </page>

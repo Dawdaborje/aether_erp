@@ -1,0 +1,52 @@
+[plugin]
+name = "erp_quality"
+icon_path = "assets/logo.svg"
+label = "Quality"
+version = "0.1.0"
+description = "Inspection templates and inspections that accept or reject received, delivered or produced goods."
+long_description = """
+A template lists the parameters to check (a measured value inside a range, or pass / fail). An inspection
+snapshots the template's parameters as readings against a document (a receipt, a delivery, a
+manufacturing order). Recording the readings and completing the inspection accepts or rejects it; other
+plugins ask `inspection_status` before they release stock. Written in Rust.
+See docs/design.md in this plugin (erp_quality/docs/design.md).
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["erp_item", "company"]
+capabilities = ["db::query", "db::mutate", "plugins::call"]
+access_models = [
+  { name = "quality_template", permissions = ["read", "write"] },
+  { name = "quality_parameter", permissions = ["read", "write"] },
+  { name = "quality_inspection", permissions = ["read", "write"] },
+  { name = "quality_reading", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "quality_admin"
+label = "Quality administrator"
+description = "Maintains templates and reopens inspections."
+
+[[roles]]
+name = "quality_user"
+label = "Inspector"
+description = "Creates inspections, records readings and decides."
+
+[[roles]]
+name = "quality_reader"
+label = "Quality reader"
+description = "Reads templates and inspections."
+
+[app]
+roles = ["quality_reader", "quality_user", "quality_admin"]
+icon = "clipboard-check"
+route = "/erp/quality"
+description = "Quality inspections"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "erp"

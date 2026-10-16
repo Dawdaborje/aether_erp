@@ -1,0 +1,88 @@
+{
+  "model_id": "mdl_unkbz5sj7z",
+  "name": "price_list",
+  "label": "%price_list%",
+  "plural_label": "%price_lists%",
+  "icon": "tag",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_togge021uk",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 32,
+      "index": "unique"
+    },
+    {
+      "id": "fld_3n9n4anjfj",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_ox2twaazyb",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_7jvei4wgg0",
+          "value": "sell",
+          "label": "%sell%"
+        },
+        {
+          "id": "opt_of8d4csnrk",
+          "value": "buy",
+          "label": "%buy%"
+        }
+      ],
+      "default": "sell"
+    },
+    {
+      "id": "fld_9sbod9k4y1",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "max_length": 8,
+      "help": "ISO code; empty means any currency."
+    },
+    {
+      "id": "fld_26kr88u5u6",
+      "name": "company",
+      "label": "%company%",
+      "type": "string",
+      "max_length": 64,
+      "help": "Optional company id restriction."
+    },
+    {
+      "id": "fld_qil6cny910",
+      "name": "is_default",
+      "label": "%is_default%",
+      "type": "bool",
+      "default": false,
+      "help": "Used when a document names no list (one per kind)."
+    },
+    {
+      "id": "fld_cgpoyulkxc",
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "view": {
+    "list": [
+      "code",
+      "name",
+      "kind",
+      "currency",
+      "is_default",
+      "active"
+    ]
+  }
+}

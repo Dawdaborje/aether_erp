@@ -1,0 +1,8 @@
+<page roles="replenish_admin" route="/erp/replenishment/evaluate" title="Check reorder rules" model="replenish_request" menu="false">
+  <view type="form" function="evaluate" submit="Check now" success="Checked" redirect="/erp/replenishment">
+    <group title="Check" cols="2">
+      <field name="company" label="Company" required="true" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="warehouse" label="Only this warehouse" source="erp_inventory.search_warehouses" optionLabel="name" entity="warehouses"/>
+    </group>
+  </view>
+</page>

@@ -1,3 +1,18 @@
-<page route="/erp/procurement" title="Procurement" icon="shopping-cart">
-  <header title="Procurement"/>
+<page roles="purchase_reader,purchase_user,purchase_admin" route="/erp/procurement" title="Procurement" icon="shopping-cart" sort="30">
+  <header title="Procurement" subtitle="Quote, order, receive and bill what you buy."/>
+  <view type="dashboard" source="purchasing_dashboard">
+    <stat label="Open orders" field="open_orders"/>
+    <stat label="Awaiting approval" field="awaiting_approval"/>
+    <stat label="Open value" field="open_value"/>
+    <stat label="Draft bills" field="draft_bills"/>
+    <stat label="Bills in exception" field="bills_in_exception"/>
+    <chart type="bar" title="Spend by supplier" field="spend_by_supplier" category="name" value="value"/>
+  </view>
+  <buttonbox>
+    <button label="Purchase orders" href="/erp/procurement/pos" variant="secondary"/>
+    <button label="Quotation requests" href="/erp/procurement/rfqs" variant="secondary"/>
+    <button label="Bills &amp; debit notes" href="/erp/procurement/bills" variant="secondary"/>
+    <button label="Receipts" href="/erp/procurement/receipts" variant="secondary"/>
+    <button label="Returns" href="/erp/procurement/returns" variant="secondary"/>
+  </buttonbox>
 </page>

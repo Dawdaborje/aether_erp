@@ -1,0 +1,75 @@
+{
+  "model_id": "mdl_acgb8ankap",
+  "name": "purchase_setting",
+  "label": "%purchase_setting%",
+  "plural_label": "%purchase_settings%",
+  "icon": "settings",
+  "title_field": "company",
+  "fields": [
+    {
+      "id": "fld_zwrcrhx8g8",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "unique"
+    },
+    {
+      "id": "fld_ompgfhv6dk",
+      "name": "po_approval_limit",
+      "label": "%po_approval_limit%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0",
+      "help": "Orders above this total wait for approval; 0 turns it off."
+    },
+    {
+      "id": "fld_nt8hs44zp8",
+      "name": "over_receipt_pct",
+      "label": "%over_receipt_pct%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0",
+      "help": "Receive up to this percent beyond the ordered quantity."
+    },
+    {
+      "id": "fld_b67ps86t5h",
+      "name": "bill_match_on",
+      "label": "%bill_match_on%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_ucyzxqoylk",
+          "value": "received",
+          "label": "%received%"
+        },
+        {
+          "id": "opt_ll06qh65gl",
+          "value": "ordered",
+          "label": "%ordered%"
+        }
+      ],
+      "default": "received",
+      "help": "Quantity a bill is matched against for release to pay."
+    },
+    {
+      "id": "fld_67noarsrrd",
+      "name": "require_inspection",
+      "label": "%require_inspection%",
+      "type": "bool",
+      "default": false,
+      "help": "With the quality plugin installed, goods are only received (or delivered) against an accepted inspection of the order."
+    }
+  ],
+  "view": {
+    "list": [
+      "company",
+      "po_approval_limit",
+      "over_receipt_pct",
+      "bill_match_on"
+    ]
+  }
+}

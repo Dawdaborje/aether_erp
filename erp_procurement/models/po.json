@@ -79,6 +79,11 @@
           "id": "opt_np7zhrq8dl",
           "value": "cancelled",
           "label": "%cancelled%"
+        },
+        {
+          "id": "opt_bzfg30x3kr",
+          "value": "to_approve",
+          "label": "%to_approve%"
         }
       ],
       "id": "fld_q7438k3wvz"
@@ -120,6 +125,40 @@
       "type": "link",
       "target": "rfq",
       "id": "fld_fuwb4t77za"
+    },
+    {
+      "id": "fld_pbz0ssqwhb",
+      "name": "subtotal",
+      "label": "%subtotal%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_d5kn3j7gaq",
+      "name": "tax_total",
+      "label": "%tax_total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_ju6eiz50rf",
+      "name": "payment_term",
+      "label": "%payment_term%",
+      "type": "link",
+      "target": "erp_pricing.payment_term",
+      "target_id": "mdl_fkq90to5up",
+      "index": "plain"
+    },
+    {
+      "id": "fld_xqcvof48tn",
+      "name": "price_list",
+      "label": "%price_list%",
+      "type": "link",
+      "target": "erp_pricing.price_list",
+      "target_id": "mdl_unkbz5sj7z",
+      "index": "plain"
     }
   ],
   "view": {

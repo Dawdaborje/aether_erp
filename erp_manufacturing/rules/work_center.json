@@ -1,0 +1,40 @@
+{
+  "model": "work_center",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "mfg_reader",
+        "mfg_user",
+        "mfg_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "mfg_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "company",
+        "code",
+        "name",
+        "cost_per_hour",
+        "active"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "model": "pick_list",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "wh_reader",
+        "wh_user",
+        "wh_admin",
+        "via:*"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "wh_user",
+        "wh_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "workflow": {
+    "field": "state",
+    "initial": [
+      "draft"
+    ],
+    "transitions": [
+      {
+        "name": "release",
+        "label": "Release",
+        "from": [
+          "draft"
+        ],
+        "to": "released",
+        "roles": [
+          "wh_user",
+          "wh_admin"
+        ]
+      },
+      {
+        "name": "pick",
+        "label": "Picked",
+        "from": [
+          "released"
+        ],
+        "to": "picked",
+        "roles": [
+          "wh_user",
+          "wh_admin"
+        ]
+      },
+      {
+        "name": "cancel",
+        "label": "Cancel",
+        "from": [
+          "draft",
+          "released"
+        ],
+        "to": "cancelled",
+        "roles": [
+          "wh_user",
+          "wh_admin"
+        ]
+      }
+    ]
+  }
+}

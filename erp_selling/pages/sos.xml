@@ -1,0 +1,19 @@
+<page roles="sales_reader,sales_user,sales_admin" route="/erp/selling/sos" title="Sales orders" model="so" menu="false">
+  <view type="list" model="so" source="list_sos" open="/erp/selling/sos/{id}" create="/erp/selling/sos/new" create_label="New order">
+    <search/>
+    <columns>
+      <column field="number" label="Order"/>
+      <column field="customer" label="Customer"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="order_date" label="Date"/>
+      <column field="subtotal" label="Subtotal"/>
+      <column field="tax_total" label="Tax"/>
+      <column field="total" label="Total"/>
+    </columns>
+    <actions>
+      <action name="confirm_so" label="Confirm" function="confirm_so" confirm="Confirm this order?"/>
+      <action name="cancel_so" label="Cancel" function="cancel_so" confirm="Cancel this order?" danger="true"/>
+    </actions>
+    <empty title="No sales orders yet" description="Use New, or turn a quotation into an order."/>
+  </view>
+</page>

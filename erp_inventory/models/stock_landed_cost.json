@@ -1,0 +1,102 @@
+{
+  "model_id": "mdl_7tg3f53hmc",
+  "name": "stock_landed_cost",
+  "label": "%stock_landed_cost%",
+  "plural_label": "%stock_landed_costs%",
+  "icon": "truck",
+  "title_field": "reference",
+  "fields": [
+    {
+      "id": "fld_g0oafvb03n",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_9ku05xdil9",
+      "name": "move",
+      "label": "%move%",
+      "type": "link",
+      "required": true,
+      "target": "stock_move",
+      "index": "plain",
+      "help": "The posted receipt the charges add cost to."
+    },
+    {
+      "id": "fld_o1w01ydfye",
+      "name": "reference",
+      "label": "%reference%",
+      "type": "string",
+      "max_length": 120,
+      "help": "Freight bill, customs entry, \u2026"
+    },
+    {
+      "id": "fld_sffbtsiuap",
+      "name": "basis",
+      "label": "%basis%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_xufom88yeq",
+          "value": "value",
+          "label": "%value%"
+        },
+        {
+          "id": "opt_px4710wxq4",
+          "value": "qty",
+          "label": "%qty%"
+        }
+      ],
+      "default": "value",
+      "help": "How charges are shared over the receipt lines."
+    },
+    {
+      "id": "fld_9zwl0n24pt",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_w6sioxnjir",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_st9wnt2nkm",
+          "value": "posted",
+          "label": "%posted%"
+        }
+      ],
+      "default": "draft"
+    },
+    {
+      "id": "fld_b3wephcgbb",
+      "name": "total",
+      "label": "%total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_t4je2hj9ax",
+      "name": "posted_on",
+      "label": "%posted_on%",
+      "type": "date"
+    }
+  ],
+  "view": {
+    "list": [
+      "reference",
+      "move",
+      "basis",
+      "state",
+      "total"
+    ]
+  }
+}

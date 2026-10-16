@@ -69,6 +69,39 @@
       "type": "link",
       "target": "sales_delivery_line",
       "id": "fld_f5yqqbyidm"
+    },
+    {
+      "id": "fld_uc37v4y75o",
+      "name": "discount_pct",
+      "label": "%discount_pct%",
+      "type": "decimal",
+      "scale": 4,
+      "default": "0"
+    },
+    {
+      "id": "fld_oj7ncknjpb",
+      "name": "tax",
+      "label": "%tax%",
+      "type": "link",
+      "target": "erp_pricing.tax",
+      "target_id": "mdl_shfete7izv",
+      "index": "plain"
+    },
+    {
+      "id": "fld_htpsqf9bnu",
+      "name": "tax_amount",
+      "label": "%tax_amount%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_3yiipg857r",
+      "name": "reverses_line",
+      "label": "%reverses_line%",
+      "type": "link",
+      "target": "sales_invoice_line",
+      "index": "plain"
     }
   ],
   "view": {

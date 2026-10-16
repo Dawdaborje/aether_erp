@@ -1,0 +1,21 @@
+<page roles="purchase_reader,purchase_user,purchase_admin" route="/erp/procurement/pos" title="Purchase orders" model="po" menu="false">
+  <view type="list" model="po" source="list_pos" open="/erp/procurement/pos/{id}" create="/erp/procurement/pos/new" create_label="New order">
+    <search/>
+    <columns>
+      <column field="number" label="Order"/>
+      <column field="supplier" label="Supplier"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="order_date" label="Date"/>
+      <column field="subtotal" label="Subtotal"/>
+      <column field="tax_total" label="Tax"/>
+      <column field="total" label="Total"/>
+    </columns>
+    <actions>
+      <action name="confirm_po" label="Confirm" function="confirm_po" confirm="Confirm this order?"/>
+      <action name="approve_po" label="Approve" function="approve_po" confirm="Approve this order?"/>
+      <action name="reject_po" label="Send back" function="reject_po" confirm="Send this order back to draft?"/>
+      <action name="cancel_po" label="Cancel" function="cancel_po" confirm="Cancel this order?" danger="true"/>
+    </actions>
+    <empty title="No purchase orders yet" description="Use New to start an order."/>
+  </view>
+</page>

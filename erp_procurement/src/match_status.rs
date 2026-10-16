@@ -77,6 +77,7 @@ pub fn header_release(lines: &[Release]) -> Release {
     Release::Exception
 }
 
+#[allow(dead_code)]
 pub fn line_amount(qty: Decimal, unit_price: Decimal) -> Result<Decimal> {
     qty.with_scale(QTY_SCALE)?.times(unit_price.with_scale(PRICE_SCALE)?, MONEY_SCALE)
 }

@@ -33,7 +33,8 @@
         "qty",
         "uom",
         "scrap_pct",
-        "is_byproduct"
+        "is_byproduct",
+        "sub_bom"
       ],
       "write_roles": [
         "via:self"

@@ -1,0 +1,12 @@
+<page roles="quality_reader,quality_user,quality_admin" route="/erp/quality/{id}" title="Readings" model="quality_reading" menu="false">
+  <view type="list" model="quality_reading" source="list_readings" create="/erp/quality/{id}/record" create_label="Record a reading">
+    <columns>
+      <column field="name" label="Parameter"/>
+      <column field="value" label="Value"/>
+      <column field="min" label="Min"/>
+      <column field="max" label="Max"/>
+      <column field="result" label="Result" fieldType="badge"/>
+    </columns>
+    <empty title="No readings" description="This inspection has no parameters."/>
+  </view>
+</page>

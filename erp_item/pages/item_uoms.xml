@@ -1,0 +1,10 @@
+<page roles="item_reader,item_admin" route="/erp/items/{id}/units" title="Units" model="item_uom" menu="false">
+  <view type="list" model="item_uom" source="list_item_uoms" create="/erp/items/{id}/units/new" create_label="Add unit">
+    <columns>
+      <column field="uom" label="Unit"/>
+      <column field="factor" label="Holds (item units)"/>
+      <column field="use_for" label="Used for" fieldType="badge"/>
+    </columns>
+    <empty title="No other units" description="Add a case, pack or pallet and how many item units it holds."/>
+  </view>
+</page>

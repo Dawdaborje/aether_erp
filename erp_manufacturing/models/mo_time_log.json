@@ -1,0 +1,49 @@
+{
+  "model_id": "mdl_kcah9mr47b",
+  "name": "mo_time_log",
+  "label": "%mo_time_log%",
+  "plural_label": "%mo_time_logs%",
+  "icon": "clock",
+  "title_field": "logged_on",
+  "fields": [
+    {
+      "id": "fld_5x7h66coqi",
+      "name": "operation",
+      "label": "%operation%",
+      "type": "link",
+      "required": true,
+      "target": "mo_operation",
+      "index": "plain"
+    },
+    {
+      "id": "fld_kgtm8n34u3",
+      "name": "minutes",
+      "label": "%minutes%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    },
+    {
+      "id": "fld_qw02tr8kid",
+      "name": "logged_on",
+      "label": "%logged_on%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_12l0mvid7n",
+      "name": "note",
+      "label": "%note%",
+      "type": "string",
+      "max_length": 200
+    }
+  ],
+  "view": {
+    "list": [
+      "operation",
+      "minutes",
+      "logged_on",
+      "note"
+    ]
+  }
+}

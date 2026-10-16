@@ -122,6 +122,40 @@
       "type": "string",
       "max_length": 500,
       "id": "fld_j6jsptg6is"
+    },
+    {
+      "id": "fld_lwo1op9zk6",
+      "name": "subtotal",
+      "label": "%subtotal%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_4rqawja3yp",
+      "name": "tax_total",
+      "label": "%tax_total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_w39nz5855h",
+      "name": "payment_term",
+      "label": "%payment_term%",
+      "type": "link",
+      "target": "erp_pricing.payment_term",
+      "target_id": "mdl_fkq90to5up",
+      "index": "plain"
+    },
+    {
+      "id": "fld_nt4zh0pn3r",
+      "name": "price_list",
+      "label": "%price_list%",
+      "type": "link",
+      "target": "erp_pricing.price_list",
+      "target_id": "mdl_unkbz5sj7z",
+      "index": "plain"
     }
   ],
   "view": {

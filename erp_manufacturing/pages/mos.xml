@@ -1,0 +1,21 @@
+<page roles="mfg_reader,mfg_user,mfg_admin" route="/erp/manufacturing/mos" title="Manufacturing orders" model="mo" menu="false">
+  <view type="list" model="mo" source="list_mos" open="/erp/manufacturing/mos/{id}" create="/erp/manufacturing/mos/new" create_label="New order">
+    <search/>
+    <columns>
+      <column field="number" label="Order"/>
+      <column field="item" label="Item"/>
+      <column field="qty" label="Qty"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="planned_date" label="Planned"/>
+      <column field="labour_cost" label="Labour"/>
+    </columns>
+    <actions>
+      <action name="confirm_mo" label="Confirm" function="confirm_mo" confirm="Confirm this order?"/>
+      <action name="reserve_mo" label="Reserve" function="reserve_mo" confirm="Reserve the materials?"/>
+      <action name="create_child_mos" label="Sub-assemblies" function="create_child_mos" confirm="Create orders for sub-assemblies?"/>
+      <action name="complete_mo" label="Complete" function="complete_mo" confirm="Consume materials and produce finished goods?"/>
+      <action name="cancel_mo" label="Cancel" function="cancel_mo" confirm="Cancel this order?" danger="true"/>
+    </actions>
+    <empty title="No manufacturing orders yet" description="Use New to plan production."/>
+  </view>
+</page>

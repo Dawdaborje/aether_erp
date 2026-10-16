@@ -103,6 +103,65 @@ pub fn allocate_number(company_id: &str, prefix: &str, date: &str) -> Result<(St
     Ok((number, next, counter_id))
 }
 
+#[allow(dead_code)]
 pub fn line_amount(qty: Decimal, unit_price: Decimal) -> Result<Decimal> {
     qty.with_scale(QTY_SCALE)?.times(unit_price.with_scale(PRICE_SCALE)?, MONEY_SCALE)
+}
+
+/// Amounts for one document line from `erp_pricing`.
+pub struct PricedLine {
+    pub net: Decimal,
+    pub tax: Decimal,
+}
+
+pub fn price_line(qty: Decimal, unit_price: Decimal, discount_pct: Decimal, tax: Option<&str>) -> Result<PricedLine> {
+    let out: Value = plugins::call(
+        "erp_pricing",
+        "compute_line",
+        &json!({
+            "qty": qty,
+            "unit_price": unit_price,
+            "discount_pct": discount_pct,
+            "tax": tax,
+            "side": "sales",
+        }),
+    )?;
+    Ok(PricedLine { net: dec(&out, "net", MONEY_SCALE)?, tax: dec(&out, "tax", MONEY_SCALE)? })
+}
+
+/// Sum `amount` and `tax_amount` over a document's lines: `(subtotal, tax_total)`.
+pub fn sum_lines(lines: &[Record]) -> Result<(Decimal, Decimal)> {
+    let mut subtotal = Decimal::zero(MONEY_SCALE);
+    let mut tax = Decimal::zero(MONEY_SCALE);
+    for line in lines {
+        subtotal = subtotal.checked_add(money_of(line, "amount")?)?;
+        tax = tax.checked_add(money_of(line, "tax_amount")?)?;
+    }
+    Ok((subtotal, tax))
+}
+
+/// Unit price and list discount for a sell line: the typed price if given, else the document's (or the default)
+/// sell price list. `doc` carries `customer`, `company`, `currency`, `price_list` and a date under `date_field`.
+pub fn resolve_sell_price(doc: &Record, date_field: &str, item_id: &str, qty: Decimal, typed: Option<Decimal>) -> Result<(Decimal, Decimal)> {
+    if let Some(p) = typed {
+        return Ok((p.with_scale(PRICE_SCALE)?, Decimal::zero(4)));
+    }
+    let found: Value = plugins::call(
+        "erp_pricing",
+        "price_for",
+        &json!({
+            "item": item_id,
+            "kind": "sell",
+            "qty": qty,
+            "price_list": text(doc, "price_list"),
+            "party": text(doc, "customer"),
+            "date": text(doc, date_field),
+            "currency": text(doc, "currency"),
+            "company": text(doc, "company"),
+        }),
+    )?;
+    if found.get("found") != Some(&json!(true)) {
+        return Err(Error::msg("no sell price found for this item; enter a unit price"));
+    }
+    Ok((price_of(&found, "unit_price")?, dec(&found, "discount_pct", 4)?))
 }

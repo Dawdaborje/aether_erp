@@ -1,0 +1,40 @@
+{
+  "model": "sales_setting",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "sales_reader",
+        "sales_user",
+        "sales_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "sales_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "company",
+        "enforce_credit_limit",
+        "default_payment_term",
+        "default_price_list",
+        "quote_valid_days"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

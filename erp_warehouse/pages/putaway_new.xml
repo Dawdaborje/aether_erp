@@ -1,0 +1,12 @@
+<page roles="wh_user,wh_admin" route="/erp/warehouse/putaway/new" title="Put away" model="bin_move" menu="false">
+  <view type="form" function="put_away" submit="Put away" success="Stock put away" redirect="/erp/warehouse">
+    <group title="Putaway" cols="2">
+      <field name="company" label="Company" required="true" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="warehouse" label="Warehouse" required="true" source="erp_inventory.list_warehouses" entity="warehouses"/>
+      <field name="item" label="Item" required="true" source="erp_item.search_items" optionLabel="name" entity="items"/>
+      <field name="qty" label="Quantity" required="true" fieldType="float"/>
+      <field name="lot" label="Lot / serial"/>
+      <field name="bin" label="Bin (blank = rule)" source="list_bins" optionLabel="code" entity="bins"/>
+    </group>
+  </view>
+</page>

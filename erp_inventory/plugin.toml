@@ -21,9 +21,22 @@ access_models = [
   { name = "stock_layer_alloc", permissions = ["read", "write"] },
   { name = "stock_reservation", permissions = ["read", "write"] },
   { name = "stock_counter", permissions = ["read", "write"] },
+  { name = "stock_lot", permissions = ["read", "write"] },
+  { name = "stock_count", permissions = ["read", "write"] },
+  { name = "stock_count_line", permissions = ["read", "write"] },
+  { name = "stock_landed_cost", permissions = ["read", "write"] },
+  { name = "stock_landed_charge", permissions = ["read", "write"] },
+  { name = "stock_landed_alloc", permissions = ["read", "write"] },
 ]
 is_builtin = false
 wasm_file = "out/plugin.wasm"
+
+[[command]]
+name = "seed"
+function = "seed_warehouse"
+help = "Create a default warehouse for the first company when there is none (idempotent)"
+on_install = true
+on_upgrade = true
 
 [[roles]]
 name = "stock_admin"
@@ -46,7 +59,11 @@ name = "stock_posted"
 [[events]]
 name = "stock_voided"
 
+[[events]]
+name = "stock_revalued"
+
 [app]
+roles = ["stock_reader", "stock_user", "stock_admin"]
 icon = "warehouse"
 route = "/erp/inventory"
 description = "Stock ledger and warehouses"

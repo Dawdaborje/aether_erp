@@ -1,0 +1,28 @@
+{
+  "model": "quality_reading",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "quality_reader",
+        "quality_user",
+        "quality_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "quality_user",
+        "quality_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    }
+  ]
+}

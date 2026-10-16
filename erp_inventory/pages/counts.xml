@@ -1,0 +1,16 @@
+<page roles="stock_reader,stock_user,stock_admin" route="/erp/inventory/counts" title="Stock counts" model="stock_count" menu="false">
+  <view type="list" model="stock_count" source="list_counts" open="/erp/inventory/counts/{id}" create="/erp/inventory/counts/new" create_label="New count">
+    <search/>
+    <columns>
+      <column field="count_date" label="Date"/>
+      <column field="warehouse" label="Warehouse"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="note" label="Note"/>
+    </columns>
+    <actions>
+      <action name="post_count" label="Post count" function="post_count" confirm="Post the differences as stock adjustments?"/>
+      <action name="cancel_count" label="Cancel" function="cancel_count" confirm="Cancel this count?" danger="true"/>
+    </actions>
+    <empty title="No counts yet" description="Start a count, enter what was counted, then post it."/>
+  </view>
+</page>

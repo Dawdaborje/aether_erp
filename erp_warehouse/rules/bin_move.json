@@ -1,0 +1,28 @@
+{
+  "model": "bin_move",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "wh_reader",
+        "wh_user",
+        "wh_admin",
+        "via:*"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "wh_user",
+        "wh_admin"
+      ],
+      "operations": [
+        "read",
+        "create"
+      ]
+    }
+  ]
+}

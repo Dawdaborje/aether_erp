@@ -40,6 +40,8 @@ struct ItemInput {
     tracking: Option<String>,
     #[serde(default)]
     is_stocked: Option<bool>,
+    #[serde(default)]
+    expiry_days: Option<i64>,
 }
 
 #[derive(Deserialize)]
@@ -57,6 +59,8 @@ struct SetItem {
     is_stocked: Option<bool>,
     #[serde(default)]
     active: Option<bool>,
+    #[serde(default)]
+    expiry_days: Option<i64>,
 }
 
 #[derive(Deserialize)]
@@ -152,7 +156,7 @@ fn do_create_item(input: ItemInput) -> Result<Record> {
     require_admin()?;
     let tracking = input.tracking.as_deref().unwrap_or("none");
     if !TRACKING.contains(&tracking) {
-        return Err(Error::msg("tracking is none or lot"));
+        return Err(Error::msg("tracking is none, lot or serial"));
     }
     let uom = require("uom.uom", &input.uom, "unit")?;
     let mut data = json!({
@@ -163,6 +167,15 @@ fn do_create_item(input: ItemInput) -> Result<Record> {
         "is_stocked": input.is_stocked.unwrap_or(true),
         "active": true,
     });
+    if let Some(days) = input.expiry_days {
+        if days <= 0 {
+            return Err(Error::msg("shelf life must be a positive number of days"));
+        }
+        if tracking == "none" {
+            return Err(Error::msg("shelf life needs a lot or serial tracked item"));
+        }
+        data["expiry_days"] = json!(days);
+    }
     if let Some(category_id) = input.category {
         let category = require("item_category", &category_id, "category")?;
         data["category"] = json!(id_of(&category)?);
@@ -191,7 +204,7 @@ fn do_set_item(input: SetItem) -> Result<Record> {
     }
     if let Some(tracking) = input.tracking {
         if !TRACKING.contains(&tracking.as_str()) {
-            return Err(Error::msg("tracking is none or lot"));
+            return Err(Error::msg("tracking is none, lot or serial"));
         }
         changes["tracking"] = json!(tracking);
     }
@@ -200,6 +213,12 @@ fn do_set_item(input: SetItem) -> Result<Record> {
     }
     if let Some(active) = input.active {
         changes["active"] = json!(active);
+    }
+    if let Some(days) = input.expiry_days {
+        if days < 0 {
+            return Err(Error::msg("shelf life must not be negative"));
+        }
+        changes["expiry_days"] = if days == 0 { Value::Null } else { json!(days) };
     }
     db::update("item", &input.id, &changes)?.ok_or_else(|| Error::msg("the item is gone"))
 }
@@ -413,7 +432,48 @@ fn do_valuation_for(input: ValuationQuery) -> Result<Value> {
     }))
 }
 
+fn do_list_categories(input: Search) -> Result<Vec<Record>> {
+    require_reader()?;
+    let mut rows: Vec<Record> = db::find::<Record>("item_category").limit(500).all()?;
+    if let Some(needle) = input.q.map(|q| q.to_lowercase()).filter(|q| !q.is_empty()) {
+        rows.retain(|r| {
+            text(r, "code").map_or(false, |c| c.to_lowercase().contains(&needle))
+                || text(r, "name").map_or(false, |n| n.to_lowercase().contains(&needle))
+        });
+    }
+    rows.sort_by(|a, b| text(a, "code").cmp(&text(b, "code")));
+    Ok(rows)
+}
+
+const SEED_CATEGORIES: &[(&str, &str)] = &[
+    ("RAW", "Raw materials"),
+    ("FINISHED", "Finished goods"),
+    ("TRADING", "Trading goods"),
+    ("CONSUMABLE", "Consumables"),
+    ("SERVICE", "Services"),
+];
+
+/// Starter item categories, each only when its code is free.
+fn do_seed() -> Result<Value> {
+    let mut added = 0;
+    for (code, name) in SEED_CATEGORIES {
+        if db::find::<Record>("item_category").filter("code", *code).first()?.is_some() {
+            continue;
+        }
+        db::create::<Record>(
+            "item_category",
+            &json!({ "code": code, "name": name, "valuation_method": "fifo", "active": true }),
+        )?;
+        added += 1;
+    }
+    Ok(json!({ "categories": added }))
+}
+
 handler! {
+    /// Starter item categories; runs on install and upgrade.
+    fn seed_items(_: Empty) -> Value { do_seed() }
+
+    fn list_categories(input: Search) -> Vec<Record> { do_list_categories(input) }
     fn create_category(input: CategoryInput) -> Record { do_create_category(input) }
     fn set_category(input: SetCategory) -> Record { do_set_category(input) }
     fn create_item(input: ItemInput) -> Record { do_create_item(input) }

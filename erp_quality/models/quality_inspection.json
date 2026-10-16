@@ -1,0 +1,157 @@
+{
+  "name": "quality_inspection",
+  "icon": "search-check",
+  "title_field": "number",
+  "fields": [
+    {
+      "id": "fld_yb9ijmerdy",
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "max_length": 32,
+      "index": "unique",
+      "sequence": {
+        "pattern": "QI-{YYYY}-{#####}",
+        "reset": "yearly"
+      }
+    },
+    {
+      "id": "fld_n0yxbog59c",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_siwox7a9xc",
+      "name": "template",
+      "label": "%template%",
+      "type": "link",
+      "required": true,
+      "target": "quality_template",
+      "index": "plain"
+    },
+    {
+      "id": "fld_p4in42j6ml",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain",
+      "required": true
+    },
+    {
+      "id": "fld_2s1zkxrv28",
+      "name": "source_kind",
+      "label": "%source_kind%",
+      "type": "string",
+      "max_length": 80,
+      "index": "plain",
+      "help": "The document inspected, e.g. erp_procurement.po."
+    },
+    {
+      "id": "fld_kea9cjm3m7",
+      "name": "source_id",
+      "label": "%source_id%",
+      "type": "string",
+      "max_length": 80,
+      "index": "plain"
+    },
+    {
+      "id": "fld_vwps6zthmd",
+      "name": "lot",
+      "label": "%lot%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_asqy1q7diu",
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6
+    },
+    {
+      "id": "fld_82nxe74zuf",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "draft",
+      "track": true,
+      "options": [
+        {
+          "id": "opt_wu4zgfdmg1",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_fb4g1rej2v",
+          "value": "accepted",
+          "label": "%accepted%"
+        },
+        {
+          "id": "opt_tc5673uwpk",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_s0667vi88y",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_985nnos61s",
+      "name": "inspected_on",
+      "label": "%inspected_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_ppfnspiijl",
+      "name": "notes",
+      "label": "%notes%",
+      "type": "text"
+    },
+    {
+      "id": "fld_fjnzo99ow8",
+      "name": "readings",
+      "label": "%readings%",
+      "type": "child",
+      "target": "quality_reading",
+      "inverse": "inspection",
+      "order": "position"
+    },
+    {
+      "id": "fld_7cndpiftui",
+      "name": "reading_count",
+      "label": "%reading_count%",
+      "type": "int",
+      "compute": "count(readings)"
+    }
+  ],
+  "chatter": {
+    "enabled": true,
+    "messages": true,
+    "notes": true,
+    "followers": true,
+    "track_changes": true
+  },
+  "view": {
+    "list": [
+      "number",
+      "item",
+      "state",
+      "source_kind",
+      "inspected_on"
+    ]
+  },
+  "model_id": "mdl_4b53e3btqm",
+  "label": "%quality_inspection%",
+  "plural_label": "%quality_inspections%"
+}

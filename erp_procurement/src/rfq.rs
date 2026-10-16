@@ -22,10 +22,25 @@ struct CreateRfq {
     warehouse: Option<String>,
     #[serde(default)]
     notes: Option<String>,
+    /// Put RFQs for the same need to several suppliers in one group to compare and award them together.
+    #[serde(default)]
+    request_group: Option<String>,
+}
+
+#[derive(Deserialize)]
+struct SetRfqPrice {
+    line: String,
+    unit_price: Decimal,
+}
+
+#[derive(Deserialize)]
+struct Group {
+    request_group: String,
 }
 
 #[derive(Deserialize)]
 struct AddRfqLine {
+    #[serde(alias = "id")]
     rfq: String,
     item: String,
     qty: Decimal,
@@ -74,6 +89,9 @@ fn do_create_rfq(input: CreateRfq) -> Result<Record> {
     }
     if let Some(notes) = input.notes.filter(|s| !s.is_empty()) {
         data["notes"] = json!(notes);
+    }
+    if let Some(group) = input.request_group.as_ref().filter(|g| !g.trim().is_empty()) {
+        data["request_group"] = json!(group.trim());
     }
     db::create("rfq", &data).map_err(|e| e.or("could not create the RFQ"))
 }
@@ -177,7 +195,9 @@ fn do_convert_rfq_to_po(input: Id) -> Result<Value> {
             "qty": qty,
             "uom": text(line, "uom"),
             "unit_price": unit_price,
+            "net_unit_price": unit_price,
             "amount": amount,
+            "tax_amount": Decimal::zero(2),
             "qty_received": Decimal::zero(QTY_SCALE),
             "qty_billed": Decimal::zero(QTY_SCALE),
         });
@@ -187,7 +207,7 @@ fn do_convert_rfq_to_po(input: Id) -> Result<Value> {
         let _: Record = db::create("po_line", &data)?;
     }
     db::transaction()
-        .update("po", &po_id, &json!({ "total": total }))
+        .update("po", &po_id, &json!({ "total": total, "subtotal": total, "tax_total": Decimal::zero(2) }))
         .update("rfq", &input.id, &json!({ "state": "awarded", "po": po_id }))
         .run()?;
     Ok(json!({
@@ -216,7 +236,95 @@ fn do_get_rfq(input: Id) -> Result<Value> {
     Ok(json!({ "rfq": rfq, "lines": lines }))
 }
 
+/// Record the supplier's quoted price on a line of a sent RFQ.
+fn do_set_rfq_price(input: SetRfqPrice) -> Result<Record> {
+    require_user()?;
+    let line = require("rfq_line", &input.line, "RFQ line")?;
+    let rfq = require("rfq", text(&line, "rfq").unwrap_or_default(), "RFQ")?;
+    if !matches!(text(&rfq, "state"), Some("draft" | "sent")) {
+        return Err(Error::msg("prices can only be recorded on a draft or sent RFQ"));
+    }
+    let price = input.unit_price.with_scale(PRICE_SCALE)?;
+    if price.is_negative() {
+        return Err(Error::msg("unit price must not be negative"));
+    }
+    db::update("rfq_line", &input.line, &json!({ "unit_price": price }))?.ok_or_else(|| Error::msg("the line is gone"))
+}
+
+fn group_rfqs(group: &str) -> Result<Vec<Record>> {
+    let rows: Vec<Record> = db::find("rfq").filter("request_group", group).limit(50).all()?;
+    if rows.is_empty() {
+        return Err(Error::msg("there are no RFQs in this group"));
+    }
+    Ok(rows)
+}
+
+/// Prices per item across the suppliers of one request group, with the cheapest marked.
+fn do_compare_rfqs(input: Group) -> Result<Value> {
+    require_reader()?;
+    let rfqs = group_rfqs(&input.request_group)?;
+    let mut items: std::collections::BTreeMap<String, Vec<Value>> = std::collections::BTreeMap::new();
+    let mut totals: Vec<Value> = Vec::new();
+    for rfq in &rfqs {
+        if text(rfq, "state") == Some("cancelled") {
+            continue;
+        }
+        let mut total = Decimal::zero(2);
+        for line in rfq_lines(id_of(rfq)?)? {
+            let amount = line_amount(qty_of(&line, "qty")?, price_of(&line, "unit_price")?)?;
+            total = total.checked_add(amount)?;
+            items.entry(text(&line, "item").unwrap_or_default().to_string()).or_default().push(json!({
+                "rfq": id_of(rfq)?,
+                "supplier": text(rfq, "supplier"),
+                "qty": line.get("qty"),
+                "unit_price": line.get("unit_price"),
+                "amount": amount,
+            }));
+        }
+        totals.push(json!({ "rfq": id_of(rfq)?, "supplier": text(rfq, "supplier"), "state": text(rfq, "state"), "total": total }));
+    }
+    let mut matrix = Vec::new();
+    for (item, quotes) in items {
+        let best = quotes
+            .iter()
+            .filter_map(|q| serde_json::from_value::<Decimal>(q["unit_price"].clone()).ok().map(|p| (p, q["rfq"].clone())))
+            .min_by(|a, b| a.0.cmp(&b.0))
+            .map(|(_, rfq)| rfq);
+        matrix.push(json!({ "item": item, "quotes": quotes, "cheapest_rfq": best }));
+    }
+    totals.sort_by(|a, b| {
+        let ta = serde_json::from_value::<Decimal>(a["total"].clone()).ok();
+        let tb = serde_json::from_value::<Decimal>(b["total"].clone()).ok();
+        ta.cmp(&tb)
+    });
+    Ok(json!({ "request_group": input.request_group, "items": matrix, "totals": totals }))
+}
+
+/// Award one RFQ: it becomes the purchase order and the group's other open RFQs are cancelled.
+fn do_award_rfq(input: Id) -> Result<Value> {
+    require_user()?;
+    let rfq = require("rfq", &input.id, "RFQ")?;
+    let group = text(&rfq, "request_group").map(str::to_string);
+    let awarded = do_convert_rfq_to_po(Id { id: input.id.clone() })?;
+    let mut cancelled = Vec::new();
+    if let Some(group) = group {
+        for other in group_rfqs(&group)? {
+            let other_id = id_of(&other)?.to_string();
+            if other_id != input.id && matches!(text(&other, "state"), Some("draft" | "sent")) {
+                let c: Option<Record> = db::update("rfq", &other_id, &json!({ "state": "cancelled" }))?;
+                if let Some(c) = c {
+                    cancelled.push(c);
+                }
+            }
+        }
+    }
+    Ok(json!({ "awarded": awarded, "cancelled": cancelled }))
+}
+
 handler! {
+    fn set_rfq_price(input: SetRfqPrice) -> Record { do_set_rfq_price(input) }
+    fn compare_rfqs(input: Group) -> Value { do_compare_rfqs(input) }
+    fn award_rfq(input: Id) -> Value { do_award_rfq(input) }
     fn create_rfq(input: CreateRfq) -> Record { do_create_rfq(input) }
     fn add_rfq_line(input: AddRfqLine) -> Record { do_add_rfq_line(input) }
     fn send_rfq(input: Id) -> Record { do_send_rfq(input) }

@@ -1,0 +1,71 @@
+{
+  "model_id": "mdl_udlqxapn7s",
+  "name": "work_center",
+  "label": "%work_center%",
+  "plural_label": "%work_centers%",
+  "icon": "factory",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_yxykvuvu7x",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_4ph3lr6ub0",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 32
+    },
+    {
+      "id": "fld_5fots21div",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_k34ohi2ue1",
+      "name": "cost_per_hour",
+      "label": "%cost_per_hour%",
+      "type": "decimal",
+      "required": true,
+      "scale": 4,
+      "default": "0",
+      "help": "Labour and overhead absorbed per hour of operation time."
+    },
+    {
+      "id": "fld_9ddp0pg5l8",
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_jupqqm2y6h",
+      "fields": [
+        "company",
+        "code"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "code",
+      "name",
+      "cost_per_hour",
+      "active"
+    ]
+  }
+}

@@ -1,0 +1,56 @@
+[plugin]
+name = "erp_warehouse"
+icon_path = "assets/logo.svg"
+label = "Warehouse"
+version = "0.1.0"
+description = "Bins, putaway rules, pick lists and shipments below the warehouse."
+long_description = """
+Bins (a tree below each warehouse), putaway rules that say where received goods go, an append-only
+ledger of movements between bins, pick lists built from sales orders, and shipments with packages.
+The stock ledger and its valuation stay in erp_inventory; this plugin says *where* stock sits and
+what to pick. Written in Rust.
+See docs/design.md in this plugin (erp_warehouse/docs/design.md).
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["erp_item", "erp_inventory", "company"]
+optional_dependencies = ["erp_selling"]
+capabilities = ["db::query", "db::mutate", "plugins::call"]
+access_models = [
+  { name = "wh_bin", permissions = ["read", "write"] },
+  { name = "putaway_rule", permissions = ["read", "write"] },
+  { name = "bin_move", permissions = ["read", "write"] },
+  { name = "pick_list", permissions = ["read", "write"] },
+  { name = "pick_line", permissions = ["read", "write"] },
+  { name = "shipment", permissions = ["read", "write"] },
+  { name = "shipment_package", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "wh_admin"
+label = "Warehouse administrator"
+description = "Maintains bins and putaway rules."
+
+[[roles]]
+name = "wh_user"
+label = "Warehouse operator"
+description = "Puts away, moves, picks and ships."
+
+[[roles]]
+name = "wh_reader"
+label = "Warehouse reader"
+description = "Reads bins, moves, pick lists and shipments."
+
+[app]
+roles = ["wh_reader", "wh_user", "wh_admin"]
+icon = "warehouse"
+route = "/erp/warehouse"
+description = "Bins, picking and shipping"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "erp"

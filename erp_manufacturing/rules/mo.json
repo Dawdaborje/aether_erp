@@ -36,7 +36,9 @@
         "state",
         "consume_move",
         "produce_move",
-        "planned_date"
+        "planned_date",
+        "labour_cost",
+        "parent_mo"
       ],
       "write_roles": [
         "via:self"

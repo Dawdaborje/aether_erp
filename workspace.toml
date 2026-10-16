@@ -3,7 +3,7 @@ name = "erp"
 label = "Enterprise Resource Planning"
 version = "0.1.0"
 assets = "./assets"
-description = "Items, stock ledger, procurement, manufacturing and selling."
+description = "Items, pricing, stock ledger, procurement, selling, manufacturing and replenishment."
 long_description = """
 ERP addons for Aether. Inventory is an append-only stock ledger (quantity and value in one chain);
 financial posting goes through the accounting workspace's general ledger. Procurement, manufacturing
@@ -16,7 +16,11 @@ dependants = ["crm"]
 
 [workspace.plugins]
 erp_item = { path = "./erp_item" }
+erp_pricing = { path = "./erp_pricing" }
 erp_inventory = { path = "./erp_inventory" }
 erp_procurement = { path = "./erp_procurement" }
 erp_manufacturing = { path = "./erp_manufacturing" }
 erp_selling = { path = "./erp_selling" }
+erp_replenishment = { path = "./erp_replenishment" }
+erp_quality = { path = "./erp_quality" }
+erp_warehouse = { path = "./erp_warehouse" }

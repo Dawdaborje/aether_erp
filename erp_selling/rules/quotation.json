@@ -1,0 +1,51 @@
+{
+  "model": "quotation",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "sales_reader",
+        "sales_user",
+        "sales_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "sales_user",
+        "sales_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "number",
+        "company",
+        "customer",
+        "currency",
+        "state",
+        "quote_date",
+        "valid_until",
+        "warehouse",
+        "payment_term",
+        "price_list",
+        "subtotal",
+        "tax_total",
+        "total",
+        "notes",
+        "so"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

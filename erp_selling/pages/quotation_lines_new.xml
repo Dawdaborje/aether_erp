@@ -1,0 +1,12 @@
+<page roles="sales_user,sales_admin" route="/erp/selling/quotations/{id}/new" title="Add quotation line" model="quotation_line" menu="false">
+  <view type="form" function="add_quotation_line" submit="Add line" success="Line added" redirect="/erp/selling/quotations/{id}">
+    <group title="Line" cols="2">
+      <field name="item" label="Item" required="true" source="erp_item.search_items" optionLabel="name" entity="items"/>
+      <field name="qty" label="Quantity" required="true" fieldType="float"/>
+      <field name="unit_price" label="Unit price (blank = price list)" fieldType="float"/>
+      <field name="discount_pct" label="Discount %" fieldType="float"/>
+      <field name="tax" label="Tax" source="erp_pricing.search_taxes" optionLabel="name" entity="taxes"/>
+      <field name="optional" label="Optional add-on" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

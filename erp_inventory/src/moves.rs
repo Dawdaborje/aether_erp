@@ -51,6 +51,9 @@ struct AddLine {
     /// For adjust: true adds stock (needs unit_cost), false removes. Default: unit_cost.is_some().
     #[serde(default)]
     increase: Option<bool>,
+    /// Inbound lines of a tracked item: the lot's expiry (default: the item's shelf life from the move date).
+    #[serde(default)]
+    expiry_date: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -237,8 +240,12 @@ fn do_add_line(input: AddLine) -> Result<Record> {
     let lot = input.lot.as_deref().map(str::trim).filter(|s| !s.is_empty());
     match tracking {
         "lot" if lot.is_none() => return Err(Error::msg("this item requires a lot")),
+        "serial" if lot.is_none() => return Err(Error::msg("this item requires a serial number")),
         "none" if lot.is_some() => return Err(Error::msg("this item does not use lots")),
         _ => {}
+    }
+    if tracking == "serial" && qty != Decimal::whole(1, QTY_SCALE)? {
+        return Err(Error::msg("a serial number is one unit: add one line per serial"));
     }
 
     let warehouse = holding_warehouse(&input.warehouse, company_id)?;
@@ -263,6 +270,22 @@ fn do_add_line(input: AddLine) -> Result<Record> {
     let existing: Vec<Record> = db::find("stock_move_line").filter("move", id_of(&move_row)?).limit(200).all()?;
     if existing.len() >= 200 {
         return Err(Error::msg("a move cannot have more than 200 lines"));
+    }
+    if let Some(code) = lot {
+        let posting_date = text(&move_row, "posting_date").unwrap_or_default();
+        let inbound = kind == "receipt" || kind == "manufacture_produce" || (kind == "adjust" && increase);
+        if inbound {
+            if tracking == "serial" {
+                crate::lots::assert_serial_new(company_id, &item_id, code)?;
+                let twice = existing.iter().any(|r| text(r, "item") == Some(item_id.as_str()) && text(r, "lot") == Some(code));
+                if twice {
+                    return Err(Error::msg(format!("serial {code} is already on this move")));
+                }
+            }
+            crate::lots::ensure_lot(company_id, &item, code, posting_date, input.expiry_date.as_deref())?;
+        } else if matches!(kind, "issue" | "manufacture_consume") {
+            crate::lots::assert_not_expired(company_id, &item_id, code, posting_date)?;
+        }
     }
     let line_no = existing.iter().map(|r| r.get("line_no").and_then(Value::as_i64).unwrap_or(0)).max().unwrap_or(0) + 1;
 
@@ -711,6 +734,33 @@ fn stock_event_amounts(kind: &str, total_value: Decimal, variances: &[Value], ad
     }))
 }
 
+/// Source kinds of moves that reverse a commercial document: the stock effect is the same as an issue or
+/// receipt, but the ledger side differs (a supplier return clears GRNI, a customer return credits COGS).
+pub const PURCHASE_RETURN_SOURCE: &str = "erp_procurement.return";
+pub const SALES_RETURN_SOURCE: &str = "erp_selling.return";
+
+/// Move the cost/clearing side of `amounts` for return moves; any other move is unchanged.
+fn reclass_for_source(mut amounts: Value, kind: &str, source_kind: Option<&str>) -> Value {
+    let obj = match amounts.as_object_mut() {
+        Some(o) => o,
+        None => return amounts,
+    };
+    match (kind, source_kind) {
+        ("issue", Some(PURCHASE_RETURN_SOURCE)) => {
+            let cogs = obj.get("cogs").cloned().unwrap_or(json!("0.00"));
+            obj.insert("clearing_debit".into(), cogs);
+            obj.insert("cogs".into(), json!(Decimal::zero(2)));
+        }
+        ("receipt", Some(SALES_RETURN_SOURCE)) => {
+            let clearing = obj.get("clearing").cloned().unwrap_or(json!("0.00"));
+            obj.insert("cogs_credit".into(), clearing);
+            obj.insert("clearing".into(), json!(Decimal::zero(2)));
+        }
+        _ => {}
+    }
+    amounts
+}
+
 /// Flip posted amounts for a void so the same account map posts the reverse entry.
 fn flip_stock_amounts(amounts: &Value) -> Result<Value> {
     let g = |name: &str| -> Result<Decimal> {
@@ -918,7 +968,11 @@ fn emit_posted(ctx: &PostCtx, move_id: &str, kind: &str, posted: &Record) -> Res
     } else {
         None
     };
-    let amounts = stock_event_amounts(kind, ctx.total_value, &ctx.variances, adjust_increase)?;
+    let amounts = reclass_for_source(
+        stock_event_amounts(kind, ctx.total_value, &ctx.variances, adjust_increase)?,
+        kind,
+        text(posted, "source_kind"),
+    );
     let mut payload = amounts;
     let obj = payload.as_object_mut().unwrap();
     obj.insert("move".into(), json!(move_id));
@@ -1118,6 +1172,13 @@ fn do_void_move(input: VoidInput) -> Result<Record> {
     }
     if db::find::<Record>("stock_move").filter("reverses", input.id.as_str()).first()?.is_some() {
         return Err(Error::msg("this move is already voided"));
+    }
+    let costed: Option<Record> = db::find("stock_landed_cost")
+        .filter("move", input.id.as_str())
+        .filter("state", "posted")
+        .first()?;
+    if costed.is_some() {
+        return Err(Error::msg("landed cost has been added to this receipt; it cannot be voided"));
     }
     let kind = text(&original, "kind").unwrap_or_default().to_string();
     let company_id = text(&original, "company").ok_or_else(|| Error::msg("move has no company"))?.to_string();
@@ -1345,7 +1406,11 @@ fn do_void_move(input: VoidInput) -> Result<Record> {
     } else {
         None
     };
-    let amounts = flip_stock_amounts(&stock_event_amounts(&kind, original_total, &[], adjust_increase)?)?;
+    let amounts = flip_stock_amounts(&reclass_for_source(
+        stock_event_amounts(&kind, original_total, &[], adjust_increase)?,
+        &kind,
+        text(&original, "source_kind"),
+    ))?;
     let mut payload = amounts;
     let obj = payload.as_object_mut().unwrap();
     obj.insert("move".into(), json!(input.id));
@@ -1394,6 +1459,19 @@ fn do_get_move(input: Id) -> Result<Value> {
     Ok(json!({ "move": move_row, "lines": lines }))
 }
 
+/// In-crate entry points for plugins parts (counts) that build moves without going through the handler boundary.
+pub(crate) fn api_draft(kind: &str, input: Value) -> Result<Record> {
+    draft(kind, serde_json::from_value(input).map_err(|e| Error::msg(format!("draft: {e}")))?)
+}
+
+pub(crate) fn api_add_line(input: Value) -> Result<Record> {
+    do_add_line(serde_json::from_value(input).map_err(|e| Error::msg(format!("line: {e}")))?)
+}
+
+pub(crate) fn api_post(id: &str) -> Result<Record> {
+    do_post_move(Id { id: id.to_string() })
+}
+
 handler! {
     fn draft_receipt(input: DraftInput) -> Record { draft("receipt", input) }
     fn draft_issue(input: DraftInput) -> Record { draft("issue", input) }
@@ -1408,4 +1486,40 @@ handler! {
     fn void_move(input: VoidInput) -> Record { do_void_move(input) }
     fn on_hand(input: OnHandQuery) -> Value { do_on_hand(input) }
     fn get_move(input: Id) -> Value { do_get_move(input) }
+}
+
+#[cfg(test)]
+mod return_tests {
+    use super::*;
+
+    fn amount(v: &Value, k: &str) -> String {
+        v[k].as_str().map(str::to_string).unwrap_or_else(|| v[k].to_string())
+    }
+
+    #[test]
+    fn supplier_return_clears_grni_not_cogs() {
+        let total = Decimal::parse("40").unwrap();
+        let base = stock_event_amounts("issue", total, &[], None).unwrap();
+        let out = reclass_for_source(base, "issue", Some(PURCHASE_RETURN_SOURCE));
+        assert_eq!(amount(&out, "cogs").trim_matches('"'), "0.00");
+        assert_eq!(amount(&out, "clearing_debit").trim_matches('"'), "40.00");
+        assert_eq!(amount(&out, "inventory_out").trim_matches('"'), "40.00");
+    }
+
+    #[test]
+    fn customer_return_credits_cogs_not_grni() {
+        let total = Decimal::parse("25").unwrap();
+        let base = stock_event_amounts("receipt", total, &[], None).unwrap();
+        let out = reclass_for_source(base, "receipt", Some(SALES_RETURN_SOURCE));
+        assert_eq!(amount(&out, "clearing").trim_matches('"'), "0.00");
+        assert_eq!(amount(&out, "cogs_credit").trim_matches('"'), "25.00");
+    }
+
+    #[test]
+    fn plain_moves_are_untouched() {
+        let total = Decimal::parse("10").unwrap();
+        let base = stock_event_amounts("issue", total, &[], None).unwrap();
+        let out = reclass_for_source(base.clone(), "issue", Some("erp_selling.so"));
+        assert_eq!(out, base);
+    }
 }

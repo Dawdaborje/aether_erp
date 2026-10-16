@@ -1,0 +1,101 @@
+{
+  "name": "quality_parameter",
+  "icon": "ruler",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_e5tf78xe5r",
+      "name": "template",
+      "label": "%template%",
+      "type": "link",
+      "required": true,
+      "target": "quality_template",
+      "index": "plain"
+    },
+    {
+      "id": "fld_ve3z35n7kv",
+      "name": "position",
+      "label": "%position%",
+      "type": "int"
+    },
+    {
+      "id": "fld_9rpmp553z7",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_6c44no67mi",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "default": "numeric",
+      "options": [
+        {
+          "id": "opt_a15vxngrlm",
+          "value": "numeric",
+          "label": "%numeric%"
+        },
+        {
+          "id": "opt_7976rsaema",
+          "value": "pass_fail",
+          "label": "%pass_fail%"
+        }
+      ]
+    },
+    {
+      "id": "fld_8kvwm66g6z",
+      "name": "min",
+      "label": "%min%",
+      "type": "decimal",
+      "scale": 6
+    },
+    {
+      "id": "fld_hj7j5h4r84",
+      "name": "max",
+      "label": "%max%",
+      "type": "decimal",
+      "scale": 6
+    }
+  ],
+  "checks": [
+    {
+      "require": {
+        "or": [
+          {
+            "min": {
+              "null": true
+            }
+          },
+          {
+            "max": {
+              "null": true
+            }
+          },
+          {
+            "max": {
+              "gte": {
+                "field": "min"
+              }
+            }
+          }
+        ]
+      },
+      "message": "the maximum is below the minimum"
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "kind",
+      "min",
+      "max"
+    ]
+  },
+  "model_id": "mdl_687zakeg88",
+  "label": "%quality_parameter%",
+  "plural_label": "%quality_parameters%"
+}

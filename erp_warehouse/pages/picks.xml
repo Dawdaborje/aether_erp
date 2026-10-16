@@ -1,0 +1,18 @@
+<page roles="wh_reader,wh_user,wh_admin" route="/erp/warehouse/picks" title="Pick lists" model="pick_list" menu="false">
+  <view type="list" model="pick_list" source="list_pick_lists" create="/erp/warehouse/picks/new" create_label="New pick list">
+    <search/>
+    <columns>
+      <column field="number" label="Number"/>
+      <column field="warehouse" label="Warehouse"/>
+      <column field="source_kind" label="For"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="line_count" label="Lines"/>
+    </columns>
+    <actions>
+      <action name="release" label="Release" function="release_pick_list" confirm="Release this pick list?"/>
+      <action name="confirm" label="Confirm picked" function="confirm_pick" confirm="Mark every line picked in full?"/>
+      <action name="cancel" label="Cancel" function="cancel_pick_list" confirm="Cancel this pick list?" danger="true"/>
+    </actions>
+    <empty title="No pick lists" description="Create one from a sales order to see what to take from which bin."/>
+  </view>
+</page>

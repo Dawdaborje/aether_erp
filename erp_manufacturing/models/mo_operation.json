@@ -1,0 +1,125 @@
+{
+  "model_id": "mdl_7rt5cavrqg",
+  "name": "mo_operation",
+  "label": "%mo_operation%",
+  "plural_label": "%mo_operations%",
+  "icon": "timer",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_0r55352vd0",
+      "name": "mo",
+      "label": "%mo%",
+      "type": "link",
+      "required": true,
+      "target": "mo",
+      "index": "plain"
+    },
+    {
+      "id": "fld_v1ecf2lt17",
+      "name": "seq",
+      "label": "%seq%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_72z06c0h9j",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_ngl7ehg5b2",
+      "name": "work_center",
+      "label": "%work_center%",
+      "type": "link",
+      "required": true,
+      "target": "work_center",
+      "index": "plain"
+    },
+    {
+      "id": "fld_q0q50n5162",
+      "name": "planned_minutes",
+      "label": "%planned_minutes%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_3tkf0jjrqc",
+      "name": "actual_minutes",
+      "label": "%actual_minutes%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_05omle40ug",
+      "name": "cost_per_hour",
+      "label": "%cost_per_hour%",
+      "type": "decimal",
+      "scale": 4,
+      "default": "0",
+      "help": "Rate snapshot at confirm."
+    },
+    {
+      "id": "fld_uub1invsq3",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_tcw5adpqca",
+          "value": "pending",
+          "label": "%pending%"
+        },
+        {
+          "id": "opt_k877cpq8f1",
+          "value": "in_progress",
+          "label": "%in_progress%"
+        },
+        {
+          "id": "opt_8m1pvk117w",
+          "value": "done",
+          "label": "%done%"
+        }
+      ],
+      "default": "pending"
+    },
+    {
+      "id": "fld_0b6u6l8doz",
+      "name": "started_on",
+      "label": "%started_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_frak7t8z90",
+      "name": "finished_on",
+      "label": "%finished_on%",
+      "type": "date"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_7r5rp1x9zl",
+      "fields": [
+        "mo",
+        "seq"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "mo",
+      "seq",
+      "name",
+      "state",
+      "planned_minutes",
+      "actual_minutes"
+    ]
+  }
+}

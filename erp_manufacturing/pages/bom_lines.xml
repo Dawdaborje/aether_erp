@@ -1,0 +1,13 @@
+<page roles="mfg_reader,mfg_user,mfg_admin" route="/erp/manufacturing/boms/{id}" title="Components" model="bom_line" menu="false">
+  <view type="list" model="bom_line" source="list_bom_lines" create="/erp/manufacturing/boms/{id}/new" create_label="Add component">
+    <columns>
+      <column field="line_no" label="#"/>
+      <column field="item" label="Item"/>
+      <column field="qty" label="Qty"/>
+      <column field="scrap_pct" label="Scrap %"/>
+      <column field="is_byproduct" label="Byproduct" fieldType="boolean"/>
+      <column field="sub_bom" label="Made from BOM"/>
+    </columns>
+    <empty title="No components yet" description="Add the materials this BOM consumes."/>
+  </view>
+</page>

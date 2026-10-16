@@ -1,0 +1,10 @@
+<page roles="sales_admin" route="/erp/selling/credit" title="Customer credit limit" model="customer_credit" menu="false">
+  <view type="form" function="set_credit_limit" submit="Save limit" success="Saved" redirect="/erp/selling">
+    <group title="Credit" cols="2">
+      <field name="company" label="Company" required="true" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="customer" label="Customer" required="true" source="party.list_parties" optionLabel="display_name" entity="parties"/>
+      <field name="credit_limit" label="Credit limit" required="true" fieldType="float"/>
+      <field name="on_hold" label="On hold" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

@@ -1,0 +1,13 @@
+<page roles="stock_reader,stock_user,stock_admin" route="/erp/inventory/counts/{id}" title="Counted lines" model="stock_count_line" menu="false">
+  <view type="list" model="stock_count_line" source="list_count_lines" create="/erp/inventory/counts/{id}/new" create_label="Count an item">
+    <columns>
+      <column field="item" label="Item"/>
+      <column field="lot" label="Lot"/>
+      <column field="counted_qty" label="Counted"/>
+      <column field="system_qty" label="System"/>
+      <column field="difference" label="Difference"/>
+      <column field="unit_cost" label="Unit cost"/>
+    </columns>
+    <empty title="Nothing counted yet" description="Add the items you counted."/>
+  </view>
+</page>

@@ -88,6 +88,72 @@
       "target": "erp_inventory.stock_warehouse",
       "target_id": "mdl_bu5hotrqqi",
       "id": "fld_xv584ab32q"
+    },
+    {
+      "id": "fld_05rtf9kmgf",
+      "name": "discount_pct",
+      "label": "%discount_pct%",
+      "type": "decimal",
+      "scale": 4,
+      "default": "0"
+    },
+    {
+      "id": "fld_v4ttqe3uor",
+      "name": "tax",
+      "label": "%tax%",
+      "type": "link",
+      "target": "erp_pricing.tax",
+      "target_id": "mdl_shfete7izv",
+      "index": "plain"
+    },
+    {
+      "id": "fld_kxkajlzmuu",
+      "name": "tax_amount",
+      "label": "%tax_amount%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_3w8u6nohg0",
+      "name": "net_unit_price",
+      "label": "%net_unit_price%",
+      "type": "decimal",
+      "scale": 6,
+      "default": "0"
+    },
+    {
+      "id": "fld_v8ka4e71f3",
+      "name": "qty_returned",
+      "label": "%qty_returned%",
+      "type": "decimal",
+      "scale": 6,
+      "default": "0"
+    },
+    {
+      "id": "fld_ew4c8f2eaf",
+      "name": "order_uom",
+      "label": "%order_uom%",
+      "type": "link",
+      "target": "uom.uom",
+      "target_id": "mdl_gidmmkjdj5",
+      "help": "The unit the line was entered in when it differs from the item's own unit."
+    },
+    {
+      "id": "fld_4glm3qiukp",
+      "name": "order_qty",
+      "label": "%order_qty%",
+      "type": "decimal",
+      "scale": 6,
+      "help": "Quantity in the order unit; `qty` is always in the item's own unit."
+    },
+    {
+      "id": "fld_gkf7jvfg7g",
+      "name": "order_unit_price",
+      "label": "%order_unit_price%",
+      "type": "decimal",
+      "scale": 6,
+      "help": "Price per order unit; `unit_price` is per item unit."
     }
   ],
   "indexes": [

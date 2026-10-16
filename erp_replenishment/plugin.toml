@@ -1,0 +1,45 @@
+[plugin]
+name = "erp_replenishment"
+icon_path = "assets/logo.svg"
+label = "Replenishment"
+version = "0.1.0"
+description = "Reorder rules and shortfall requests that become purchase or manufacturing orders."
+long_description = """
+Min/max reorder rules per item and warehouse, and demand-driven shortfall from sales orders. Each shortfall
+becomes an open request; converting it creates a draft purchase order (buy route, priced from the buy price
+list) or a manufacturing order (make route, from the item's BOM). Open orders already on the way count as
+incoming so nothing is ordered twice. Runs with the caller's roles on the other plugins. Written in Rust.
+See docs/design.md in this plugin (erp_replenishment/docs/design.md).
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["erp_item", "erp_inventory", "erp_procurement", "erp_manufacturing", "erp_selling", "company", "party"]
+capabilities = ["db::query", "db::mutate", "plugins::call"]
+access_models = [
+  { name = "reorder_rule", permissions = ["read", "write"] },
+  { name = "replenish_request", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "replenish_admin"
+label = "Replenishment administrator"
+description = "Maintains rules, evaluates and converts requests."
+
+[[roles]]
+name = "replenish_reader"
+label = "Replenishment reader"
+description = "Reads rules and requests."
+
+[app]
+roles = ["replenish_reader", "replenish_admin"]
+icon = "refresh-cw"
+route = "/erp/replenishment"
+description = "Reorder rules and purchase/manufacture requests"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "erp"

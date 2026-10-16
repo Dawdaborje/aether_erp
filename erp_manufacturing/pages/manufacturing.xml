@@ -1,3 +1,17 @@
-<page route="/erp/manufacturing" title="Manufacturing" icon="factory">
-  <header title="Manufacturing"/>
+<page roles="mfg_reader,mfg_user,mfg_admin" route="/erp/manufacturing" title="Manufacturing" icon="factory" sort="32">
+  <header title="Manufacturing" subtitle="Bills of materials, routings and manufacturing orders."/>
+  <view type="dashboard" source="production_dashboard">
+    <stat label="Open orders" field="open_orders"/>
+    <stat label="Units in progress" field="units_in_progress"/>
+    <stat label="Orders done" field="done_orders"/>
+    <stat label="Planned minutes" field="planned_minutes"/>
+    <stat label="Actual minutes" field="actual_minutes"/>
+    <stat label="Efficiency %" field="efficiency_pct"/>
+    <chart type="bar" title="Orders by state" field="orders_by_state" category="name" value="value"/>
+  </view>
+  <buttonbox>
+    <button label="Manufacturing orders" href="/erp/manufacturing/mos" variant="secondary"/>
+    <button label="Bills of materials" href="/erp/manufacturing/boms" variant="secondary"/>
+    <button label="Work centers" href="/erp/manufacturing/work-centers" variant="secondary"/>
+  </buttonbox>
 </page>

@@ -1,0 +1,14 @@
+<page roles="purchase_reader,purchase_user,purchase_admin" route="/erp/procurement/bills/{id}" title="Bill lines" model="purchase_bill_line" menu="false">
+  <view type="list" model="purchase_bill_line" source="list_bill_lines">
+    <columns>
+      <column field="line_no" label="#"/>
+      <column field="item" label="Item"/>
+      <column field="qty" label="Qty"/>
+      <column field="unit_price" label="Price"/>
+      <column field="amount" label="Net"/>
+      <column field="tax_amount" label="Tax"/>
+      <column field="can_be_paid" label="Release" fieldType="badge"/>
+    </columns>
+    <empty title="No lines" description="This bill has no lines."/>
+  </view>
+</page>

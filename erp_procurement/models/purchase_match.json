@@ -65,6 +65,11 @@
           "id": "opt_7hh4d1hbsc",
           "value": "bill",
           "label": "%bill%"
+        },
+        {
+          "id": "opt_iavif6f40b",
+          "value": "return",
+          "label": "%return%"
         }
       ],
       "id": "fld_2gkcwf3o5p"

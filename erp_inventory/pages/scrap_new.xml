@@ -1,0 +1,12 @@
+<page roles="stock_user,stock_admin" route="/erp/inventory/scrap/new" title="Scrap stock" model="stock_move" menu="false">
+  <view type="form" function="scrap_stock" submit="Scrap" success="Stock scrapped" redirect="/erp/inventory/moves">
+    <group title="Scrap" cols="2">
+      <field name="company" label="Company" required="true" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="warehouse" label="Warehouse" required="true" source="list_warehouses" entity="warehouses"/>
+      <field name="item" label="Item" required="true" source="erp_item.search_items" optionLabel="name" entity="items"/>
+      <field name="qty" label="Quantity" required="true" fieldType="float"/>
+      <field name="lot" label="Lot / serial"/>
+      <field name="reason" label="Reason" required="true"/>
+    </group>
+  </view>
+</page>

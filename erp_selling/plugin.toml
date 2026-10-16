@@ -11,7 +11,8 @@ as procurement on the outbound side. Written in Rust.
 See docs/design.md in this plugin (erp_selling/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
-dependencies = ["erp_item", "erp_inventory", "company", "party", "uom", "currency", "crm_deal", "crm_customer"]
+dependencies = ["erp_item", "erp_inventory", "company", "party", "uom", "currency", "crm_deal", "crm_customer", "erp_pricing"]
+optional_dependencies = ["erp_quality"]
 capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call"]
 access_models = [
   { name = "so", permissions = ["read", "write"] },
@@ -21,6 +22,12 @@ access_models = [
   { name = "sales_invoice", permissions = ["read", "write"] },
   { name = "sales_invoice_line", permissions = ["read", "write"] },
   { name = "sales_counter", permissions = ["read", "write"] },
+  { name = "quotation", permissions = ["read", "write"] },
+  { name = "quotation_line", permissions = ["read", "write"] },
+  { name = "customer_credit", permissions = ["read", "write"] },
+  { name = "sales_setting", permissions = ["read", "write"] },
+  { name = "sales_return", permissions = ["read", "write"] },
+  { name = "sales_return_line", permissions = ["read", "write"] },
 ]
 is_builtin = false
 wasm_file = "out/plugin.wasm"
@@ -43,7 +50,11 @@ description = "Reads sales documents."
 [[events]]
 name = "sales_invoice_approved"
 
+[[events]]
+name = "sales_credit_note_approved"
+
 [app]
+roles = ["sales_reader", "sales_user", "sales_admin"]
 icon = "shopping-bag"
 route = "/erp/selling"
 description = "Sales orders and deliveries"

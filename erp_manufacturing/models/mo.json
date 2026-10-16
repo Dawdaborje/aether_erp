@@ -12,7 +12,19 @@
       "type": "string",
       "max_length": 40,
       "index": "plain",
-      "id": "fld_dh77rlwnkl"
+      "id": "fld_dh77rlwnkl",
+      "sequence": {
+        "pattern": "MO-{YYYY}-{#####}",
+        "reset": "yearly",
+        "scope": "company",
+        "assign_on": {
+          "field": "state",
+          "values": [
+            "confirmed"
+          ]
+        }
+      },
+      "help": "Numbered by the kernel when the order is confirmed, per company and year."
     },
     {
       "name": "company",
@@ -130,6 +142,22 @@
       "scale": 6,
       "help": "BOM output qty frozen at confirm",
       "id": "fld_cavw3tygnd"
+    },
+    {
+      "id": "fld_1pik16x6jb",
+      "name": "labour_cost",
+      "label": "%labour_cost%",
+      "type": "decimal",
+      "scale": 6,
+      "default": "0"
+    },
+    {
+      "id": "fld_m969vgmnwz",
+      "name": "parent_mo",
+      "label": "%parent_mo%",
+      "type": "link",
+      "target": "mo",
+      "index": "plain"
     }
   ],
   "view": {

@@ -1,0 +1,14 @@
+<page roles="purchase_reader,purchase_user,purchase_admin" route="/erp/procurement/returns" title="Returns to suppliers" model="purchase_return" menu="false">
+  <view type="list" model="purchase_return" source="list_returns">
+    <search/>
+    <columns>
+      <column field="number" label="Number"/>
+      <column field="po" label="Order"/>
+      <column field="supplier" label="Supplier"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="return_date" label="Date"/>
+      <column field="reason" label="Reason"/>
+    </columns>
+    <empty title="No returns" description="Goods sent back to suppliers appear here."/>
+  </view>
+</page>

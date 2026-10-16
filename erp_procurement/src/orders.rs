@@ -5,10 +5,10 @@ use aether_sdk::decimal::Decimal;
 use aether_sdk::prelude::*;
 
 use crate::common::{
-    allocate_number, company_currency_code, id_of, money_of, price_of, qty_of, require, require_reader, require_supplier,
-    require_user, text, today, Record, MONEY_SCALE, PRICE_SCALE, QTY_SCALE,
+    allocate_number, company_currency_code, id_of, money_of, price_line, price_of, qty_of, require, require_reader,
+    require_supplier, require_user, sum_lines, text, today, Record, MONEY_SCALE, PRICE_SCALE, QTY_SCALE,
 };
-use crate::match_status::{header_release, line_amount, line_release};
+use crate::match_status::{header_release, line_release};
 
 #[derive(Deserialize)]
 struct CreatePo {
@@ -22,16 +22,30 @@ struct CreatePo {
     warehouse: Option<String>,
     #[serde(default)]
     notes: Option<String>,
+    #[serde(default)]
+    payment_term: Option<String>,
+    #[serde(default)]
+    price_list: Option<String>,
 }
 
 #[derive(Deserialize)]
 struct AddPoLine {
+    #[serde(alias = "id")]
     po: String,
     item: String,
     qty: Decimal,
-    unit_price: Decimal,
+    /// Omit to take the price from the order's (or the default) buy price list.
+    #[serde(default)]
+    unit_price: Option<Decimal>,
+    #[serde(default)]
+    discount_pct: Option<Decimal>,
+    #[serde(default)]
+    tax: Option<String>,
     #[serde(default)]
     warehouse: Option<String>,
+    /// Unit the quantity and price are given in (a case); default the item's own unit.
+    #[serde(default)]
+    uom: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -73,13 +87,100 @@ struct CreateBill {
     lines: Vec<BillLineIn>,
 }
 
+/// Per-company purchasing policy; a company with no row uses the defaults (no approval, no tolerance, match on received).
+pub(crate) struct Policy {
+    pub approval_limit: Decimal,
+    pub over_receipt_pct: Decimal,
+    pub match_on_ordered: bool,
+    pub require_inspection: bool,
+}
+
+pub(crate) fn policy_for(company_id: &str) -> Result<Policy> {
+    let row: Option<Record> = db::find("purchase_setting").filter("company", company_id).first()?;
+    Ok(match row {
+        Some(r) => Policy {
+            approval_limit: crate::common::dec(&r, "po_approval_limit", MONEY_SCALE)?,
+            over_receipt_pct: crate::common::dec(&r, "over_receipt_pct", 2)?,
+            match_on_ordered: text(&r, "bill_match_on") == Some("ordered"),
+            require_inspection: r.get("require_inspection") == Some(&json!(true)),
+        },
+        None => Policy {
+            approval_limit: Decimal::zero(MONEY_SCALE),
+            over_receipt_pct: Decimal::zero(2),
+            match_on_ordered: false,
+            require_inspection: false,
+        },
+    })
+}
+
+#[derive(Deserialize)]
+struct SetPolicy {
+    company: String,
+    #[serde(default)]
+    po_approval_limit: Option<Decimal>,
+    #[serde(default)]
+    over_receipt_pct: Option<Decimal>,
+    #[serde(default)]
+    bill_match_on: Option<String>,
+    #[serde(default)]
+    require_inspection: Option<bool>,
+}
+
+fn do_set_policy(input: SetPolicy) -> Result<Record> {
+    crate::common::require_admin()?;
+    let company = require("company.company", &input.company, "company")?;
+    let mut data = json!({});
+    if let Some(v) = input.po_approval_limit {
+        let v = v.with_scale(MONEY_SCALE)?;
+        if v.is_negative() {
+            return Err(Error::msg("the approval limit must not be negative"));
+        }
+        data["po_approval_limit"] = json!(v);
+    }
+    if let Some(v) = input.over_receipt_pct {
+        let v = v.with_scale(2)?;
+        if v.is_negative() || v > Decimal::parse("100")?.with_scale(2)? {
+            return Err(Error::msg("over-receipt tolerance is between 0 and 100 percent"));
+        }
+        data["over_receipt_pct"] = json!(v);
+    }
+    if let Some(on) = input.require_inspection {
+        data["require_inspection"] = json!(on);
+    }
+    if let Some(m) = input.bill_match_on {
+        if !matches!(m.as_str(), "received" | "ordered") {
+            return Err(Error::msg("bills are matched on received or ordered quantity"));
+        }
+        data["bill_match_on"] = json!(m);
+    }
+    let existing: Option<Record> = db::find("purchase_setting").filter("company", id_of(&company)?).first()?;
+    match existing {
+        Some(row) => db::update("purchase_setting", id_of(&row)?, &data)?.ok_or_else(|| Error::msg("the setting is gone")),
+        None => {
+            data["company"] = json!(id_of(&company)?);
+            db::create("purchase_setting", &data).map_err(|e| e.or("could not save the setting"))
+        }
+    }
+}
+
+fn do_get_policy(input: SetPolicy) -> Result<Value> {
+    require_reader()?;
+    let p = policy_for(&input.company)?;
+    Ok(json!({
+        "po_approval_limit": p.approval_limit,
+        "over_receipt_pct": p.over_receipt_pct,
+        "bill_match_on": if p.match_on_ordered { "ordered" } else { "received" },
+        "require_inspection": p.require_inspection,
+    }))
+}
+
 pub(crate) fn po_lines(po_id: &str) -> Result<Vec<Record>> {
     let mut rows: Vec<Record> = db::find("po_line").filter("po", po_id).limit(500).all()?;
     rows.sort_by_key(|r| r.get("line_no").and_then(Value::as_i64).unwrap_or(0));
     Ok(rows)
 }
 
-fn refresh_po_state(po_id: &str) -> Result<Record> {
+pub(crate) fn refresh_po_state(po_id: &str) -> Result<Record> {
     let po = require("po", po_id, "purchase order")?;
     if matches!(text(&po, "state"), Some("cancelled" | "closed" | "draft")) {
         return Ok(po);
@@ -141,6 +242,16 @@ fn do_create_po(input: CreatePo) -> Result<Record> {
     if let Some(notes) = input.notes.filter(|s| !s.is_empty()) {
         data["notes"] = json!(notes);
     }
+    if let Some(term) = input.payment_term.filter(|t| !t.is_empty()) {
+        let _ = require("erp_pricing.payment_term", &term, "payment term")?;
+        data["payment_term"] = json!(term);
+    }
+    if let Some(list) = input.price_list.filter(|l| !l.is_empty()) {
+        let _ = require("erp_pricing.price_list", &list, "price list")?;
+        data["price_list"] = json!(list);
+    }
+    data["subtotal"] = json!(Decimal::zero(MONEY_SCALE));
+    data["tax_total"] = json!(Decimal::zero(MONEY_SCALE));
     db::create("po", &data).map_err(|e| e.or("could not create the purchase order"))
 }
 
@@ -151,19 +262,66 @@ fn do_add_po_line(input: AddPoLine) -> Result<Record> {
         return Err(Error::msg("lines can only be added while the order is a draft"));
     }
     let qty = input.qty.with_scale(QTY_SCALE)?;
-    let unit_price = input.unit_price.with_scale(PRICE_SCALE)?;
     if qty.is_zero() || qty.is_negative() {
         return Err(Error::msg("quantity must be greater than zero"));
-    }
-    if unit_price.is_negative() {
-        return Err(Error::msg("unit price is not negative"));
     }
     let item: Record = plugins::call("erp_item", "get_item", &json!({ "id": input.item }))?;
     if item.get("active") == Some(&json!(false)) {
         return Err(Error::msg("the item is not active"));
     }
-    let uom = text(&item, "uom").ok_or_else(|| Error::msg("the item has no unit"))?;
-    let amount = line_amount(qty, unit_price)?;
+    let item_uom = text(&item, "uom").ok_or_else(|| Error::msg("the item has no unit"))?.to_string();
+    // A line may be entered in another unit (a case): `qty` and `unit_price` are kept per item unit.
+    let order_uom = input.uom.clone().filter(|u| !u.is_empty() && *u != item_uom);
+    let entered_qty = qty;
+    let mut factor = Decimal::whole(1, 6)?;
+    let mut qty = qty;
+    if let Some(u) = &order_uom {
+        let converted: Value = plugins::call(
+            "erp_item",
+            "convert_qty",
+            &json!({ "item": id_of(&item)?, "qty": entered_qty, "from_uom": u, "context": "purchase" }),
+        )?;
+        qty = crate::common::dec(&converted, "base_qty", QTY_SCALE)?;
+        if qty.is_zero() {
+            return Err(Error::msg("the quantity is too small in the item's unit"));
+        }
+        factor = qty.div(entered_qty, 6)?;
+    }
+    let entered_price = input.unit_price.clone();
+    let input_unit_price = match (&order_uom, &entered_price) {
+        (Some(_), Some(p)) => Some(p.clone().div(factor, PRICE_SCALE)?),
+        _ => entered_price.clone(),
+    };
+    let uom = item_uom.as_str();
+    let (unit_price, list_discount) = match input_unit_price {
+        Some(p) => (p.with_scale(PRICE_SCALE)?, Decimal::zero(4)),
+        None => {
+            let found: Value = plugins::call(
+                "erp_pricing",
+                "price_for",
+                &json!({
+                    "item": id_of(&item)?,
+                    "kind": "buy",
+                    "qty": qty,
+                    "price_list": text(&po, "price_list"),
+                    "party": text(&po, "supplier"),
+                    "date": text(&po, "order_date"),
+                    "currency": text(&po, "currency"),
+                    "company": text(&po, "company"),
+                }),
+            )?;
+            if found.get("found") != Some(&json!(true)) {
+                return Err(Error::msg("no buy price found for this item; enter a unit price"));
+            }
+            (price_of(&found, "unit_price")?, crate::common::dec(&found, "discount_pct", 4)?)
+        }
+    };
+    if unit_price.is_negative() {
+        return Err(Error::msg("unit price is not negative"));
+    }
+    let discount_pct = input.discount_pct.unwrap_or(list_discount).with_scale(4)?;
+    let tax = input.tax.filter(|t| !t.is_empty());
+    let priced = price_line(qty, unit_price, discount_pct, tax.as_deref())?;
     let existing = po_lines(id_of(&po)?)?;
     let line_no = existing.iter().map(|r| r.get("line_no").and_then(Value::as_i64).unwrap_or(0)).max().unwrap_or(0) + 1;
     let mut data = json!({
@@ -173,17 +331,35 @@ fn do_add_po_line(input: AddPoLine) -> Result<Record> {
         "qty": qty,
         "uom": uom,
         "unit_price": unit_price,
-        "amount": amount,
+        "discount_pct": discount_pct,
+        "amount": priced.net,
+        "tax_amount": priced.tax,
+        "net_unit_price": priced.net_unit,
         "qty_received": Decimal::zero(QTY_SCALE),
         "qty_billed": Decimal::zero(QTY_SCALE),
     });
+    if let Some(u) = &order_uom {
+        data["order_uom"] = json!(u);
+        data["order_qty"] = json!(entered_qty);
+        data["order_unit_price"] = json!(match &entered_price {
+            Some(p) => p.clone().with_scale(PRICE_SCALE)?,
+            None => unit_price.times(factor, PRICE_SCALE)?,
+        });
+    }
+    if let Some(t) = &tax {
+        data["tax"] = json!(t);
+    }
     if let Some(wh) = input.warehouse.or_else(|| text(&po, "warehouse").map(str::to_string)) {
         let _ = require("erp_inventory.stock_warehouse", &wh, "warehouse")?;
         data["warehouse"] = json!(wh);
     }
     let line: Record = db::create("po_line", &data).map_err(|e| e.or("could not add the line"))?;
-    let total = existing.iter().try_fold(amount, |acc, r| acc.checked_add(money_of(r, "amount")?))?;
-    let _: Option<Record> = db::update("po", id_of(&po)?, &json!({ "total": total }))?;
+    let (subtotal, tax_total) = sum_lines(&po_lines(id_of(&po)?)?)?;
+    let _: Option<Record> = db::update(
+        "po",
+        id_of(&po)?,
+        &json!({ "subtotal": subtotal, "tax_total": tax_total, "total": subtotal.checked_add(tax_total)? }),
+    )?;
     Ok(line)
 }
 
@@ -198,18 +374,67 @@ fn do_confirm_po(input: Id) -> Result<Record> {
         return Err(Error::msg("add at least one line before confirming"));
     }
     let company_id = text(&po, "company").unwrap_or_default();
-    let order_date = text(&po, "order_date").unwrap_or_default();
+    let policy = policy_for(company_id)?;
+    let is_admin = context::current()?.has_role(crate::common::ADMIN_ROLE);
+    if !policy.approval_limit.is_zero() && money_of(&po, "total")? > policy.approval_limit && !is_admin {
+        // Over the limit: parked until an administrator approves (no number yet).
+        return db::update("po", &input.id, &json!({ "state": "to_approve" }))?
+            .ok_or_else(|| Error::msg("the order is gone"));
+    }
+    release_po(&po, &input.id)
+}
+
+fn release_po(po: &Record, id: &str) -> Result<Record> {
+    let company_id = text(po, "company").unwrap_or_default();
+    let order_date = text(po, "order_date").unwrap_or_default();
     let (number, next, counter_id) = allocate_number(company_id, "PO", order_date)?;
     db::transaction()
         .update("purchase_counter", &counter_id, &json!({ "next": next + 1 }))
-        .update("po", &input.id, &json!({ "state": "confirmed", "number": number }))
+        .update("po", id, &json!({ "state": "confirmed", "number": number }))
         .run()?;
-    require("po", &input.id, "purchase order")
+    require("po", id, "purchase order")
 }
 
-fn next_match_seq(po_line: &str) -> Result<i64> {
+fn do_approve_po(input: Id) -> Result<Record> {
+    crate::common::require_admin()?;
+    let po = require("po", &input.id, "purchase order")?;
+    if text(&po, "state") != Some("to_approve") {
+        return Err(Error::msg("only an order waiting for approval can be approved"));
+    }
+    release_po(&po, &input.id)
+}
+
+fn do_reject_po(input: Id) -> Result<Record> {
+    crate::common::require_admin()?;
+    let po = require("po", &input.id, "purchase order")?;
+    if text(&po, "state") != Some("to_approve") {
+        return Err(Error::msg("only an order waiting for approval can be rejected"));
+    }
+    db::update("po", &input.id, &json!({ "state": "draft" }))?.ok_or_else(|| Error::msg("the order is gone"))
+}
+
+pub(crate) fn next_match_seq(po_line: &str) -> Result<i64> {
     let rows: Vec<Record> = db::find("purchase_match").filter("po_line", po_line).limit(5000).all()?;
     Ok(rows.iter().map(|r| r.get("seq").and_then(Value::as_i64).unwrap_or(0)).max().unwrap_or(0) + 1)
+}
+
+/// With the quality plugin installed, the order must have an accepted inspection. Without it
+/// (the plugin is optional) there is nothing to ask and receiving goes ahead.
+fn require_accepted_inspection(source_kind: &str, source_id: &str) -> Result<()> {
+    if !plugins::available("erp_quality")? {
+        return Ok(());
+    }
+    let status: Value = plugins::call(
+        "erp_quality",
+        "inspection_status",
+        &json!({ "source_kind": source_kind, "source_id": source_id }),
+    )?;
+    match status.get("state").and_then(Value::as_str) {
+        Some("accepted") => Ok(()),
+        Some("rejected") => Err(Error::msg("the inspection of this order was rejected")),
+        Some("pending") => Err(Error::msg("finish the inspection of this order first")),
+        _ => Err(Error::msg("this order needs an accepted inspection before goods are received")),
+    }
 }
 
 fn do_receive_po(input: ReceivePo) -> Result<Value> {
@@ -222,6 +447,10 @@ fn do_receive_po(input: ReceivePo) -> Result<Value> {
         return Err(Error::msg("name what to receive"));
     }
     let company_id = text(&po, "company").unwrap_or_default().to_string();
+    let policy = policy_for(&company_id)?;
+    if policy.require_inspection {
+        require_accepted_inspection("erp_procurement.po", &input.po)?;
+    }
     let supplier_id = text(&po, "supplier").unwrap_or_default().to_string();
     let receipt_date = match input.receipt_date {
         Some(d) => {
@@ -278,7 +507,10 @@ fn do_receive_po(input: ReceivePo) -> Result<Value> {
         }
         let ordered = qty_of(&po_line, "qty")?;
         let already = qty_of(&po_line, "qty_received")?;
-        let open = ordered.checked_sub(already)?;
+        let tolerance = ordered
+            .times(policy.over_receipt_pct, QTY_SCALE + 2)?
+            .div(Decimal::parse("100")?, QTY_SCALE)?;
+        let open = ordered.checked_add(tolerance)?.checked_sub(already)?;
         if qty > open {
             return Err(Error::msg(format!("cannot receive {qty}: only {open} open on the line")));
         }
@@ -288,7 +520,11 @@ fn do_receive_po(input: ReceivePo) -> Result<Value> {
             .or_else(|| text(&po_line, "warehouse").map(str::to_string))
             .or_else(|| text(&po, "warehouse").map(str::to_string))
             .ok_or_else(|| Error::msg("name a warehouse to receive into"))?;
-        let unit_price = price_of(&po_line, "unit_price")?;
+        // Stock is valued at the tax-exclusive, post-discount price (older lines fall back to the list price).
+        let unit_price = match price_of(&po_line, "net_unit_price")? {
+            p if p.is_zero() => price_of(&po_line, "unit_price")?,
+            p => p,
+        };
         let item_id = text(&po_line, "item").unwrap_or_default();
 
         let _: Record = plugins::call(
@@ -359,7 +595,8 @@ fn match_qty(po_line_id: &str, kind: &str) -> Result<Decimal> {
 }
 
 fn recompute_bill_release(bill_id: &str) -> Result<Record> {
-    let _bill = require("purchase_bill", bill_id, "bill")?;
+    let bill = require("purchase_bill", bill_id, "bill")?;
+    let on_ordered = policy_for(text(&bill, "company").unwrap_or_default())?.match_on_ordered;
     let lines: Vec<Record> = db::find("purchase_bill_line").filter("bill", bill_id).limit(500).all()?;
     let mut statuses = Vec::new();
     for line in &lines {
@@ -367,7 +604,7 @@ fn recompute_bill_release(bill_id: &str) -> Result<Record> {
         let po_line = require("po_line", po_line_id, "order line")?;
         // Match rows are the source of truth; fall back to denormalised PO fields if empty.
         let received = {
-            let from_match = match_qty(po_line_id, "receive")?;
+            let from_match = match_qty(po_line_id, "receive")?.checked_sub(match_qty(po_line_id, "return")?)?;
             if from_match.is_zero() {
                 qty_of(&po_line, "qty_received")?
             } else {
@@ -380,7 +617,7 @@ fn recompute_bill_release(bill_id: &str) -> Result<Record> {
             qty_of(line, "qty")?,
             price_of(&po_line, "unit_price")?,
             price_of(line, "unit_price")?,
-            false,
+            on_ordered,
         )?;
         let _: Option<Record> = db::update("purchase_bill_line", id_of(line)?, &json!({ "can_be_paid": status.as_str() }))?;
         statuses.push(status);
@@ -421,10 +658,18 @@ fn do_create_bill(input: CreateBill) -> Result<Record> {
             "release_to_pay": "exception",
             "source_version": 1,
             "number": number,
+            "subtotal": Decimal::zero(MONEY_SCALE),
+            "tax_total": Decimal::zero(MONEY_SCALE),
         }),
     )?;
+    if let Some(term) = text(&po, "payment_term") {
+        let due: Value = plugins::call("erp_pricing", "due_date_for", &json!({ "term": term, "date": bill_date }))?;
+        let _: Option<Record> =
+            db::update("purchase_bill", id_of(&bill)?, &json!({ "payment_term": term, "due_date": due["due_date"] }))?;
+    }
     let bill_id = id_of(&bill)?.to_string();
-    let mut total = Decimal::zero(MONEY_SCALE);
+    let mut subtotal = Decimal::zero(MONEY_SCALE);
+    let mut tax_total = Decimal::zero(MONEY_SCALE);
     let mut line_no = 0i64;
     for spec in &input.lines {
         let po_line = require("po_line", &spec.po_line, "order line")?;
@@ -445,8 +690,12 @@ fn do_create_bill(input: CreateBill) -> Result<Record> {
             )));
         }
         let unit_price = spec.unit_price.unwrap_or(price_of(&po_line, "unit_price")?).with_scale(PRICE_SCALE)?;
-        let amount = line_amount(qty, unit_price)?;
-        total = total.checked_add(amount)?;
+        let discount_pct = crate::common::dec(&po_line, "discount_pct", 4)?;
+        let tax = text(&po_line, "tax").map(str::to_string);
+        let priced = price_line(qty, unit_price, discount_pct, tax.as_deref())?;
+        let amount = priced.net;
+        subtotal = subtotal.checked_add(amount)?;
+        tax_total = tax_total.checked_add(priced.tax)?;
         line_no += 1;
         let mut data = json!({
             "bill": bill_id,
@@ -455,9 +704,14 @@ fn do_create_bill(input: CreateBill) -> Result<Record> {
             "item": text(&po_line, "item"),
             "qty": qty,
             "unit_price": unit_price,
+            "discount_pct": discount_pct,
             "amount": amount,
+            "tax_amount": priced.tax,
             "can_be_paid": "exception",
         });
+        if let Some(t) = &tax {
+            data["tax"] = json!(t);
+        }
         if let Some(rl) = &spec.receipt_line {
             let _ = require("purchase_receipt_line", rl, "receipt line")?;
             data["receipt_line"] = json!(rl);
@@ -481,7 +735,11 @@ fn do_create_bill(input: CreateBill) -> Result<Record> {
     }
     db::transaction()
         .update("purchase_counter", &counter_id, &json!({ "next": next + 1 }))
-        .update("purchase_bill", &bill_id, &json!({ "total": total }))
+        .update(
+            "purchase_bill",
+            &bill_id,
+            &json!({ "subtotal": subtotal, "tax_total": tax_total, "total": subtotal.checked_add(tax_total)? }),
+        )
         .run()?;
     recompute_bill_release(&bill_id)
 }
@@ -492,6 +750,9 @@ fn do_approve_bill(input: Id) -> Result<Record> {
     if text(&bill, "state") != Some("draft") {
         return Err(Error::msg("only a draft bill can be approved"));
     }
+    if text(&bill, "kind") == Some("debit_note") {
+        return approve_debit_note(&input.id);
+    }
     let bill = recompute_bill_release(&input.id)?;
     if text(&bill, "release_to_pay") == Some("no") {
         return Err(Error::msg("nothing is received for this bill; receive first or force a price/qty exception review"));
@@ -500,7 +761,11 @@ fn do_approve_bill(input: Id) -> Result<Record> {
     let approved = db::update("purchase_bill", &input.id, &json!({ "state": "approved" }))?
         .ok_or_else(|| Error::msg("the bill is gone"))?;
     let total = money_of(&approved, "total")?;
-    // v0.1: full bill total clears GRNI and credits AP (no tax/variance split yet).
+    // Goods (subtotal) clear GRNI, input tax is its own line, and the full total is the payable.
+    let subtotal = money_of(&approved, "subtotal")?;
+    let tax_total = money_of(&approved, "tax_total")?;
+    // Bills written before taxes existed carry only a total: treat it all as goods.
+    let (grni_clear, tax_total) = if subtotal.is_zero() && tax_total.is_zero() { (total, tax_total) } else { (subtotal, tax_total) };
     events::emit(
         "purchase_bill_approved",
         &json!({
@@ -512,9 +777,37 @@ fn do_approve_bill(input: Id) -> Result<Record> {
             "bill_date": text(&approved, "bill_date"),
             "total": approved.get("total"),
             "ap_total": total,
-            "grni_clear": total,
+            "grni_clear": grni_clear,
+            "tax_total": tax_total,
+            "due_date": text(&approved, "due_date"),
             "variance": Decimal::zero(MONEY_SCALE),
             "release_to_pay": text(&approved, "release_to_pay"),
+            "po": text(&approved, "po"),
+            "source_version": approved.get("source_version").and_then(Value::as_i64).unwrap_or(1),
+        }),
+    )?;
+    Ok(approved)
+}
+
+/// A debit note reduces what is owed: it mirrors the bill's ledger lines (debit AP, credit GRNI and tax).
+fn approve_debit_note(id: &str) -> Result<Record> {
+    let approved = db::update("purchase_bill", id, &json!({ "state": "approved" }))?
+        .ok_or_else(|| Error::msg("the debit note is gone"))?;
+    let total = money_of(&approved, "total")?;
+    events::emit(
+        "purchase_debit_note_approved",
+        &json!({
+            "bill": id,
+            "number": text(&approved, "number"),
+            "company": text(&approved, "company"),
+            "supplier": text(&approved, "supplier"),
+            "currency": text(&approved, "currency"),
+            "bill_date": text(&approved, "bill_date"),
+            "total": approved.get("total"),
+            "ap_total": total,
+            "grni_credit": money_of(&approved, "subtotal")?,
+            "tax_total": money_of(&approved, "tax_total")?,
+            "reverses": text(&approved, "reverses"),
             "po": text(&approved, "po"),
             "source_version": approved.get("source_version").and_then(Value::as_i64).unwrap_or(1),
         }),
@@ -542,6 +835,15 @@ fn do_cancel_po(input: Id) -> Result<Record> {
     db::update("po", &input.id, &json!({ "state": "cancelled" }))?.ok_or_else(|| Error::msg("the order is gone"))
 }
 
+/// In-crate entry points for the parts of the plugin that build orders (material requests).
+pub(crate) fn api_create_po(input: Value) -> Result<Record> {
+    do_create_po(serde_json::from_value(input).map_err(|e| Error::msg(format!("order: {e}")))?)
+}
+
+pub(crate) fn api_add_po_line(input: Value) -> Result<Record> {
+    do_add_po_line(serde_json::from_value(input).map_err(|e| Error::msg(format!("line: {e}")))?)
+}
+
 handler! {
     fn create_po(input: CreatePo) -> Record { do_create_po(input) }
     fn add_po_line(input: AddPoLine) -> Record { do_add_po_line(input) }
@@ -551,4 +853,8 @@ handler! {
     fn create_bill(input: CreateBill) -> Record { do_create_bill(input) }
     fn approve_bill(input: Id) -> Record { do_approve_bill(input) }
     fn get_po(input: Id) -> Value { do_get_po(input) }
+    fn approve_po(input: Id) -> Record { do_approve_po(input) }
+    fn reject_po(input: Id) -> Record { do_reject_po(input) }
+    fn set_purchase_setting(input: SetPolicy) -> Record { do_set_policy(input) }
+    fn get_purchase_setting(input: SetPolicy) -> Value { do_get_policy(input) }
 }

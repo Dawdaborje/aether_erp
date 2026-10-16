@@ -65,6 +65,15 @@
       "type": "bool",
       "default": false,
       "id": "fld_6351awxjvz"
+    },
+    {
+      "id": "fld_nlvgdtvp1f",
+      "name": "sub_bom",
+      "label": "%sub_bom%",
+      "type": "link",
+      "help": "Make this component from another BOM (multi-level).",
+      "target": "bom",
+      "index": "plain"
     }
   ],
   "indexes": [

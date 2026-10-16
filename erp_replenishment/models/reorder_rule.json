@@ -1,0 +1,142 @@
+{
+  "model_id": "mdl_7dtp5c6evz",
+  "name": "reorder_rule",
+  "label": "%reorder_rule%",
+  "plural_label": "%reorder_rules%",
+  "icon": "refresh-cw",
+  "title_field": "item",
+  "fields": [
+    {
+      "id": "fld_q7z3tkqpoy",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_jpyj3d0qbx",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain"
+    },
+    {
+      "id": "fld_6kg6vo5vuz",
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "required": true,
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "index": "plain"
+    },
+    {
+      "id": "fld_6h2a5manmt",
+      "name": "min_qty",
+      "label": "%min_qty%",
+      "type": "decimal",
+      "required": true,
+      "scale": 6,
+      "help": "Replenish when available plus incoming falls below this."
+    },
+    {
+      "id": "fld_q16up8wedf",
+      "name": "max_qty",
+      "label": "%max_qty%",
+      "type": "decimal",
+      "required": true,
+      "scale": 6,
+      "help": "Order up to this projected quantity."
+    },
+    {
+      "id": "fld_cuwfrf7hrc",
+      "name": "multiple",
+      "label": "%multiple%",
+      "type": "decimal",
+      "scale": 6,
+      "default": "1",
+      "help": "Order in multiples of this quantity."
+    },
+    {
+      "id": "fld_1sb78b5lqj",
+      "name": "route",
+      "label": "%route%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_x019h4yf1l",
+          "value": "buy",
+          "label": "%buy%"
+        },
+        {
+          "id": "opt_r1ylybfkye",
+          "value": "make",
+          "label": "%make%"
+        }
+      ],
+      "default": "buy"
+    },
+    {
+      "id": "fld_bye7onyg3o",
+      "name": "supplier",
+      "label": "%supplier%",
+      "type": "link",
+      "target": "party.party",
+      "target_id": "mdl_mr76tss5ic",
+      "index": "plain",
+      "help": "Default supplier for the buy route."
+    },
+    {
+      "id": "fld_3ljvfsgvu3",
+      "name": "bom",
+      "label": "%bom%",
+      "type": "link",
+      "target": "erp_manufacturing.bom",
+      "index": "plain",
+      "target_id": "mdl_q4zddrk8fw",
+      "help": "BOM for the make route (default: the item's active BOM)."
+    },
+    {
+      "id": "fld_8th1iy6jcy",
+      "name": "lead_days",
+      "label": "%lead_days%",
+      "type": "int",
+      "default": 0
+    },
+    {
+      "id": "fld_ehjv8obfkz",
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_sxrnvbbndr",
+      "fields": [
+        "company",
+        "item",
+        "warehouse"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "item",
+      "warehouse",
+      "min_qty",
+      "max_qty",
+      "route",
+      "active"
+    ]
+  }
+}

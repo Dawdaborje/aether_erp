@@ -103,7 +103,25 @@ fn do_list_warehouses(input: ListWarehouses) -> Result<Vec<Record>> {
     Ok(rows)
 }
 
+/// A "Main warehouse" for the first company when the organization has no warehouse at all.
+fn do_seed() -> Result<Value> {
+    if db::find::<Record>("stock_warehouse").first()?.is_some() {
+        return Ok(json!({ "warehouse": false }));
+    }
+    let Some(company) = db::find::<Record>("company.company").first()? else {
+        return Ok(json!({ "warehouse": false }));
+    };
+    db::create::<Record>(
+        "stock_warehouse",
+        &json!({ "code": "MAIN", "name": "Main warehouse", "company": id_of(&company)?, "kind": "stock", "active": true }),
+    )?;
+    Ok(json!({ "warehouse": true }))
+}
+
 handler! {
+    /// A default warehouse when there is none; runs on install and upgrade.
+    fn seed_warehouse(_: Empty) -> Value { do_seed() }
+
     fn create_warehouse(input: WarehouseInput) -> Record { do_create_warehouse(input) }
     fn set_warehouse(input: SetWarehouse) -> Record { do_set_warehouse(input) }
     fn list_warehouses(input: ListWarehouses) -> Vec<Record> { do_list_warehouses(input) }

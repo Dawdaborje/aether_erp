@@ -1,0 +1,12 @@
+<page roles="mfg_reader,mfg_user,mfg_admin" route="/erp/manufacturing/boms" title="Bills of materials" model="bom" menu="false">
+  <view type="list" model="bom" source="list_boms" open="/erp/manufacturing/boms/{id}" create="/erp/manufacturing/boms/new" create_label="New BOM">
+    <search/>
+    <columns>
+      <column field="code" label="Code"/>
+      <column field="item" label="Item"/>
+      <column field="qty" label="Output qty"/>
+      <column field="active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No BOMs yet" description="Define what goes into a finished item."/>
+  </view>
+</page>

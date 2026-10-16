@@ -1,0 +1,72 @@
+{
+  "model_id": "mdl_rekzo46imh",
+  "name": "stock_landed_alloc",
+  "label": "%stock_landed_alloc%",
+  "plural_label": "%stock_landed_allocs%",
+  "icon": "list",
+  "title_field": "landed",
+  "fields": [
+    {
+      "id": "fld_1vwusz6sij",
+      "name": "landed",
+      "label": "%landed%",
+      "type": "link",
+      "required": true,
+      "target": "stock_landed_cost",
+      "index": "plain"
+    },
+    {
+      "id": "fld_kxz8j66bf2",
+      "name": "move_line",
+      "label": "%move_line%",
+      "type": "link",
+      "required": true,
+      "target": "stock_move_line",
+      "index": "plain"
+    },
+    {
+      "id": "fld_3gg4gti9w5",
+      "name": "layer",
+      "label": "%layer%",
+      "type": "link",
+      "target": "stock_layer",
+      "index": "plain"
+    },
+    {
+      "id": "fld_sy2atqvssk",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "required": true,
+      "scale": 6,
+      "help": "Share of the charges for this line."
+    },
+    {
+      "id": "fld_qvnlvv4qb7",
+      "name": "capitalised",
+      "label": "%capitalised%",
+      "type": "decimal",
+      "required": true,
+      "scale": 6,
+      "help": "Part added to stock still on hand."
+    },
+    {
+      "id": "fld_ol044fxrg4",
+      "name": "expensed",
+      "label": "%expensed%",
+      "type": "decimal",
+      "required": true,
+      "scale": 6,
+      "help": "Part for goods already issued, taken to cost of sales (or variance)."
+    }
+  ],
+  "view": {
+    "list": [
+      "landed",
+      "move_line",
+      "amount",
+      "capitalised",
+      "expensed"
+    ]
+  }
+}

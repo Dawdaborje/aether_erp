@@ -122,6 +122,72 @@
       "type": "int",
       "default": 1,
       "id": "fld_10c4hbnm86"
+    },
+    {
+      "id": "fld_n6s5wenkhw",
+      "name": "subtotal",
+      "label": "%subtotal%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_wyajl0tibd",
+      "name": "tax_total",
+      "label": "%tax_total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_m1dsue9ean",
+      "name": "payment_term",
+      "label": "%payment_term%",
+      "type": "link",
+      "target": "erp_pricing.payment_term",
+      "target_id": "mdl_fkq90to5up",
+      "index": "plain"
+    },
+    {
+      "id": "fld_ndxpcr3j3x",
+      "name": "due_date",
+      "label": "%due_date%",
+      "type": "date"
+    },
+    {
+      "id": "fld_k4zz41bnj2",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_s8rfa7ud3q",
+          "value": "bill",
+          "label": "%bill%"
+        },
+        {
+          "id": "opt_0x5bqpkdia",
+          "value": "debit_note",
+          "label": "%debit_note%"
+        }
+      ],
+      "default": "bill"
+    },
+    {
+      "id": "fld_nsu4vhc2ok",
+      "name": "reverses",
+      "label": "%reverses%",
+      "type": "link",
+      "target": "purchase_bill",
+      "index": "plain"
+    },
+    {
+      "id": "fld_3m0ooc9drq",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "string",
+      "max_length": 200
     }
   ],
   "view": {

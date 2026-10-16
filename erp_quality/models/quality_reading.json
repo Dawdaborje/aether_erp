@@ -1,0 +1,108 @@
+{
+  "name": "quality_reading",
+  "icon": "gauge",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_p52dcmapvt",
+      "name": "inspection",
+      "label": "%inspection%",
+      "type": "link",
+      "required": true,
+      "target": "quality_inspection",
+      "index": "plain"
+    },
+    {
+      "id": "fld_l4slm41xzv",
+      "name": "position",
+      "label": "%position%",
+      "type": "int"
+    },
+    {
+      "id": "fld_86o8udjdqb",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_09s9eymi4v",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "default": "numeric",
+      "options": [
+        {
+          "id": "opt_5e10sb3llg",
+          "value": "numeric",
+          "label": "%numeric%"
+        },
+        {
+          "id": "opt_1dy2ofbsr9",
+          "value": "pass_fail",
+          "label": "%pass_fail%"
+        }
+      ]
+    },
+    {
+      "id": "fld_8lpvft0uqu",
+      "name": "min",
+      "label": "%min%",
+      "type": "decimal",
+      "scale": 6
+    },
+    {
+      "id": "fld_17iiwyh19f",
+      "name": "max",
+      "label": "%max%",
+      "type": "decimal",
+      "scale": 6
+    },
+    {
+      "id": "fld_yvvejv85ut",
+      "name": "value",
+      "label": "%value%",
+      "type": "decimal",
+      "scale": 6
+    },
+    {
+      "id": "fld_dpcru5mlw5",
+      "name": "result",
+      "label": "%result%",
+      "type": "select",
+      "required": true,
+      "default": "pending",
+      "options": [
+        {
+          "id": "opt_fwb1xu70ed",
+          "value": "pending",
+          "label": "%pending%"
+        },
+        {
+          "id": "opt_ivcysqktme",
+          "value": "pass",
+          "label": "%pass%"
+        },
+        {
+          "id": "opt_6gh0e72qth",
+          "value": "fail",
+          "label": "%fail%"
+        }
+      ]
+    }
+  ],
+  "view": {
+    "list": [
+      "name",
+      "value",
+      "min",
+      "max",
+      "result"
+    ]
+  },
+  "model_id": "mdl_u49bgr3gki",
+  "label": "%quality_reading%",
+  "plural_label": "%quality_readings%"
+}
