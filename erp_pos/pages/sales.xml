@@ -1,0 +1,15 @@
+<page roles="pos_reader,pos_cashier,pos_manager" route="/erp/pos/sales" title="Sales" model="pos_sale" menu="false">
+  <view type="list" model="pos_sale" source="list_sales" open="/erp/pos/sales/{id}" create="/erp/pos/sales/new" create_label="New sale">
+    <columns>
+      <column field="number" label="Sale"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="sale_date" label="Date"/>
+      <column field="subtotal" label="Subtotal"/>
+      <column field="tax_total" label="Tax"/>
+      <column field="total" label="Total"/>
+      <column field="paid" label="Paid"/>
+      <column field="change" label="Change"/>
+    </columns>
+    <empty title="No sales yet" description="Use New sale to start a cart."/>
+  </view>
+</page>

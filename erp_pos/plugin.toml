@@ -1,0 +1,53 @@
+[plugin]
+name = "erp_pos"
+icon_path = "assets/logo.svg"
+label = "Point of sale"
+version = "0.1.0"
+description = "Counter sales: cashier sessions, a cart priced from the price list, payment, and stock issued from a warehouse."
+long_description = """
+A manager sets up a profile (company, warehouse, price list). A cashier opens a session with a float, rings up sales
+as a cart of priced lines, and takes payment in cash, card or other. Paying issues the stock through erp_inventory in
+the same step, so a sale that cannot be supplied is not recorded. Closing the session counts the drawer against what
+the sales say it should hold. Each paid sale emits pos_sale_paid for the ledger. Written in Rust.
+See docs/design.md in this plugin (erp_pos/docs/design.md).
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["erp_item", "erp_pricing", "erp_inventory", "company", "party"]
+capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call"]
+access_models = [
+  { name = "pos_profile", permissions = ["read", "write"] },
+  { name = "pos_session", permissions = ["read", "write"] },
+  { name = "pos_sale", permissions = ["read", "write"] },
+  { name = "pos_sale_line", permissions = ["read", "write"] },
+  { name = "pos_payment", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "pos_manager"
+label = "POS manager"
+description = "Sets up profiles, voids sales and sees every session."
+
+[[roles]]
+name = "pos_cashier"
+label = "POS cashier"
+description = "Opens a session, rings up and takes payment for sales, closes the session."
+
+[[roles]]
+name = "pos_reader"
+label = "POS reader"
+description = "Reads sessions and sales."
+
+[app]
+roles = ["pos_reader", "pos_cashier", "pos_manager"]
+icon = "store"
+route = "/erp/pos"
+description = "Counter sales and cashier sessions"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "erp"

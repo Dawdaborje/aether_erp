@@ -14,5 +14,6 @@
     <button label="Lots" href="/erp/inventory/lots" variant="secondary"/>
     <button label="Counts" href="/erp/inventory/counts" variant="secondary"/>
     <button label="Landed cost" href="/erp/inventory/landed" variant="secondary"/>
+    <button label="Import opening stock" href="/erp/inventory/opening" variant="secondary"/>
   </buttonbox>
 </page>

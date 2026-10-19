@@ -12,7 +12,7 @@ See docs/design.md in this plugin (erp_item/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["company", "uom", "party"]
-capabilities = ["db::query", "db::mutate"]
+capabilities = ["db::query", "db::mutate", "import::run", "export::run", "storage::read", "storage::delete", "media::store"]
 access_models = [
   { name = "item_category", permissions = ["read", "write"] },
   { name = "item", permissions = ["read", "write"] },
@@ -31,6 +31,9 @@ function = "seed_items"
 help = "Create starter item categories (idempotent)"
 on_install = true
 on_upgrade = true
+
+[media_guard]
+function = "can_read_media"
 
 [[roles]]
 name = "item_admin"

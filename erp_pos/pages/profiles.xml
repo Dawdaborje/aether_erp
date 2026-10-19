@@ -1,0 +1,12 @@
+<page roles="pos_reader,pos_cashier,pos_manager" route="/erp/pos/profiles" title="POS profiles" model="pos_profile" menu="false">
+  <view type="list" model="pos_profile" source="list_profiles" create="/erp/pos/profiles/new" create_label="New profile">
+    <columns>
+      <column field="name" label="Profile"/>
+      <column field="company" label="Company"/>
+      <column field="warehouse" label="Warehouse"/>
+      <column field="price_list" label="Price list"/>
+      <column field="active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No profiles" description="A profile says which warehouse and price list a till sells from."/>
+  </view>
+</page>

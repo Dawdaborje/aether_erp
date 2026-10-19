@@ -1,0 +1,11 @@
+<page roles="stock_user,stock_admin" route="/erp/inventory/opening" title="Import opening stock" menu="false">
+  <view type="form" function="import_opening_stock" submit="Check or post" success="Done" redirect="/erp/inventory/opening/{report}">
+    <group title="Opening stock" cols="2">
+      <field name="company" label="Company" required="true" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="warehouse" label="Warehouse" required="true" source="search_warehouses" optionLabel="name" entity="warehouses"/>
+      <field name="posting_date" label="As of" fieldType="date"/>
+      <field name="mode" label="Mode" fieldType="selection" options="dry_run, run" help="dry_run checks every row and posts nothing; run posts the stock."/>
+      <field name="file" label="CSV file" fieldType="file" guard="erp_inventory" required="true" help="Columns: item (code), qty, unit_cost, lot, expiry_date."/>
+    </group>
+  </view>
+</page>

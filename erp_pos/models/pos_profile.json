@@ -1,0 +1,62 @@
+{
+  "model_id": "mdl_ujzde8gxd6",
+  "name": "pos_profile",
+  "label": "%pos_profile%",
+  "plural_label": "%pos_profiles%",
+  "icon": "store",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_33xtplpft7",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain",
+      "required": true
+    },
+    {
+      "id": "fld_5v2seh60kv",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "index": "unique"
+    },
+    {
+      "id": "fld_j50ce9uvw5",
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "index": "plain",
+      "required": true,
+      "help": "Stock is issued from here."
+    },
+    {
+      "id": "fld_3efr4edt2s",
+      "name": "price_list",
+      "label": "%price_list%",
+      "type": "link",
+      "target": "erp_pricing.price_list",
+      "target_id": "mdl_unkbz5sj7z",
+      "index": "plain",
+      "help": "Sell price list; empty uses the default sell list."
+    },
+    {
+      "id": "fld_ywb3wkh5dn",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string"
+    },
+    {
+      "id": "fld_sipzz5fk2z",
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true
+    }
+  ]
+}

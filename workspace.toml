@@ -26,3 +26,4 @@ erp_quality = { path = "./erp_quality" }
 erp_warehouse = { path = "./erp_warehouse" }
 erp_reports = { path = "./erp_reports" }
 erp_alerts = { path = "./erp_alerts" }
+erp_pos = { path = "./erp_pos" }

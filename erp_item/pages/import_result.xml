@@ -1,0 +1,13 @@
+<page roles="item_admin" route="/erp/items/import/{job}" title="Import result" menu="false">
+  <view type="list" source="import_report">
+    <columns>
+      <column field="row" label="Row"/>
+      <column field="outcome" label="Outcome" fieldType="badge"/>
+      <column field="errors" label="Problems"/>
+    </columns>
+    <actions>
+      <action name="import_undo" label="Undo this import" function="import_undo" confirm="Take back every record this import created or changed?" danger="true"/>
+    </actions>
+    <empty title="No problems" description="Every row was accepted, or the job is still running."/>
+  </view>
+</page>

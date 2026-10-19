@@ -1,0 +1,9 @@
+<page roles="pos_cashier,pos_manager" route="/erp/pos/sales/{id}/pay" title="Take payment" model="pos_sale" menu="false">
+  <view type="form" function="pay_sale" submit="Pay and issue stock" success="Paid" redirect="/erp/pos/sales">
+    <group title="Tender" cols="2">
+      <field name="cash" label="Cash" fieldType="float"/>
+      <field name="card" label="Card" fieldType="float"/>
+      <field name="other" label="Other" fieldType="float"/>
+    </group>
+  </view>
+</page>

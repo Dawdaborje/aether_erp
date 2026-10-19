@@ -1,0 +1,151 @@
+{
+  "model_id": "mdl_dhodzdoc9i",
+  "name": "pos_sale",
+  "label": "%pos_sale%",
+  "plural_label": "%pos_sales%",
+  "icon": "shopping-cart",
+  "title_field": "number",
+  "fields": [
+    {
+      "id": "fld_wj99ibag7i",
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "index": "unique",
+      "sequence": {
+        "pattern": "POS-{YYYY}-{#####}",
+        "reset": "yearly",
+        "assign_on": {
+          "field": "state",
+          "values": [
+            "paid"
+          ]
+        }
+      }
+    },
+    {
+      "id": "fld_1mnbqns6pu",
+      "name": "session",
+      "label": "%session%",
+      "type": "link",
+      "target": "pos_session",
+      "index": "plain",
+      "required": true
+    },
+    {
+      "id": "fld_q80idw3706",
+      "name": "profile",
+      "label": "%profile%",
+      "type": "link",
+      "target": "pos_profile",
+      "index": "plain",
+      "required": true
+    },
+    {
+      "id": "fld_i8j76b2laj",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain",
+      "required": true
+    },
+    {
+      "id": "fld_lj4h9du779",
+      "name": "customer",
+      "label": "%customer%",
+      "type": "string",
+      "help": "Optional party id."
+    },
+    {
+      "id": "fld_2i0hz2uep1",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_4g9dpmrcg6",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_29be2u66mr",
+          "value": "paid",
+          "label": "%paid%"
+        },
+        {
+          "id": "opt_26846p7q9m",
+          "value": "void",
+          "label": "%void%"
+        }
+      ],
+      "required": true,
+      "default": "draft"
+    },
+    {
+      "id": "fld_enthjxjqi3",
+      "name": "sale_date",
+      "label": "%sale_date%",
+      "type": "date"
+    },
+    {
+      "id": "fld_ogz5kok16z",
+      "name": "subtotal",
+      "label": "%subtotal%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_v0mwufxbv9",
+      "name": "tax_total",
+      "label": "%tax_total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_32byv7s6eh",
+      "name": "total",
+      "label": "%total%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_ogfqrclri1",
+      "name": "paid",
+      "label": "%paid%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_qzj865ufrd",
+      "name": "change",
+      "label": "%change%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_l1erbfqfoe",
+      "name": "stock_move",
+      "label": "%stock_move%",
+      "type": "string"
+    },
+    {
+      "id": "fld_qh3av90ric",
+      "name": "void_reason",
+      "label": "%void_reason%",
+      "type": "string"
+    },
+    {
+      "id": "fld_7phkqdlmtt",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string"
+    }
+  ]
+}

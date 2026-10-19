@@ -1,0 +1,96 @@
+{
+  "model_id": "mdl_s0j8ht9lgm",
+  "name": "pos_sale_line",
+  "label": "%pos_sale_line%",
+  "plural_label": "%pos_sale_lines%",
+  "icon": "list",
+  "title_field": "line_no",
+  "fields": [
+    {
+      "id": "fld_7ns26lrwbq",
+      "name": "sale",
+      "label": "%sale%",
+      "type": "link",
+      "target": "pos_sale",
+      "index": "plain",
+      "required": true
+    },
+    {
+      "id": "fld_cab69m64p2",
+      "name": "line_no",
+      "label": "%line_no%",
+      "type": "int"
+    },
+    {
+      "id": "fld_g158z6tnov",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain",
+      "required": true
+    },
+    {
+      "id": "fld_mizwdiaeq1",
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true
+    },
+    {
+      "id": "fld_kdfy6spsc3",
+      "name": "unit_price",
+      "label": "%unit_price%",
+      "type": "decimal",
+      "scale": 6
+    },
+    {
+      "id": "fld_lkr2aqxv9u",
+      "name": "discount_pct",
+      "label": "%discount_pct%",
+      "type": "decimal",
+      "scale": 4
+    },
+    {
+      "id": "fld_pctnwlavyf",
+      "name": "tax",
+      "label": "%tax%",
+      "type": "link",
+      "target": "erp_pricing.tax",
+      "target_id": "mdl_shfete7izv",
+      "index": "plain"
+    },
+    {
+      "id": "fld_4r6mp6afqf",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_jzczbttof7",
+      "name": "tax_amount",
+      "label": "%tax_amount%",
+      "type": "decimal",
+      "scale": 2
+    },
+    {
+      "id": "fld_jyu5jsjc61",
+      "name": "lot",
+      "label": "%lot%",
+      "type": "string"
+    }
+  ],
+  "checks": [
+    {
+      "require": {
+        "qty": {
+          "gt": "0"
+        }
+      },
+      "message": "the quantity must be above zero"
+    }
+  ]
+}

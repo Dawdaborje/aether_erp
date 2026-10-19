@@ -12,7 +12,7 @@ See docs/design.md in this plugin (erp_pricing/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["erp_item", "party"]
-capabilities = ["db::query", "db::mutate"]
+capabilities = ["db::query", "db::mutate", "import::run", "export::run", "storage::read", "storage::delete", "media::store"]
 access_models = [
   { name = "tax", permissions = ["read", "write"] },
   { name = "tax_component", permissions = ["read", "write"] },
@@ -29,6 +29,9 @@ function = "seed_pricing"
 help = "Create starter payment terms and a default sell and buy price list (idempotent)"
 on_install = true
 on_upgrade = true
+
+[media_guard]
+function = "can_read_media"
 
 [[roles]]
 name = "pricing_admin"

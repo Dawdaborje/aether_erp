@@ -90,5 +90,73 @@
       "valid_from",
       "valid_to"
     ]
-  }
+  },
+  "checks": [
+    {
+      "require": {
+        "min_qty": {
+          "gte": "0"
+        }
+      },
+      "message": "the minimum quantity must not be negative"
+    },
+    {
+      "require": {
+        "unit_price": {
+          "gte": "0"
+        }
+      },
+      "message": "the price must not be negative"
+    },
+    {
+      "require": {
+        "or": [
+          {
+            "discount_pct": {
+              "null": true
+            }
+          },
+          {
+            "and": [
+              {
+                "discount_pct": {
+                  "gte": "0"
+                }
+              },
+              {
+                "discount_pct": {
+                  "lte": "100"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "message": "the discount is between 0 and 100 percent"
+    },
+    {
+      "require": {
+        "or": [
+          {
+            "valid_to": {
+              "null": true
+            }
+          },
+          {
+            "valid_from": {
+              "null": true
+            }
+          },
+          {
+            "valid_to": {
+              "gte": {
+                "field": "valid_from"
+              }
+            }
+          }
+        ]
+      },
+      "message": "valid to is before valid from"
+    }
+  ]
 }

@@ -1,0 +1,10 @@
+<page roles="item_admin" route="/erp/items/import" title="Import" menu="false">
+  <view type="form" function="import_file" submit="Check or import" success="Import started" redirect="/erp/items/import/{job}">
+    <group title="File" cols="2">
+      <field name="model" label="Data" fieldType="selection" options="item_category, item" required="true"/>
+      <field name="file" label="CSV or XLSX file" fieldType="file" required="true" help="The first row must be the column names from the template."/>
+      <field name="mode" label="Mode" fieldType="selection" options="dry_run, run" help="dry_run checks every row and keeps nothing; run writes the records."/>
+      <field name="force" label="Import even if this exact file was imported before" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

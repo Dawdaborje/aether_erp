@@ -97,5 +97,41 @@
       "is_stocked",
       "active"
     ]
-  }
+  },
+  "checks": [
+    {
+      "require": {
+        "or": [
+          {
+            "expiry_days": {
+              "null": true
+            }
+          },
+          {
+            "expiry_days": {
+              "gt": 0
+            }
+          }
+        ]
+      },
+      "message": "shelf life must be a positive number of days"
+    },
+    {
+      "require": {
+        "or": [
+          {
+            "expiry_days": {
+              "null": true
+            }
+          },
+          {
+            "tracking": {
+              "ne": "none"
+            }
+          }
+        ]
+      },
+      "message": "shelf life needs a lot or serial tracked item"
+    }
+  ]
 }

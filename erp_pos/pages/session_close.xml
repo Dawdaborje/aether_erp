@@ -1,0 +1,7 @@
+<page roles="pos_cashier,pos_manager" route="/erp/pos/sessions/{id}" title="Close session" model="pos_session" menu="false">
+  <view type="form" function="close_session" submit="Close session" success="Session closed" redirect="/erp/pos/sessions">
+    <group title="Count the drawer" cols="2">
+      <field name="counted_cash" label="Cash counted" required="true" fieldType="float" help="The difference against the sales is recorded on the session."/>
+    </group>
+  </view>
+</page>

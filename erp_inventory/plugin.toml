@@ -12,7 +12,7 @@ See docs/design.md in this plugin (erp_inventory/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["erp_item", "company", "uom", "currency"]
-capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call"]
+capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call", "media::read", "cache::get", "cache::set"]
 access_models = [
   { name = "stock_warehouse", permissions = ["read", "write"] },
   { name = "stock_move", permissions = ["read", "write"] },
@@ -37,6 +37,9 @@ function = "seed_warehouse"
 help = "Create a default warehouse for the first company when there is none (idempotent)"
 on_install = true
 on_upgrade = true
+
+[media_guard]
+function = "can_read_media"
 
 [[roles]]
 name = "stock_admin"

@@ -1,0 +1,12 @@
+<page roles="pos_cashier,pos_manager" route="/erp/pos/sales/{id}/new" title="Add item" model="pos_sale_line" menu="false">
+  <view type="form" function="add_sale_line" submit="Add" success="Added" redirect="/erp/pos/sales/{id}">
+    <group title="Item" cols="2">
+      <field name="item" label="Item" required="true" source="erp_item.search_items" optionLabel="name" entity="items"/>
+      <field name="qty" label="Quantity" required="true" fieldType="float"/>
+      <field name="unit_price" label="Unit price (blank = price list)" fieldType="float"/>
+      <field name="discount_pct" label="Discount %" fieldType="float"/>
+      <field name="tax" label="Tax" source="erp_pricing.search_taxes" optionLabel="name" entity="taxes"/>
+      <field name="lot" label="Lot or serial (tracked items)"/>
+    </group>
+  </view>
+</page>

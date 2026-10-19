@@ -4,5 +4,7 @@
     <button label="Taxes" href="/erp/pricing/taxes" variant="secondary"/>
     <button label="Payment terms" href="/erp/pricing/terms" variant="secondary"/>
     <button label="Price lists" href="/erp/pricing/lists" variant="secondary"/>
+    <button label="Export prices" href="/erp/pricing/export/price_list_item" variant="secondary"/>
+    <button label="Import prices" href="/erp/pricing/import" variant="secondary"/>
   </buttonbox>
 </page>

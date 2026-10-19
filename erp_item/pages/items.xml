@@ -11,4 +11,9 @@
     </columns>
     <empty title="No items yet" description="Use New to add a stocked or non-stocked item."/>
   </view>
+  <buttonbox>
+    <button label="Export items" href="/erp/items/export/item" variant="secondary"/>
+    <button label="Export categories" href="/erp/items/export/item_category" variant="secondary"/>
+    <button label="Import" href="/erp/items/import" variant="secondary"/>
+  </buttonbox>
 </page>

@@ -1,0 +1,49 @@
+{
+  "model": "pos_session",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "pos_reader",
+        "pos_cashier",
+        "pos_manager"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "pos_cashier",
+        "pos_manager"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "number",
+        "profile",
+        "company",
+        "cashier",
+        "state",
+        "opened_on",
+        "closed_on",
+        "opening_cash",
+        "cash_sales",
+        "card_sales",
+        "expected_cash",
+        "counted_cash",
+        "difference"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

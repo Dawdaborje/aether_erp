@@ -44,6 +44,10 @@ Lean item master: category tree, SKU, UOM, stocked flag, tracking (none, lot, se
 | `item_admin` | Categories, items, company settings, standard costs |
 | `item_reader` | Read item master and valuation |
 
+## Import and export
+
+`import_template`, `import_file`, `import_status`, `import_report`, `import_undo`, `export_data` (`src/data_io.rs`). Categories and items import from a CSV or XLSX whose header row is the template (`code, name, parent, valuation_method, active` and `code, name, category, uom, tracking, is_stocked, active, expiry_days`). Rows upsert on `code`; `parent`, `category` and `uom` are given by code. The default mode is a dry run; a real run can be undone. The kernel importer runs as the caller through the model's checks and record rules, **not** through `create_item`, so the shelf-life-needs-tracking check is not applied to imported rows. Import a category file before the items that use it. Export writes a file to the plugin's storage; there is no download button yet.
+
 ## Boundaries
 
 - No warehouses, stock qty, or GL. Warehouses and the ledger live in `erp_inventory`.

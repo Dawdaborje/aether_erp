@@ -1472,6 +1472,49 @@ pub(crate) fn api_post(id: &str) -> Result<Record> {
     do_post_move(Id { id: id.to_string() })
 }
 
+/// Opening stock (`opening.rs`): the same draft, line and post steps as any other move.
+pub(crate) fn opening_draft(company: &str, posting_date: &str, idem_key: &str) -> Result<Record> {
+    draft(
+        "adjust",
+        DraftInput {
+            company: company.to_string(),
+            posting_date: Some(posting_date.to_string()),
+            currency: None,
+            source_kind: Some("opening_stock".into()),
+            source_id: None,
+            source_version: None,
+            idem_key: Some(idem_key.to_string()),
+            reason: Some("Opening stock".into()),
+        },
+    )
+}
+
+pub(crate) fn opening_line(
+    move_id: &str,
+    item: &str,
+    warehouse: &str,
+    qty: Decimal,
+    unit_cost: Decimal,
+    lot: Option<&str>,
+    expiry_date: Option<&str>,
+) -> Result<Record> {
+    do_add_line(AddLine {
+        move_id: move_id.to_string(),
+        item: item.to_string(),
+        qty,
+        warehouse: warehouse.to_string(),
+        warehouse_from: None,
+        lot: lot.map(str::to_string),
+        unit_cost: Some(unit_cost),
+        increase: Some(true),
+        expiry_date: expiry_date.map(str::to_string),
+    })
+}
+
+pub(crate) fn opening_post(id: &str) -> Result<Record> {
+    do_post_move(Id { id: id.to_string() })
+}
+
 handler! {
     fn draft_receipt(input: DraftInput) -> Record { draft("receipt", input) }
     fn draft_issue(input: DraftInput) -> Record { draft("issue", input) }

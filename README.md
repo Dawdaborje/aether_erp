@@ -17,6 +17,8 @@ stock-repost).
 - Quality: templates with numeric and pass / fail parameters, inspections with recorded readings, an `inspection_status` gate
 - Warehouse: bins in a tree, putaway rules, an append-only bin ledger, pick lists from sales orders, shipments with packages
 - Reports: net sales and purchases by month or party, open orders by state, late manufacturing orders, export to Excel / PDF
+- Bulk import / export of categories, items and price list rows (dry run first, undoable); opening stock from a CSV posted through the ledger
+- Point of sale: sessions, carts, cash / card payment that issues stock in the same step, drawer count at close
 - Alerts: a scheduled morning digest per subscriber, built with that person's own access
 - Screens: dashboards, lists, create forms and line pages in every plugin
 
@@ -35,6 +37,7 @@ stock-repost).
 | [`erp_quality`](erp_quality/) | Inspection templates, inspections and readings that accept or reject goods | [docs/design.md](erp_quality/docs/design.md) |
 | [`erp_reports`](erp_reports/) | Read-only sales, purchase, open-order and manufacturing reports with Excel / PDF export | [docs/design.md](erp_reports/docs/design.md) |
 | [`erp_alerts`](erp_alerts/) | Daily notification digest: expiring lots, late orders, overdue bills, open requests | [docs/design.md](erp_alerts/docs/design.md) |
+| [`erp_pos`](erp_pos/) | Cashier sessions, carts priced from the price list, payment that issues stock, drawer count | [docs/design.md](erp_pos/docs/design.md) |
 
 ## Relation to other workspaces
 

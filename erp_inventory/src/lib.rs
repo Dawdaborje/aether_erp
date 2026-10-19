@@ -5,6 +5,7 @@ mod counts;
 mod landed;
 mod lots;
 mod moves;
+mod opening;
 mod reports;
 mod reserve;
 mod scrap;

@@ -1,0 +1,7 @@
+<page roles="pos_manager" route="/erp/pos/sales/{id}/void" title="Void sale" model="pos_sale" menu="false">
+  <view type="form" function="void_sale" submit="Void sale" success="Sale voided" redirect="/erp/pos/sales">
+    <group title="Void" cols="2">
+      <field name="reason" label="Reason" required="true"/>
+    </group>
+  </view>
+</page>

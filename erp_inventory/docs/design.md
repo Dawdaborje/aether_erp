@@ -78,3 +78,7 @@ Move kinds: `receipt`, `issue`, `transfer`, `adjust`, `manufacture_consume`, `ma
 
 - Does not own the general ledger. Financial posting is `accounting/gl_erp` listening to stock events → `gl.on_posting_event`.
 - Item master and valuation settings stay in `erp_item`. Buying/making/selling only call these handlers; they do not write layers themselves.
+
+## Opening stock import
+
+`import_opening_stock`, `opening_stock_report`, `opening_stock_template` (`src/opening.rs`). A CSV with `item` (the item code), `qty`, `unit_cost`, and for tracked items `lot` and optionally `expiry_date`. The file is uploaded with the plugin's media guard and read back with `media::read`. A dry run checks every row (item exists, active and stocked, numbers, lot rules, repeated serials) and posts nothing; a real run refuses the whole file when one row is wrong, then posts it as `adjust` moves of up to 200 lines each through the normal draft, line and post steps, so the ledger stays append-only. The move's `idem_key` is built from the file, warehouse and chunk, so running the same file again does nothing. Undo is a void of the posted moves. CSV only (UTF-8); XLSX is not read here.

@@ -40,6 +40,10 @@ One place for how a document line is priced and taxed: tax rates, payment terms 
 | `pricing_admin` | Maintain taxes, terms, lists |
 | `pricing_reader` | Read; purchase and sales roles may also read |
 
+## Import and export
+
+`import_template`, `import_file`, `import_status`, `import_report`, `import_undo`, `export_data` (`src/data_io.rs`). Price list rows import from a CSV or XLSX with the columns `price_list, item, min_qty, unit_price, discount_pct, valid_from, valid_to, active`; `price_list` and `item` are given by code, and rows upsert on price list, item, minimum quantity and valid-from. The default mode is a dry run; a real run can be undone. The kernel importer runs as the caller through the model's checks, not through this plugin's price-list functions. Export writes a file to the plugin's storage; there is no download button yet.
+
 ## Boundaries
 
 - Does not post accounting entries. Bills and invoices emit `tax_total` and `due_date`; `gl_erp` maps them to input/output tax accounts and `gl_payment`.
