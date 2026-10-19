@@ -1,0 +1,15 @@
+<page roles="alerts_user,alerts_admin" route="/erp/alerts" title="Alerts" model="alert_subscription" icon="bell" sort="61">
+  <view type="list" model="alert_subscription" source="list_subscriptions" create="/erp/alerts/subscribe" create_label="Subscribe">
+    <columns>
+      <column field="user" label="Person"/>
+      <column field="company" label="Company"/>
+      <column field="expiry_days" label="Expiry window (days)"/>
+      <column field="active" label="Active" fieldType="boolean"/>
+      <column field="last_sent" label="Last sent"/>
+    </columns>
+    <actions>
+      <action name="send_now" label="Send digests now" function="send_now" confirm="Queue a digest for every active subscriber?"/>
+    </actions>
+    <empty title="No subscribers" description="Subscribe to get a morning digest of what needs attention."/>
+  </view>
+</page>

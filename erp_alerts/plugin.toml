@@ -1,0 +1,50 @@
+[plugin]
+name = "erp_alerts"
+icon_path = "assets/logo.svg"
+label = "Alerts"
+version = "0.1.0"
+description = "A daily digest of what needs attention: expiring lots, late orders, overdue bills, open requests."
+long_description = """
+Each person subscribes once and chooses what they want to hear about. Every morning a scheduled sweep queues one
+digest job per active subscriber; the job runs as that person, so the figures follow their own roles and record
+rules, and sends one notification. A person without access to a part of the ERP simply gets no line for it.
+Written in Rust. See docs/design.md in this plugin (erp_alerts/docs/design.md).
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["erp_inventory", "erp_manufacturing", "erp_procurement", "erp_quality", "erp_replenishment", "company"]
+capabilities = ["db::query", "db::mutate", "report::query", "notify::send", "scheduler::enqueue", "scheduler::run_as"]
+access_models = [
+  { name = "alert_subscription", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "alerts_user"
+label = "Alerts subscriber"
+description = "Subscribes to the daily digest."
+
+[[roles]]
+name = "alerts_admin"
+label = "Alerts administrator"
+description = "Sees every subscription and can send a digest now."
+
+[[schedule]]
+name = "daily-digest"
+title = "Queue the daily alert digests"
+description = "Queues one digest per active subscriber."
+function = "sweep"
+cron = "0 7 * * *"
+
+[app]
+roles = ["alerts_user", "alerts_admin"]
+icon = "bell"
+route = "/erp/alerts"
+description = "Daily digest of what needs attention"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "erp"

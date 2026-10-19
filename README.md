@@ -16,6 +16,8 @@ stock-repost).
 - Scrap write-offs and unbuild of completed manufacturing orders; order lines in a purchase / sales unit (a case)
 - Quality: templates with numeric and pass / fail parameters, inspections with recorded readings, an `inspection_status` gate
 - Warehouse: bins in a tree, putaway rules, an append-only bin ledger, pick lists from sales orders, shipments with packages
+- Reports: net sales and purchases by month or party, open orders by state, late manufacturing orders, export to Excel / PDF
+- Alerts: a scheduled morning digest per subscriber, built with that person's own access
 - Screens: dashboards, lists, create forms and line pages in every plugin
 
 ## Plugins
@@ -31,6 +33,8 @@ stock-repost).
 | [`erp_replenishment`](erp_replenishment/) | Reorder rules and shortfall → draft PO / MO | [docs/design.md](erp_replenishment/docs/design.md) |
 | [`erp_warehouse`](erp_warehouse/) | Bins, putaway rules, pick lists and shipments | [docs/design.md](erp_warehouse/docs/design.md) |
 | [`erp_quality`](erp_quality/) | Inspection templates, inspections and readings that accept or reject goods | [docs/design.md](erp_quality/docs/design.md) |
+| [`erp_reports`](erp_reports/) | Read-only sales, purchase, open-order and manufacturing reports with Excel / PDF export | [docs/design.md](erp_reports/docs/design.md) |
+| [`erp_alerts`](erp_alerts/) | Daily notification digest: expiring lots, late orders, overdue bills, open requests | [docs/design.md](erp_alerts/docs/design.md) |
 
 ## Relation to other workspaces
 

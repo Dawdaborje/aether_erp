@@ -1,0 +1,16 @@
+<page roles="alerts_user,alerts_admin" route="/erp/alerts/subscribe" title="Subscribe to alerts" model="alert_subscription" menu="false">
+  <view type="form" function="subscribe" submit="Save" success="Subscription saved" redirect="/erp/alerts">
+    <group title="Digest" cols="2">
+      <field name="company" label="Company" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="expiry_days" label="Expiry window (days)" fieldType="integer"/>
+      <field name="active" label="Send me the digest" fieldType="boolean"/>
+    </group>
+    <group title="Include" cols="2">
+      <field name="lots" label="Lots about to expire" fieldType="boolean"/>
+      <field name="late_mos" label="Late manufacturing orders" fieldType="boolean"/>
+      <field name="overdue_bills" label="Overdue supplier bills" fieldType="boolean"/>
+      <field name="open_requests" label="Open replenishment requests" fieldType="boolean"/>
+      <field name="rejected_inspections" label="Rejected inspections" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

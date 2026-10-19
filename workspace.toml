@@ -24,3 +24,5 @@ erp_selling = { path = "./erp_selling" }
 erp_replenishment = { path = "./erp_replenishment" }
 erp_quality = { path = "./erp_quality" }
 erp_warehouse = { path = "./erp_warehouse" }
+erp_reports = { path = "./erp_reports" }
+erp_alerts = { path = "./erp_alerts" }

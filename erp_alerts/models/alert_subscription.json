@@ -1,0 +1,90 @@
+{
+  "model_id": "mdl_26cb38be9z",
+  "name": "alert_subscription",
+  "label": "%alert_subscription%",
+  "plural_label": "%alert_subscriptions%",
+  "icon": "bell",
+  "title_field": "user",
+  "fields": [
+    {
+      "id": "fld_w1bsx9ifg7",
+      "name": "user",
+      "label": "%user%",
+      "type": "string",
+      "required": true,
+      "index": "unique",
+      "help": "The person's account id; set when they subscribe."
+    },
+    {
+      "id": "fld_ba8d3wvyre",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain",
+      "help": "Limit the alerts to one company; empty means all."
+    },
+    {
+      "id": "fld_piqu2tc9po",
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true
+    },
+    {
+      "id": "fld_xh1khgipmn",
+      "name": "expiry_days",
+      "label": "%expiry_days%",
+      "type": "int",
+      "default": 30,
+      "help": "Warn about lots that expire within this many days."
+    },
+    {
+      "id": "fld_w57oalmlpp",
+      "name": "lots",
+      "label": "%lots%",
+      "type": "bool",
+      "default": true,
+      "help": "Lots about to expire."
+    },
+    {
+      "id": "fld_rj9q8t1w6s",
+      "name": "late_mos",
+      "label": "%late_mos%",
+      "type": "bool",
+      "default": true,
+      "help": "Manufacturing orders past their planned date."
+    },
+    {
+      "id": "fld_ohl28acxsr",
+      "name": "overdue_bills",
+      "label": "%overdue_bills%",
+      "type": "bool",
+      "default": true,
+      "help": "Approved supplier bills past their due date."
+    },
+    {
+      "id": "fld_shw2bf2akz",
+      "name": "open_requests",
+      "label": "%open_requests%",
+      "type": "bool",
+      "default": true,
+      "help": "Replenishment requests nobody has converted."
+    },
+    {
+      "id": "fld_otgqjumk67",
+      "name": "rejected_inspections",
+      "label": "%rejected_inspections%",
+      "type": "bool",
+      "default": true,
+      "help": "Inspections rejected in the last 7 days."
+    },
+    {
+      "id": "fld_6wxf0g8w4a",
+      "name": "last_sent",
+      "label": "%last_sent%",
+      "type": "date"
+    }
+  ]
+}

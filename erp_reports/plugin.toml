@@ -1,0 +1,36 @@
+[plugin]
+name = "erp_reports"
+icon_path = "assets/logo.svg"
+label = "Reports"
+version = "0.1.0"
+description = "Sales, purchase, order-status and manufacturing figures across the ERP plugins."
+long_description = """
+Read-only analysis over the ERP plugins: sales and purchases by month or by party, open orders by state,
+and manufacturing orders by state with the late ones counted. Every figure comes from report::query on the
+other plugins' models, so the caller's record rules and hidden fields apply. A result can be exported to
+Excel or PDF. The plugin owns no data. Written in Rust.
+See docs/design.md in this plugin (erp_reports/docs/design.md).
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["erp_item", "erp_inventory", "erp_procurement", "erp_manufacturing", "erp_selling", "company", "party"]
+capabilities = ["report::query", "report::export"]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[roles]]
+name = "reports_reader"
+label = "Reports reader"
+description = "Opens the ERP reports and exports them."
+
+[app]
+roles = ["reports_reader"]
+icon = "chart-column"
+route = "/erp/reports"
+description = "Sales, purchase and manufacturing figures"
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "erp"

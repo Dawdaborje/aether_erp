@@ -1,0 +1,19 @@
+<page roles="reports_reader" route="/erp/reports" title="Reports" icon="chart-column" sort="60">
+  <header title="Reports" subtitle="Sales, purchases, open orders and manufacturing."/>
+  <view type="dashboard" source="reports_dashboard">
+    <stat label="Net sales this month" field="sales_this_month"/>
+    <stat label="Net purchases this month" field="purchases_this_month"/>
+    <stat label="Open sales orders" field="open_sales_orders"/>
+    <stat label="Open purchase orders" field="open_purchase_orders"/>
+    <stat label="Late manufacturing orders" field="late_mos"/>
+    <chart type="bar" title="Net sales by month" field="sales_by_month" category="label" value="value"/>
+    <chart type="pie" title="Manufacturing orders by state" field="mos_by_state" category="label" value="value"/>
+  </view>
+  <buttonbox>
+    <button label="Sales" href="/erp/reports/sales" variant="secondary"/>
+    <button label="Purchases" href="/erp/reports/purchases" variant="secondary"/>
+    <button label="Sales orders" href="/erp/reports/sales_orders" variant="secondary"/>
+    <button label="Purchase orders" href="/erp/reports/purchase_orders" variant="secondary"/>
+    <button label="Manufacturing" href="/erp/reports/manufacturing" variant="secondary"/>
+  </buttonbox>
+</page>
