@@ -1,0 +1,37 @@
+{
+  "model": "wh_setting",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "wh_reader",
+        "wh_user",
+        "wh_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "wh_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "company",
+        "block_pick_on_mismatch"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

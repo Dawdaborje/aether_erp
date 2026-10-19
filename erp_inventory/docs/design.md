@@ -54,11 +54,11 @@ Move kinds: `receipt`, `issue`, `transfer`, `adjust`, `manufacture_consume`, `ma
 
 **Moves:** `draft_receipt`, `draft_issue`, `draft_transfer`, `draft_adjust`, `draft_manufacture_consume`, `draft_manufacture_produce`, `add_line`, `post_move`, `post_manufacture_pair`, `outbound_value`, `void_move`, `on_hand`, `get_move`
 
-**Reservations:** `reserve`, `release`, `reserved`
+**Reservations:** `reserve`, `release`, `reserved` (give `demand_kind` and `demand_id` to also get `for_demand`, the part held for that demand)
 
 **Scrap:** `scrap_stock`
 
-**Lots:** `set_lot`, `get_lot`, `suggest_lots`, `expiring_lots`
+**Lots:** `warehouse_stock` (on hand per item and lot for one warehouse), `set_lot`, `get_lot`, `suggest_lots`, `expiring_lots`
 
 **Counts:** `create_count`, `set_count_line`, `post_count`, `cancel_count`
 

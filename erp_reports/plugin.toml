@@ -27,6 +27,7 @@ roles = ["reports_reader"]
 icon = "chart-column"
 route = "/erp/reports"
 description = "Sales, purchase and manufacturing figures"
+standalone = true
 
 [plugin.api]
 version = "0.1"

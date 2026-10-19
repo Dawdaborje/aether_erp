@@ -12,6 +12,7 @@
     </columns>
     <actions>
       <action name="confirm_so" label="Confirm" function="confirm_so" confirm="Confirm this order?"/>
+      <action name="reserve_so" label="Reserve stock" function="reserve_so" confirm="Hold free stock for this order?"/>
       <action name="cancel_so" label="Cancel" function="cancel_so" confirm="Cancel this order?" danger="true"/>
     </actions>
     <empty title="No sales orders yet" description="Use New, or turn a quotation into an order."/>

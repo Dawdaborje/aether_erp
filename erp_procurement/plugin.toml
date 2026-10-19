@@ -61,6 +61,7 @@ roles = ["purchase_reader", "purchase_user", "purchase_admin"]
 icon = "shopping-cart"
 route = "/erp/procurement"
 description = "Purchase orders and bills"
+standalone = true
 
 [plugin.api]
 version = "0.1"

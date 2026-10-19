@@ -18,6 +18,7 @@ capabilities = ["db::query", "db::mutate", "plugins::call"]
 access_models = [
   { name = "wh_bin", permissions = ["read", "write"] },
   { name = "putaway_rule", permissions = ["read", "write"] },
+  { name = "wh_setting", permissions = ["read", "write"] },
   { name = "bin_move", permissions = ["read", "write"] },
   { name = "pick_list", permissions = ["read", "write"] },
   { name = "pick_line", permissions = ["read", "write"] },
@@ -47,6 +48,7 @@ roles = ["wh_reader", "wh_user", "wh_admin"]
 icon = "warehouse"
 route = "/erp/warehouse"
 description = "Bins, picking and shipping"
+standalone = true
 
 [plugin.api]
 version = "0.1"

@@ -50,6 +50,7 @@ roles = ["item_reader", "item_admin"]
 icon = "package"
 route = "/erp/items"
 description = "Items and categories"
+standalone = true
 
 [plugin.api]
 version = "0.1"

@@ -70,6 +70,7 @@ roles = ["stock_reader", "stock_user", "stock_admin"]
 icon = "warehouse"
 route = "/erp/inventory"
 description = "Stock ledger and warehouses"
+standalone = true
 
 [plugin.api]
 version = "0.1"

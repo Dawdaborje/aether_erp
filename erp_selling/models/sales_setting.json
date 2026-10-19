@@ -24,6 +24,14 @@
       "default": false
     },
     {
+      "id": "fld_rsv0nconf1",
+      "name": "reserve_on_confirm",
+      "label": "%reserve_on_confirm%",
+      "type": "bool",
+      "default": false,
+      "help": "Confirming an order holds the free stock for it, so another order cannot promise the same units. Delivery uses the hold; cancelling gives it back."
+    },
+    {
       "id": "fld_n68kgr3n6d",
       "name": "default_payment_term",
       "label": "%default_payment_term%",

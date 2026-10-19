@@ -41,6 +41,7 @@ roles = ["alerts_user", "alerts_admin"]
 icon = "bell"
 route = "/erp/alerts"
 description = "Daily digest of what needs attention"
+standalone = true
 
 [plugin.api]
 version = "0.1"

@@ -7,7 +7,7 @@
 use aether_sdk::decimal::Decimal;
 use aether_sdk::prelude::*;
 
-use crate::bins::{bin_balances, move_out_for_pick};
+use crate::bins::{bin_balances, ensure_bins_match, move_out_for_pick};
 use crate::common::{id_of, qty_of_value, require, require_reader, require_user, text, Record, QTY_SCALE};
 
 #[derive(Deserialize)]
@@ -149,6 +149,8 @@ fn do_confirm(input: ConfirmPick) -> Result<Record> {
     let lines = pick.get("lines").and_then(Value::as_array).cloned().unwrap_or_default();
     let company = text(&pick, "company").unwrap_or_default().to_string();
     let warehouse = text(&pick, "warehouse").unwrap_or_default().to_string();
+    let items: Vec<String> = lines.iter().filter_map(|l| text(l, "item").map(str::to_string)).collect();
+    ensure_bins_match(&company, &warehouse, &items)?;
     for line in &lines {
         let line_id = text(line, "id").unwrap_or_default();
         let planned = qty_of_value(line, "qty")?;

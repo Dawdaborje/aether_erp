@@ -1,6 +1,7 @@
 //! Lot master (expiry), serial uniqueness and first-expired-first-out suggestions.
 
 use aether_sdk::dates::{format_date, parse_date, Duration};
+use aether_sdk::db::Figure;
 use aether_sdk::decimal::Decimal;
 use aether_sdk::prelude::*;
 
@@ -249,7 +250,36 @@ fn do_get_lot(input: SetLot) -> Result<Record> {
     lot_row(&input.company, &input.item, input.code.trim())?.ok_or_else(|| Error::msg("there is no such lot"))
 }
 
+#[derive(Deserialize)]
+struct WarehouseStock {
+    company: String,
+    warehouse: String,
+}
+
+/// Everything on hand in one warehouse, per item and lot (an empty lot for untracked stock). Lets a caller
+/// that keeps its own picture of the warehouse (bins) check it against the ledger without asking item by item.
+fn do_warehouse_stock(input: WarehouseStock) -> Result<Value> {
+    require_reader()?;
+    let company = require("company.company", &input.company, "company")?;
+    let warehouse = require("stock_warehouse", &input.warehouse, "warehouse")?;
+    let sums = db::find::<Record>("stock_layer")
+        .filter("company", id_of(&company)?)
+        .filter("warehouse", id_of(&warehouse)?)
+        .aggregate(&["item", "lot"], &[("qty", Figure::sum("remaining_qty"))])?;
+    let mut rows = Vec::new();
+    for row in sums {
+        let Some(item) = text(&row, "item") else { continue };
+        let qty = qty_of(&row, "qty")?;
+        if qty.is_zero() {
+            continue;
+        }
+        rows.push(json!({ "item": item, "lot": text(&row, "lot").unwrap_or(""), "qty": qty }));
+    }
+    Ok(json!({ "warehouse": id_of(&warehouse)?, "rows": rows }))
+}
+
 handler! {
+    fn warehouse_stock(input: WarehouseStock) -> Value { do_warehouse_stock(input) }
     fn set_lot(input: SetLot) -> Record { do_set_lot(input) }
     fn get_lot(input: SetLot) -> Record { do_get_lot(input) }
     fn suggest_lots(input: Suggest) -> Value { do_suggest_lots(input) }

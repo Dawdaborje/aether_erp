@@ -26,7 +26,7 @@ Delivery: `draft` / `posted` / `void`. Invoice: `draft` / `approved` / `cancelle
 
 ## Design
 
-- **Confirm** assigns SO number; lines required. No automatic stock reservation on confirm — callers may reserve against demand `erp_selling.so` / so id; delivery issues use `source_kind` `erp_selling.so` so posting can consume those holds.
+- **Confirm** assigns SO number; lines required. With `sales_setting.reserve_on_confirm`, confirming also holds the free stock for the order against demand `erp_selling.so` / so id (see *Stock holds*); otherwise callers may reserve themselves. Delivery issues use `source_kind` `erp_selling.so` so posting consumes those holds.
 - **Deliver:** draft inventory issue, add lines, post, then update `qty_delivered` and SO state. Partial deliveries supported.
 - **Invoice:** bill open delivered (or ordered) qty; approve emits `sales_invoice_approved` for AR (`gl_erp`). COGS/inventory come from the delivery’s `stock_posted`, not from the invoice event.
 - **`create_so_from_deal`:** loads deal via `crm_deal.get_deal`, customer via `crm_customer`; multiple SOs per deal allowed; win stays on CRM.
@@ -38,6 +38,8 @@ Delivery: `draft` / `posted` / `void`. Invoice: `draft` / `approved` / `cancelle
 **Handlers:** `create_so`, `create_so_from_deal`, `add_so_line`, `confirm_so`, `cancel_so`, `deliver_so`, `create_invoice`, `approve_invoice`, `get_so`
 
 **Quotations:** `create_quotation`, `add_quotation_line`, `send_quotation`, `accept_quotation`, `reject_quotation`, `convert_quotation_to_so`
+
+**Holds:** `reserve_so`
 
 **Credit / settings:** `set_credit_limit`, `check_credit`, `set_sales_setting`
 
@@ -56,6 +58,15 @@ Delivery: `draft` / `posted` / `void`. Invoice: `draft` / `approved` / `cancelle
 
 - `return_from_customer` receives stock back at the **cost the goods were delivered at** (read from the delivery's posted move), with `source_kind` `erp_selling.return` so the stock event credits COGS. It lowers `qty_delivered`, raises `qty_returned`.
 - `create_credit_note` reverses part of an **approved** invoice (`sales_invoice.kind = credit_note`, `reverses`), capped by what is not yet credited; approval emits `sales_credit_note_approved`. `gl` nets it against the invoice by allocation on the customer's control account.
+
+## Stock holds
+
+With `reserve_on_confirm` on, `confirm_so` holds, per `(item, warehouse)`, the lesser of what is still to deliver and what is free (`available` from `erp_inventory.on_hand`), so another order cannot promise the same units. A shortfall is not an error; the order is confirmed and `reserve_so` tops the hold up later (after a receipt) and reports `reserved` and `short` per item. Non-stocked items and lines with no warehouse are skipped.
+
+- **Lots and serials:** a tracked item is held lot by lot, unexpired lots earliest expiry first, free stock only. Delivery of a tracked item takes `lot` on the delivery line, or, when omitted, the lots the order holds first and then the rest earliest expiry first (refused when the unexpired lots do not cover the quantity). One delivery line is written per lot, with its `lot`.
+- **Giving back:** delivery releases the delivered quantity from the lot it left; `cancel_so` releases everything; an order that reaches `delivered` releases any hold left over. A hold that fails to place or release never fails the confirm, delivery or cancel; the stock card shows the real figure.
+- **Closed:** nothing in this plugin sets an order to `closed` today; if a closing step is added it must release holds the way cancel does.
+- **Returns of lot items** are not lot-aware yet: `return_from_customer` receives without a lot, which the ledger refuses for a tracked item.
 
 ## Quality gate
 

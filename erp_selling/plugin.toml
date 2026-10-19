@@ -58,6 +58,7 @@ roles = ["sales_reader", "sales_user", "sales_admin"]
 icon = "shopping-bag"
 route = "/erp/selling"
 description = "Sales orders and deliveries"
+standalone = true
 
 [plugin.api]
 version = "0.1"

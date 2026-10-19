@@ -69,6 +69,9 @@ struct DeliverLine {
     qty: Decimal,
     #[serde(default)]
     warehouse: Option<String>,
+    /// Lot or serial to deliver from; omit for a tracked item to take the held lots, then earliest expiry first.
+    #[serde(default)]
+    lot: Option<String>,
 }
 
 #[derive(Deserialize)]
@@ -131,7 +134,15 @@ pub(crate) fn refresh_so_state(so_id: &str) -> Result<Record> {
     } else {
         "confirmed"
     };
-    db::update("so", so_id, &json!({ "state": state }))?.ok_or_else(|| Error::msg("the order is gone"))
+    let updated = db::update("so", so_id, &json!({ "state": state }))?.ok_or_else(|| Error::msg("the order is gone"))?;
+    if state == "delivered" {
+        // Nothing is left to deliver, so no hold should remain (a line quantity lowered after the hold, say).
+        let company = text(&updated, "company").unwrap_or_default().to_string();
+        for need in open_demand(&updated, &lines, false)? {
+            let _ = release_for_order(&company, &need.item, &need.warehouse, so_id, None, need.tracked, None);
+        }
+    }
+    Ok(updated)
 }
 
 fn do_create_so(input: CreateSo) -> Result<Record> {
@@ -309,6 +320,245 @@ fn do_add_so_line(input: AddSoLine) -> Result<Record> {
     Ok(line)
 }
 
+/// One order line's stock need: item, warehouse and what is still to deliver.
+struct Need {
+    item: String,
+    warehouse: String,
+    open: Decimal,
+    tracked: bool,
+}
+
+/// Stocked lines summed per (item, warehouse); with `only_open`, just those still to deliver. Non-stocked items and lines with no warehouse
+/// are left out.
+fn open_demand(so: &Record, lines: &[Record], only_open: bool) -> Result<Vec<Need>> {
+    let mut rows: Vec<Need> = Vec::new();
+    for line in lines {
+        let open = qty_of(line, "qty")?.checked_sub(qty_of(line, "qty_delivered")?)?;
+        let Some(warehouse) = text(line, "warehouse").or_else(|| text(so, "warehouse")) else { continue };
+        if only_open && (open.is_zero() || open.is_negative()) {
+            continue;
+        }
+        let item_id = text(line, "item").unwrap_or_default();
+        let item: Record = plugins::call("erp_item", "get_item", &json!({ "id": item_id }))?;
+        if item.get("is_stocked") == Some(&json!(false)) {
+            continue;
+        }
+        let tracked = !matches!(text(&item, "tracking"), None | Some("none"));
+        match rows.iter_mut().find(|r| r.item == item_id && r.warehouse == warehouse) {
+            Some(r) => r.open = r.open.checked_add(open)?,
+            None => rows.push(Need { item: item_id.to_string(), warehouse: warehouse.to_string(), open, tracked }),
+        }
+    }
+    Ok(rows)
+}
+
+/// A lot (or serial) on hand with how much of it is held and what is free.
+struct LotView {
+    lot: String,
+    /// Held for this order.
+    held: Decimal,
+    /// On hand and not held by any order.
+    free: Decimal,
+}
+
+/// Unexpired lots of an item in a warehouse, earliest expiry first (no expiry last), with this order's hold.
+fn lot_views(company: &str, item: &str, warehouse: &str, so_id: &str) -> Result<Vec<LotView>> {
+    let stock: Value = plugins::call(
+        "erp_inventory",
+        "suggest_lots",
+        &json!({ "company": company, "item": item, "warehouse": warehouse }),
+    )?;
+    let mut lots: Vec<(Option<String>, LotView)> = Vec::new();
+    for row in stock.get("lots").and_then(Value::as_array).into_iter().flatten() {
+        if row.get("expired") == Some(&json!(true)) {
+            continue;
+        }
+        let Some(lot) = text(row, "lot") else { continue };
+        let held: Value = plugins::call(
+            "erp_inventory",
+            "reserved",
+            &json!({
+                "company": company, "item": item, "warehouse": warehouse, "lot": lot,
+                "demand_kind": "erp_selling.so", "demand_id": so_id,
+            }),
+        )?;
+        let on_hand = qty_field(row, "qty")?;
+        let all_held = qty_field(&held, "reserved")?;
+        let mine = qty_field(&held, "for_demand")?;
+        let free = on_hand.checked_sub(all_held)?;
+        let free = if free.is_negative() { Decimal::zero(QTY_SCALE) } else { free };
+        lots.push((text(row, "expiry_date").map(str::to_string), LotView { lot: lot.to_string(), held: mine, free }));
+    }
+    lots.sort_by(|a, b| match (&a.0, &b.0) {
+        (Some(x), Some(y)) => x.cmp(y).then(a.1.lot.cmp(&b.1.lot)),
+        (Some(_), None) => std::cmp::Ordering::Less,
+        (None, Some(_)) => std::cmp::Ordering::Greater,
+        (None, None) => a.1.lot.cmp(&b.1.lot),
+    });
+    Ok(lots.into_iter().map(|(_, v)| v).collect())
+}
+
+/// What to take from which lot to cover `qty` for the order: lots it already holds first, then the free stock
+/// of the others, each earliest expiry first. Returns the picks and the part no lot covers.
+fn plan_lots(views: &[LotView], qty: Decimal) -> Result<(Vec<(String, Decimal)>, Decimal)> {
+    let mut left = qty;
+    let mut picks = Vec::new();
+    for pass_held in [true, false] {
+        for v in views.iter().filter(|v| (v.held > Decimal::zero(QTY_SCALE)) == pass_held) {
+            if left.is_zero() {
+                break;
+            }
+            let usable = v.held.checked_add(v.free)?;
+            let take = if usable < left { usable } else { left };
+            if take > Decimal::zero(QTY_SCALE) {
+                picks.push((v.lot.clone(), take));
+                left = left.checked_sub(take)?;
+            }
+        }
+    }
+    Ok((picks, left))
+}
+
+/// Hold the free stock for a confirmed order, as much as there is. A shortfall is not an error: the order is
+/// still valid and replenishment sees the demand. Lot and serial items are held lot by lot, earliest expiry
+/// first. Returns what was held and what is short, per item.
+fn reserve_for_order(so: &Record) -> Result<Vec<Value>> {
+    let so_id = id_of(so)?;
+    let company = text(so, "company").unwrap_or_default();
+    let mut report = Vec::new();
+    for need in open_demand(so, &so_lines(so_id)?, true)? {
+        let (item, warehouse) = (need.item.as_str(), need.warehouse.as_str());
+        let zero = Decimal::zero(QTY_SCALE);
+        let mut taken: Vec<(Option<String>, Decimal)> = Vec::new();
+        let short;
+        if need.tracked {
+            let views = lot_views(company, item, warehouse, so_id)?;
+            let mut held = zero.clone();
+            for v in &views {
+                held = held.checked_add(v.held.clone())?;
+            }
+            let want = need.open.checked_sub(held)?;
+            if want.is_zero() || want.is_negative() {
+                continue;
+            }
+            // Only free stock is new to hold; what the order already holds is counted in `held`.
+            let fresh: Vec<LotView> =
+                views.into_iter().map(|v| LotView { lot: v.lot, held: Decimal::zero(QTY_SCALE), free: v.free }).collect();
+            let (picks, left) = plan_lots(&fresh, want)?;
+            taken = picks.into_iter().map(|(l, q)| (Some(l), q)).collect();
+            short = left;
+        } else {
+            let held = held_for_order(company, item, warehouse, so_id, None)?;
+            let want = need.open.checked_sub(held)?;
+            if want.is_zero() || want.is_negative() {
+                continue;
+            }
+            let stock: Value = plugins::call(
+                "erp_inventory",
+                "on_hand",
+                &json!({ "company": company, "item": item, "warehouse": warehouse }),
+            )?;
+            let free = qty_field(&stock, "available")?;
+            let take = if free < want { free } else { want };
+            taken.push((None, take.clone()));
+            short = want.checked_sub(take)?;
+        }
+        let mut reserved = zero.clone();
+        for (lot, qty) in &taken {
+            if *qty > zero {
+                let mut body = json!({
+                    "company": company, "item": item, "warehouse": warehouse, "qty": qty,
+                    "demand_kind": "erp_selling.so", "demand_id": so_id,
+                });
+                if let Some(l) = lot {
+                    body["lot"] = json!(l);
+                }
+                let _: Record = plugins::call("erp_inventory", "reserve", &body)?;
+                reserved = reserved.checked_add(qty.clone())?;
+            }
+        }
+        report.push(json!({ "item": item, "warehouse": warehouse, "reserved": reserved, "short": short }));
+    }
+    Ok(report)
+}
+
+fn held_for_order(company: &str, item: &str, warehouse: &str, so_id: &str, lot: Option<&str>) -> Result<Decimal> {
+    let mut body = json!({
+        "company": company, "item": item, "warehouse": warehouse,
+        "demand_kind": "erp_selling.so", "demand_id": so_id,
+    });
+    if let Some(l) = lot {
+        body["lot"] = json!(l);
+    }
+    let held: Value = plugins::call("erp_inventory", "reserved", &body)?;
+    qty_field(&held, "for_demand")
+}
+
+fn qty_field(value: &Value, field: &str) -> Result<Decimal> {
+    match value.get(field).filter(|v| !v.is_null()) {
+        Some(v) => serde_json::from_value::<Decimal>(v.clone())
+            .map_err(|e| Error::msg(format!("{field}: {e}")))?
+            .with_scale(QTY_SCALE),
+        None => Ok(Decimal::zero(QTY_SCALE)),
+    }
+}
+
+/// Give back up to `upto` of the order's hold on one item (all of it when `None`). `lot` names the lot of a
+/// tracked item; with `None` on a tracked item every lot the order holds is released.
+fn release_for_order(
+    company: &str,
+    item: &str,
+    warehouse: &str,
+    so_id: &str,
+    lot: Option<&str>,
+    tracked: bool,
+    upto: Option<Decimal>,
+) -> Result<()> {
+    let zero = Decimal::zero(QTY_SCALE);
+    let mut targets: Vec<Option<String>> = vec![lot.map(str::to_string)];
+    if tracked && lot.is_none() {
+        targets = lot_views_all(company, item, warehouse)?.into_iter().map(Some).collect();
+    }
+    let mut left = upto;
+    for target in targets {
+        let held = held_for_order(company, item, warehouse, so_id, target.as_deref())?;
+        let give = match &left {
+            Some(q) if *q < held => q.clone(),
+            _ => held,
+        };
+        if give > zero {
+            let mut body = json!({
+                "company": company, "item": item, "warehouse": warehouse, "qty": give,
+                "demand_kind": "erp_selling.so", "demand_id": so_id,
+            });
+            if let Some(l) = &target {
+                body["lot"] = json!(l);
+            }
+            let _: Record = plugins::call("erp_inventory", "release", &body)?;
+            if let Some(q) = left.as_mut() {
+                *q = q.checked_sub(give)?;
+            }
+        }
+    }
+    Ok(())
+}
+
+/// Every lot code of an item on hand in the warehouse, expired ones included (a hold may sit on one).
+fn lot_views_all(company: &str, item: &str, warehouse: &str) -> Result<Vec<String>> {
+    let stock: Value = plugins::call(
+        "erp_inventory",
+        "suggest_lots",
+        &json!({ "company": company, "item": item, "warehouse": warehouse }),
+    )?;
+    Ok(stock
+        .get("lots")
+        .and_then(Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(|r| text(r, "lot").map(str::to_string))
+        .collect())
+}
+
 fn do_confirm_so(input: Id) -> Result<Record> {
     require_user()?;
     let so = require("so", &input.id, "sales order")?;
@@ -326,7 +576,22 @@ fn do_confirm_so(input: Id) -> Result<Record> {
         .update("sales_counter", &counter_id, &json!({ "next": next + 1 }))
         .update("so", &input.id, &json!({ "state": "confirmed", "number": number }))
         .run()?;
-    require("so", &input.id, "sales order")
+    let confirmed = require("so", &input.id, "sales order")?;
+    if crate::quotes::reserve_on_confirm(company_id)? {
+        // The order is confirmed either way; a failed hold is visible on the stock card and can be redone.
+        let _ = reserve_for_order(&confirmed);
+    }
+    Ok(confirmed)
+}
+
+/// Hold stock for an order that was confirmed before the setting was on, or top up after a stock receipt.
+fn do_reserve_so(input: Id) -> Result<Value> {
+    require_user()?;
+    let so = require("so", &input.id, "sales order")?;
+    if !matches!(text(&so, "state"), Some("confirmed" | "partially_delivered")) {
+        return Err(Error::msg("hold stock for a confirmed order"));
+    }
+    Ok(json!({ "so": input.id, "lines": reserve_for_order(&so)? }))
 }
 
 fn do_deliver_so(input: DeliverSo) -> Result<Value> {
@@ -381,6 +646,10 @@ fn do_deliver_so(input: DeliverSo) -> Result<Value> {
         so_line_id: String,
         qty: Decimal,
         already: Decimal,
+        item: String,
+        warehouse: String,
+        /// Where it came from: one entry per lot for a tracked item, a single lot-less entry otherwise.
+        picks: Vec<(Option<String>, Decimal)>,
     }
     let mut planned = Vec::new();
     let mut line_no = 0i64;
@@ -406,32 +675,47 @@ fn do_deliver_so(input: DeliverSo) -> Result<Value> {
             .or_else(|| text(&so, "warehouse").map(str::to_string))
             .ok_or_else(|| Error::msg("name a warehouse to deliver from"))?;
         let item_id = text(&so_line, "item").unwrap_or_default();
-        let _: Record = plugins::call(
-            "erp_inventory",
-            "add_line",
-            &json!({
-                "move": move_id,
-                "item": item_id,
-                "qty": qty,
-                "warehouse": warehouse,
-            }),
-        )?;
-        line_no += 1;
-        let _: Record = db::create(
-            "sales_delivery_line",
-            &json!({
+        let item: Record = plugins::call("erp_item", "get_item", &json!({ "id": item_id }))?;
+        let picks: Vec<(Option<String>, Decimal)> = if matches!(text(&item, "tracking"), None | Some("none")) {
+            vec![(None, qty.clone())]
+        } else if let Some(lot) = spec.lot.as_deref().map(str::trim).filter(|l| !l.is_empty()) {
+            vec![(Some(lot.to_string()), qty.clone())]
+        } else {
+            // Not named: the lots the order holds first, then the rest earliest expiry first.
+            let views = lot_views(&company_id, item_id, &warehouse, &input.so)?;
+            let (plan, short) = plan_lots(&views, qty.clone())?;
+            if short > Decimal::zero(QTY_SCALE) {
+                return Err(Error::msg(format!(
+                    "not enough unexpired stock by lot to deliver {qty}: {short} short; name a lot or receive more"
+                )));
+            }
+            plan.into_iter().map(|(l, q)| (Some(l), q)).collect()
+        };
+        for (lot, part) in &picks {
+            let mut line = json!({ "move": move_id, "item": item_id, "qty": part, "warehouse": warehouse });
+            let mut row = json!({
                 "delivery": delivery_id,
-                "line_no": line_no,
+                "line_no": line_no + 1,
                 "so_line": id_of(&so_line)?,
                 "item": item_id,
-                "qty": qty,
+                "qty": part,
                 "warehouse": warehouse,
-            }),
-        )?;
+            });
+            if let Some(l) = lot {
+                line["lot"] = json!(l);
+                row["lot"] = json!(l);
+            }
+            let _: Record = plugins::call("erp_inventory", "add_line", &line)?;
+            line_no += 1;
+            let _: Record = db::create("sales_delivery_line", &row)?;
+        }
         planned.push(Planned {
             so_line_id: id_of(&so_line)?.to_string(),
             qty,
             already,
+            item: item_id.to_string(),
+            warehouse: warehouse.clone(),
+            picks,
         });
     }
 
@@ -444,6 +728,14 @@ fn do_deliver_so(input: DeliverSo) -> Result<Value> {
         tx = tx.update("so_line", &row.so_line_id, &json!({ "qty_delivered": new_d }));
     }
     tx.run().map_err(|e| e.or("could not finish the delivery"))?;
+    // The goods are out: what they were holding goes back. Stock is already posted, so a failure here
+    // must not fail the delivery.
+    for row in &planned {
+        for (lot, part) in &row.picks {
+            let tracked = lot.is_some();
+            let _ = release_for_order(&company_id, &row.item, &row.warehouse, &input.so, lot.as_deref(), tracked, Some(part.clone()));
+        }
+    }
     let so = refresh_so_state(&input.so)?;
     Ok(json!({
         "delivery": require("sales_delivery", &delivery_id, "delivery")?,
@@ -630,7 +922,12 @@ fn do_cancel_so(input: Id) -> Result<Record> {
     if lines.iter().any(|l| qty_of(l, "qty_delivered").map(|q| !q.is_zero()).unwrap_or(false)) {
         return Err(Error::msg("cancel only when nothing has been delivered"));
     }
-    db::update("so", &input.id, &json!({ "state": "cancelled" }))?.ok_or_else(|| Error::msg("the order is gone"))
+    let cancelled = db::update("so", &input.id, &json!({ "state": "cancelled" }))?.ok_or_else(|| Error::msg("the order is gone"))?;
+    let company = text(&so, "company").unwrap_or_default();
+    for need in open_demand(&so, &lines, true)? {
+        let _ = release_for_order(company, &need.item, &need.warehouse, &input.id, None, need.tracked, None);
+    }
+    Ok(cancelled)
 }
 
 /// In-crate entry points so quotations can open orders without crossing the handler boundary.
@@ -648,6 +945,7 @@ handler! {
     fn add_so_line(input: AddSoLine) -> Record { do_add_so_line(input) }
     fn confirm_so(input: Id) -> Record { do_confirm_so(input) }
     fn cancel_so(input: Id) -> Record { do_cancel_so(input) }
+    fn reserve_so(input: Id) -> Value { do_reserve_so(input) }
     fn deliver_so(input: DeliverSo) -> Value { do_deliver_so(input) }
     fn create_invoice(input: CreateInvoice) -> Record { do_create_invoice(input) }
     fn approve_invoice(input: Id) -> Record { do_approve_invoice(input) }

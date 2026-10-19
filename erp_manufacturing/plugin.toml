@@ -51,6 +51,7 @@ roles = ["mfg_reader", "mfg_user", "mfg_admin"]
 icon = "factory"
 route = "/erp/manufacturing"
 description = "Bills of materials and production"
+standalone = true
 
 [plugin.api]
 version = "0.1"

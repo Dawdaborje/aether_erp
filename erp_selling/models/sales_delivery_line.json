@@ -48,6 +48,13 @@
       "id": "fld_zeaowxpok6"
     },
     {
+      "name": "lot",
+      "label": "%lot%",
+      "type": "string",
+      "max_length": 80,
+      "id": "fld_sdl0lot001"
+    },
+    {
       "name": "warehouse",
       "label": "%warehouse%",
       "type": "link",

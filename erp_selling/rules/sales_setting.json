@@ -28,6 +28,7 @@
       "fields": [
         "company",
         "enforce_credit_limit",
+        "reserve_on_confirm",
         "default_payment_term",
         "default_price_list",
         "quote_valid_days"

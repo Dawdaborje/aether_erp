@@ -48,6 +48,7 @@ roles = ["pricing_reader", "pricing_admin"]
 icon = "percent"
 route = "/erp/pricing"
 description = "Taxes, payment terms and price lists"
+standalone = true
 
 [plugin.api]
 version = "0.1"

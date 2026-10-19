@@ -44,6 +44,7 @@ roles = ["pos_reader", "pos_cashier", "pos_manager"]
 icon = "store"
 route = "/erp/pos"
 description = "Counter sales and cashier sessions"
+standalone = true
 
 [plugin.api]
 version = "0.1"

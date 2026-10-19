@@ -81,6 +81,8 @@ struct SetSetting {
     quote_valid_days: Option<i64>,
     #[serde(default)]
     require_inspection: Option<bool>,
+    #[serde(default)]
+    reserve_on_confirm: Option<bool>,
 }
 
 #[derive(Deserialize)]
@@ -333,6 +335,9 @@ fn do_set_setting(input: SetSetting) -> Result<Record> {
     if let Some(v) = input.require_inspection {
         data["require_inspection"] = json!(v);
     }
+    if let Some(v) = input.reserve_on_confirm {
+        data["reserve_on_confirm"] = json!(v);
+    }
     if let Some(t) = input.default_payment_term {
         if !t.is_empty() {
             let _ = require("erp_pricing.payment_term", &t, "payment term")?;
@@ -410,6 +415,11 @@ fn do_check_credit(input: CheckCredit) -> Result<Value> {
     };
     let ok = !on_hold && limit.map_or(true, |l| after <= l);
     Ok(json!({ "exposure": owed, "after": after, "credit_limit": limit, "on_hold": on_hold, "ok": ok }))
+}
+
+/// Whether confirming an order of this company holds stock for it.
+pub(crate) fn reserve_on_confirm(company: &str) -> Result<bool> {
+    Ok(setting_for(company)?.map_or(false, |s| s.get("reserve_on_confirm") == Some(&json!(true))))
 }
 
 /// With the quality plugin installed and `require_inspection` on for the company, goods leave only

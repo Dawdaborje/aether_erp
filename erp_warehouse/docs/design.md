@@ -26,12 +26,14 @@ stock ledger stay in `erp_inventory`.
 - **Putaway:** `suggest_bin` and `put_away` pick the matching active rule with the lowest rank: a rule for the item itself beats one for its category, then lowest `priority`.
 - **Picking:** `create_pick_list` with `so` asks selling (optional dependency, `plugins::available`) for the open quantity of each line and takes it from the fullest bins first; what no bin covers becomes a line without a bin. `confirm_pick` records quantities and writes a `pick` move out of each line's bin, then moves the list to `picked`.
 - **Kernel does the bookkeeping:** both numbers are naming series with `scope: company` and `assign_on` (drafts have no number); lines and packages are `child` fields written with their parent; `line_count` and `package_count` are computed; every state change is a plain write checked by the `workflow` in the rule file and recorded in chatter.
+- **Reconciling:** `reconcile_bins(warehouse[, item])` compares the bin ledger with the stock ledger per item *and lot*, over everything the warehouse holds (`erp_inventory.warehouse_stock`) plus anything binned, and lists the differences. `unplaced` is stock received but not yet put away; `over_binned` (bins hold more than the ledger) is a fault to chase. The ledger knows nothing of bins, so there is no per-bin comparison.
+- **Blocking:** `wh_setting.block_pick_on_mismatch` (per company, set by `wh_admin`) makes `confirm_pick` refuse while any picked item is `over_binned` in the pick's warehouse. Only that fault blocks; `unplaced` stock is normal. Bin movements are never blocked, since they are how it gets fixed.
 - **Bins are not the stock ledger:** nothing here posts to `erp_inventory`. Putting away into a bin does not receive stock; the receipt does that. Keep the two in step by putting away what the receipt received.
 
 ## Functions
 
 **Bins and rules:** `create_bin`, `set_bin`, `list_bins`, `create_putaway_rule`, `list_putaway_rules`, `suggest_bin`
-**Movements:** `put_away`, `move_between_bins`, `bin_stock`
+**Movements:** `put_away`, `move_between_bins`, `bin_stock`, `reconcile_bins`, `set_warehouse_setting`
 **Picking:** `create_pick_list`, `release_pick_list`, `confirm_pick`, `cancel_pick_list`, `list_pick_lists`, `list_pick_lines`
 **Shipping:** `create_shipment`, `add_package`, `ship_shipment`, `deliver_shipment`, `cancel_shipment`, `list_shipments`, `list_packages`
 
@@ -43,4 +45,4 @@ stock ledger stay in `erp_inventory`.
 
 - No barcode scanning, wave or batch picking, or put-to-light.
 - No carrier rate shopping or label printing; `tracking` is a typed value.
-- The bin ledger is not reconciled against `erp_inventory` on-hand automatically.
+- The bin ledger is compared with `erp_inventory` on-hand on request (`reconcile_bins`), not enforced by default; with `block_pick_on_mismatch` a pick is refused while the bins hold more than the ledger.

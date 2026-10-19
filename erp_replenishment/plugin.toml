@@ -36,6 +36,7 @@ roles = ["replenish_reader", "replenish_admin"]
 icon = "refresh-cw"
 route = "/erp/replenishment"
 description = "Reorder rules and purchase/manufacture requests"
+standalone = true
 
 [plugin.api]
 version = "0.1"

@@ -26,6 +26,11 @@ struct ReservedQuery {
     warehouse: String,
     #[serde(default)]
     lot: Option<String>,
+    /// With both, the answer also says how much of the hold belongs to that demand.
+    #[serde(default)]
+    demand_kind: Option<String>,
+    #[serde(default)]
+    demand_id: Option<String>,
 }
 
 pub(crate) fn reserved_qty(company: &str, item: &str, warehouse: &str, lot: Option<&str>) -> Result<Decimal> {
@@ -189,11 +194,22 @@ fn do_reserved(input: ReservedQuery) -> Result<Value> {
         id_of(&warehouse)?,
         input.lot.as_deref().filter(|s| !s.is_empty()),
     )?;
-    Ok(json!({
+    let mut out = json!({
         "item": id_of(&item)?,
         "warehouse": id_of(&warehouse)?,
         "reserved": qty,
-    }))
+    });
+    if let (Some(kind), Some(id)) = (input.demand_kind.as_deref(), input.demand_id.as_deref()) {
+        out["for_demand"] = json!(reserved_for_demand(
+            id_of(&company)?,
+            id_of(&item)?,
+            id_of(&warehouse)?,
+            input.lot.as_deref().filter(|s| !s.is_empty()),
+            kind,
+            id,
+        )?);
+    }
+    Ok(out)
 }
 
 handler! {

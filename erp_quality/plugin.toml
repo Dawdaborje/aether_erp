@@ -43,6 +43,7 @@ roles = ["quality_reader", "quality_user", "quality_admin"]
 icon = "clipboard-check"
 route = "/erp/quality"
 description = "Quality inspections"
+standalone = true
 
 [plugin.api]
 version = "0.1"

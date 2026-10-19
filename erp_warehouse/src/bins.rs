@@ -4,6 +4,8 @@
 //! out by the database; nothing is edited in place. The stock ledger and its valuation stay in
 //! `erp_inventory`: a bin says where stock sits, not what it is worth.
 
+use std::collections::BTreeMap;
+
 use aether_sdk::db::Figure;
 use aether_sdk::decimal::Decimal;
 use aether_sdk::prelude::*;
@@ -368,6 +370,132 @@ fn do_bin_stock(input: StockQuery) -> Result<Value> {
     Ok(json!({ "warehouse": id_of(&warehouse)?, "rows": rows }))
 }
 
+/// Net quantity in bins per (item, lot) for a warehouse; an empty lot is untracked stock.
+fn binned_by_lot(warehouse: &str, item: Option<&str>) -> Result<BTreeMap<(String, String), Decimal>> {
+    let mut net: BTreeMap<(String, String), Decimal> = BTreeMap::new();
+    for (column, sign) in [("to_bin", 1_i64), ("from_bin", -1_i64)] {
+        let mut q = db::find::<Record>("bin_move").filter("warehouse", warehouse);
+        if let Some(item) = item {
+            q = q.filter("item", item);
+        }
+        for row in q.aggregate(&["item", "lot", column], &[("qty", Figure::sum("qty"))])? {
+            let (Some(item), Some(_bin)) = (text(&row, "item"), row.get(column).and_then(Value::as_str)) else { continue };
+            let qty = dec(&row, "qty")?;
+            let signed = if sign > 0 { qty } else { Decimal::zero(QTY_SCALE).checked_sub(qty)? };
+            let key = (item.to_string(), text(&row, "lot").unwrap_or("").to_string());
+            let total = net.entry(key).or_insert_with(|| Decimal::zero(QTY_SCALE));
+            *total = total.checked_add(signed)?;
+        }
+    }
+    Ok(net)
+}
+
+/// Compare the bin ledger with the stock ledger for every item and lot the warehouse holds or has binned.
+/// `unplaced` is stock the ledger holds that no bin accounts for (received, not yet put away); a negative
+/// figure means the bins claim more than the ledger has, which is the real fault.
+fn do_reconcile_bins(input: StockQuery) -> Result<Value> {
+    require_reader()?;
+    let warehouse = require("erp_inventory.stock_warehouse", &input.warehouse, "warehouse")?;
+    let warehouse_id = id_of(&warehouse)?.to_string();
+    let company = text(&warehouse, "company").ok_or_else(|| Error::msg("the warehouse has no company"))?.to_string();
+    let only = input.item.filter(|i| !i.is_empty());
+
+    let mut ledger: BTreeMap<(String, String), Decimal> = BTreeMap::new();
+    let stock: Value = plugins::call("erp_inventory", "warehouse_stock", &json!({ "company": company, "warehouse": warehouse_id }))?;
+    for row in stock.get("rows").and_then(Value::as_array).into_iter().flatten() {
+        let Some(item) = text(row, "item") else { continue };
+        if only.as_deref().map_or(false, |o| o != item) {
+            continue;
+        }
+        let total = ledger
+            .entry((item.to_string(), text(row, "lot").unwrap_or("").to_string()))
+            .or_insert_with(|| Decimal::zero(QTY_SCALE));
+        *total = total.checked_add(dec(row, "qty")?)?;
+    }
+    let binned = binned_by_lot(&warehouse_id, only.as_deref())?;
+
+    let mut keys: Vec<&(String, String)> = ledger.keys().chain(binned.keys()).collect();
+    keys.sort();
+    keys.dedup();
+    let zero = Decimal::zero(QTY_SCALE);
+    let mut rows = Vec::new();
+    for key in &keys {
+        let on_ledger = ledger.get(*key).cloned().unwrap_or_else(|| zero.clone());
+        let in_bins = binned.get(*key).cloned().unwrap_or_else(|| zero.clone());
+        let unplaced = on_ledger.checked_sub(in_bins.clone())?;
+        if unplaced.is_zero() {
+            continue;
+        }
+        let status = if unplaced.is_negative() { "over_binned" } else { "unplaced" };
+        let mut row = json!({ "item": key.0, "ledger": on_ledger, "in_bins": in_bins, "unplaced": unplaced, "status": status });
+        if !key.1.is_empty() {
+            row["lot"] = json!(key.1);
+        }
+        rows.push(row);
+    }
+    let ok = rows.is_empty();
+    Ok(json!({ "warehouse": warehouse_id, "checked": keys.len(), "ok": ok, "rows": rows }))
+}
+
+#[derive(Deserialize)]
+struct SetWhSetting {
+    company: String,
+    #[serde(default)]
+    block_pick_on_mismatch: Option<bool>,
+}
+
+fn do_set_setting(input: SetWhSetting) -> Result<Record> {
+    require_admin()?;
+    let company = require("company.company", &input.company, "company")?;
+    let mut data = json!({});
+    if let Some(v) = input.block_pick_on_mismatch {
+        data["block_pick_on_mismatch"] = json!(v);
+    }
+    let existing: Option<Record> = db::find("wh_setting").filter("company", id_of(&company)?).first()?;
+    match existing {
+        Some(row) => db::update("wh_setting", id_of(&row)?, &data)?.ok_or_else(|| Error::msg("the setting is gone")),
+        None => {
+            data["company"] = json!(id_of(&company)?);
+            db::create("wh_setting", &data).map_err(|e| e.or("could not save the setting"))
+        }
+    }
+}
+
+/// With `block_pick_on_mismatch` on for the company, refuse while the bins hold more of any of these items than
+/// the stock ledger has. Stock received but not yet put away is normal and never blocks.
+pub(crate) fn ensure_bins_match(company: &str, warehouse: &str, items: &[String]) -> Result<()> {
+    let on = db::find::<Record>("wh_setting")
+        .filter("company", company)
+        .first()?
+        .map_or(false, |s| s.get("block_pick_on_mismatch") == Some(&json!(true)));
+    if !on {
+        return Ok(());
+    }
+    let mut seen: Vec<&String> = Vec::new();
+    for item in items {
+        if seen.contains(&item) {
+            continue;
+        }
+        seen.push(item);
+        let report = do_reconcile_bins(StockQuery { warehouse: warehouse.to_string(), item: Some(item.clone()) })?;
+        let bad: Vec<&Value> = report
+            .get("rows")
+            .and_then(Value::as_array)
+            .into_iter()
+            .flatten()
+            .filter(|r| r.get("status") == Some(&json!("over_binned")))
+            .collect();
+        if let Some(r) = bad.first() {
+            return Err(Error::msg(format!(
+                "the bins hold more of this item than the stock ledger ({} against {}); correct it before picking",
+                r.get("in_bins").map(|v| v.to_string()).unwrap_or_default(),
+                r.get("ledger").map(|v| v.to_string()).unwrap_or_default(),
+            )));
+        }
+    }
+    Ok(())
+}
+
 pub(crate) fn move_out_for_pick(
     company: &str,
     warehouse: &str,
@@ -404,4 +532,6 @@ handler! {
     fn put_away(input: PutAway) -> Record { do_put_away(input) }
     fn move_between_bins(input: Transfer) -> Record { do_transfer(input) }
     fn bin_stock(input: StockQuery) -> Value { do_bin_stock(input) }
+    fn reconcile_bins(input: StockQuery) -> Value { do_reconcile_bins(input) }
+    fn set_warehouse_setting(input: SetWhSetting) -> Record { do_set_setting(input) }
 }
