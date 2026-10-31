@@ -44,6 +44,7 @@ label = "Pricing reader"
 description = "Reads taxes, terms and prices."
 
 [app]
+nav = true
 roles = ["pricing_reader", "pricing_admin"]
 icon = "percent"
 route = "/erp/pricing"
