@@ -3,7 +3,7 @@ name = "erp_warehouse"
 icon_path = "assets/logo.svg"
 label = "Warehouse"
 version = "0.1.0"
-description = "Bins, putaway rules, pick lists and shipments below the warehouse."
+description = "Bins, putaway rules, pick lists and shipments within a warehouse."
 long_description = """
 Bins (a tree below each warehouse), putaway rules that say where received goods go, an append-only
 ledger of movements between bins, pick lists built from sales orders, and shipments with packages.
