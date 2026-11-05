@@ -3,7 +3,7 @@ name = "erp_item"
 icon_path = "assets/logo.svg"
 label = "Items"
 version = "0.1.0"
-description = "Stock and non-stock items with per-company valuation settings."
+description = "Stock and non-stock items, with valuation settings for each company."
 long_description = """
 A lean item master: category tree, SKU, unit of measure, and whether the item is stocked.
 Per-company rows hold the valuation method; standard cost is an append-only dated rate table.
