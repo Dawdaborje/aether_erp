@@ -1,0 +1,8 @@
+<page roles="stock_user,stock_admin" route="/erp/inventory/landed/{id}/new" title="Add charge" model="stock_landed_charge" menu="false">
+  <view type="form" function="add_landed_charge" submit="Add" success="Added" redirect="/erp/inventory/landed/{id}">
+    <group title="Charge" cols="2">
+      <field name="description" label="Description" required="true"/>
+      <field name="amount" label="Amount" required="true" fieldType="float"/>
+    </group>
+  </view>
+</page>

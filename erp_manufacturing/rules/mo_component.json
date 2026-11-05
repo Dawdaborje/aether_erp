@@ -1,0 +1,15 @@
+{
+  "model": "mo_component",
+  "access": [
+    {
+      "name": "read",
+      "roles": ["mfg_reader", "mfg_user", "mfg_admin"],
+      "operations": ["read"]
+    },
+    {
+      "name": "write",
+      "roles": ["mfg_user", "mfg_admin"],
+      "operations": ["read", "create", "write"]
+    }
+  ]
+}

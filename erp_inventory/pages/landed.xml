@@ -1,0 +1,17 @@
+<page roles="stock_reader,stock_user,stock_admin" route="/erp/inventory/landed" title="Landed cost" model="stock_landed_cost" menu="false">
+  <view type="list" model="stock_landed_cost" source="list_landed_costs" open="/erp/inventory/landed/{id}" create="/erp/inventory/landed/new" create_label="New landed cost">
+    <search/>
+    <columns>
+      <column field="reference" label="Reference"/>
+      <column field="move" label="Receipt"/>
+      <column field="basis" label="Basis" fieldType="badge"/>
+      <column field="total" label="Total"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="posted_on" label="Posted"/>
+    </columns>
+    <actions>
+      <action name="post_landed_cost" label="Post" function="post_landed_cost" confirm="Add these charges to the receipt's stock cost?"/>
+    </actions>
+    <empty title="No landed costs yet" description="Add freight or duty to a posted receipt."/>
+  </view>
+</page>

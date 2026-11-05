@@ -1,0 +1,3 @@
+<page roles="item_reader,item_admin" route="/erp/items/export/{model}" title="Export" menu="false">
+  <viewer source="export_data" height="480"/>
+</page>

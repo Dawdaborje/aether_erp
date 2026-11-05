@@ -1,0 +1,14 @@
+<page roles="sales_reader,sales_user,sales_admin" route="/erp/selling/returns" title="Customer returns" model="sales_return" menu="false">
+  <view type="list" model="sales_return" source="list_returns">
+    <search/>
+    <columns>
+      <column field="number" label="Number"/>
+      <column field="so" label="Order"/>
+      <column field="customer" label="Customer"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="return_date" label="Date"/>
+      <column field="reason" label="Reason"/>
+    </columns>
+    <empty title="No returns" description="Goods taken back from customers appear here."/>
+  </view>
+</page>

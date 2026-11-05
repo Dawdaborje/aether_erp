@@ -1,0 +1,12 @@
+<page roles="quality_reader,quality_user,quality_admin" route="/erp/quality/templates" title="Templates" model="quality_template" menu="false">
+  <view type="list" model="quality_template" source="list_templates">
+    <columns>
+      <column field="code" label="Code"/>
+      <column field="name" label="Name"/>
+      <column field="item" label="Item"/>
+      <column field="applies_to" label="Applies to" fieldType="badge"/>
+      <column field="active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No templates" description="Create a template with the create_template function to define what to check."/>
+  </view>
+</page>

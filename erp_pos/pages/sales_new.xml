@@ -1,0 +1,7 @@
+<page roles="pos_cashier,pos_manager" route="/erp/pos/sales/new" title="New sale" model="pos_sale" menu="false">
+  <view type="form" function="new_sale" submit="Start cart" success="Cart started" redirect="/erp/pos/sales/{id}">
+    <group title="Sale" cols="2">
+      <field name="customer" label="Customer (optional)" source="party.list_parties" optionLabel="display_name" entity="parties"/>
+    </group>
+  </view>
+</page>

@@ -1,0 +1,101 @@
+{
+  "name": "wh_bin",
+  "icon": "archive",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_no6lheh8ow",
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "index": "plain",
+      "required": true
+    },
+    {
+      "id": "fld_rggw2cmf84",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40
+    },
+    {
+      "id": "fld_zduk3g68bm",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_0x31oeuccy",
+      "name": "parent",
+      "label": "%parent%",
+      "type": "link",
+      "target": "wh_bin",
+      "hierarchy": true,
+      "index": "plain",
+      "help": "The shelf or rack this bin is in."
+    },
+    {
+      "id": "fld_ujmiu6ga9v",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "required": true,
+      "default": "storage",
+      "options": [
+        {
+          "id": "opt_qtvat00ppw",
+          "value": "storage",
+          "label": "%storage%"
+        },
+        {
+          "id": "opt_jh4b402acm",
+          "value": "receiving",
+          "label": "%receiving%"
+        },
+        {
+          "id": "opt_eapltfaa1v",
+          "value": "shipping",
+          "label": "%shipping%"
+        },
+        {
+          "id": "opt_4lpntdpotq",
+          "value": "quarantine",
+          "label": "%quarantine%"
+        }
+      ]
+    },
+    {
+      "id": "fld_3zufnnivl6",
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_eh4hv1dt4a",
+      "fields": [
+        "warehouse",
+        "code"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "warehouse",
+      "code",
+      "name",
+      "kind",
+      "active"
+    ]
+  },
+  "model_id": "mdl_af05zpk5ih",
+  "label": "%wh_bin%",
+  "plural_label": "%wh_bins%"
+}

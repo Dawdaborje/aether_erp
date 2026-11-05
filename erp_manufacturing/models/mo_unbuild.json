@@ -1,0 +1,66 @@
+{
+  "model_id": "mdl_bzir0njgdw",
+  "name": "mo_unbuild",
+  "label": "%mo_unbuild%",
+  "plural_label": "%mo_unbuilds%",
+  "icon": "undo",
+  "title_field": "posting_date",
+  "fields": [
+    {
+      "id": "fld_q6ypgxbwio",
+      "name": "mo",
+      "label": "%mo%",
+      "type": "link",
+      "required": true,
+      "target": "mo",
+      "index": "plain"
+    },
+    {
+      "id": "fld_c2alegqkz0",
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "min": "0.000001"
+    },
+    {
+      "id": "fld_ae43rqdd75",
+      "name": "posting_date",
+      "label": "%posting_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_fxqr4l7y8a",
+      "name": "consume_move",
+      "label": "%consume_move%",
+      "type": "string",
+      "max_length": 64,
+      "help": "Inventory move that took the finished goods out."
+    },
+    {
+      "id": "fld_0e574auasv",
+      "name": "produce_move",
+      "label": "%produce_move%",
+      "type": "string",
+      "max_length": 64,
+      "help": "Inventory move that returned the components."
+    },
+    {
+      "id": "fld_n2e9ljoc4r",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "string",
+      "max_length": 200
+    }
+  ],
+  "view": {
+    "list": [
+      "mo",
+      "qty",
+      "posting_date",
+      "reason"
+    ]
+  }
+}

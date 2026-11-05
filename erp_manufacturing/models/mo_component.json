@@ -1,0 +1,80 @@
+{
+  "model_id": "mdl_mocomp0001",
+  "name": "mo_component",
+  "label": "%mo_component%",
+  "plural_label": "%mo_components%",
+  "icon": "list",
+  "title_field": "line_no",
+  "fields": [
+    {
+      "name": "mo",
+      "label": "%mo%",
+      "type": "link",
+      "required": true,
+      "target": "mo",
+      "index": "plain",
+      "id": "fld_bzxulkzls4"
+    },
+    {
+      "name": "line_no",
+      "label": "%line_no%",
+      "type": "int",
+      "required": true,
+      "id": "fld_xkok5stsvo"
+    },
+    {
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain",
+      "id": "fld_v6lw2thbst"
+    },
+    {
+      "name": "qty_per",
+      "label": "%qty_per%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "help": "Per BOM output qty at confirm time",
+      "id": "fld_cdeehb4het"
+    },
+    {
+      "name": "scrap_pct",
+      "label": "%scrap_pct%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0",
+      "id": "fld_4zr4ohl3ew"
+    },
+    {
+      "name": "is_byproduct",
+      "label": "%is_byproduct%",
+      "type": "bool",
+      "default": false,
+      "id": "fld_ovdyy7jzrb"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_ldkwi7zp5s",
+      "fields": [
+        "mo",
+        "line_no"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "mo",
+      "line_no",
+      "item",
+      "qty_per",
+      "scrap_pct",
+      "is_byproduct"
+    ]
+  }
+}

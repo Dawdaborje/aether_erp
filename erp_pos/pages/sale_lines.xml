@@ -1,0 +1,21 @@
+<page roles="pos_reader,pos_cashier,pos_manager" route="/erp/pos/sales/{id}" title="Cart" model="pos_sale_line" menu="false">
+  <view type="list" model="pos_sale_line" source="list_sale_lines" create="/erp/pos/sales/{id}/new" create_label="Add item">
+    <columns>
+      <column field="line_no" label="#"/>
+      <column field="item" label="Item"/>
+      <column field="qty" label="Qty"/>
+      <column field="unit_price" label="Price"/>
+      <column field="discount_pct" label="Discount %"/>
+      <column field="amount" label="Net"/>
+      <column field="tax_amount" label="Tax"/>
+    </columns>
+    <actions>
+      <action name="remove_sale_line" label="Remove" function="remove_sale_line" confirm="Remove this line?" danger="true"/>
+    </actions>
+    <empty title="The cart is empty" description="Add what the customer is buying."/>
+  </view>
+  <buttonbox>
+    <button label="Take payment" href="/erp/pos/sales/{id}/pay" variant="secondary"/>
+    <button label="Void" href="/erp/pos/sales/{id}/void" variant="secondary"/>
+  </buttonbox>
+</page>

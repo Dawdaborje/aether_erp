@@ -1,0 +1,19 @@
+<page roles="wh_reader,wh_user,wh_admin" route="/erp/warehouse/shipments" title="Shipments" model="shipment" menu="false">
+  <view type="list" model="shipment" source="list_shipments" create="/erp/warehouse/shipments/new" create_label="New shipment">
+    <search/>
+    <columns>
+      <column field="number" label="Number"/>
+      <column field="carrier" label="Carrier"/>
+      <column field="tracking" label="Tracking"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="shipped_on" label="Shipped"/>
+      <column field="package_count" label="Packages"/>
+    </columns>
+    <actions>
+      <action name="ship" label="Ship" function="ship_shipment" confirm="Hand this shipment to the carrier?"/>
+      <action name="deliver" label="Delivered" function="deliver_shipment" confirm="Mark as delivered?"/>
+      <action name="cancel" label="Cancel" function="cancel_shipment" confirm="Cancel this shipment?" danger="true"/>
+    </actions>
+    <empty title="No shipments" description="Create a shipment from a picked list."/>
+  </view>
+</page>

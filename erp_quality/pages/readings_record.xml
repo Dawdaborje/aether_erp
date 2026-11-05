@@ -1,0 +1,9 @@
+<page roles="quality_user,quality_admin" route="/erp/quality/{id}/record" title="Record a reading" model="quality_reading" menu="false">
+  <view type="form" function="record_reading" submit="Save reading" success="Reading saved" redirect="/erp/quality/{id}">
+    <group title="Reading" cols="2">
+      <field name="reading" label="Parameter" required="true" source="list_readings" optionLabel="name" entity="readings"/>
+      <field name="value" label="Measured value" fieldType="float"/>
+      <field name="result" label="Pass / fail" fieldType="selection" options="pass, fail"/>
+    </group>
+  </view>
+</page>

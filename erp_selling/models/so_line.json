@@ -1,0 +1,170 @@
+{
+  "model_id": "mdl_soline0001",
+  "name": "so_line",
+  "label": "%so_line%",
+  "plural_label": "%so_lines%",
+  "icon": "list",
+  "title_field": "line_no",
+  "fields": [
+    {
+      "name": "so",
+      "label": "%so%",
+      "type": "link",
+      "required": true,
+      "target": "so",
+      "index": "plain",
+      "id": "fld_tpcwmdjq4z"
+    },
+    {
+      "name": "line_no",
+      "label": "%line_no%",
+      "type": "int",
+      "required": true,
+      "id": "fld_yxvpqlzoj7"
+    },
+    {
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain",
+      "id": "fld_qjeemom7cv"
+    },
+    {
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "id": "fld_fjuvfbrzny"
+    },
+    {
+      "name": "uom",
+      "label": "%uom%",
+      "type": "link",
+      "required": true,
+      "target": "uom.uom",
+      "target_id": "mdl_gidmmkjdj5",
+      "id": "fld_hvdr7mxowh"
+    },
+    {
+      "name": "unit_price",
+      "label": "%unit_price%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "id": "fld_4y5jxtr2nf"
+    },
+    {
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true,
+      "id": "fld_dhipuv22uv"
+    },
+    {
+      "name": "qty_delivered",
+      "label": "%qty_delivered%",
+      "type": "decimal",
+      "scale": 6,
+      "default": "0",
+      "id": "fld_s6dyp3vfbe"
+    },
+    {
+      "name": "qty_invoiced",
+      "label": "%qty_invoiced%",
+      "type": "decimal",
+      "scale": 6,
+      "default": "0",
+      "id": "fld_geneuvmhyi"
+    },
+    {
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "id": "fld_p6pieeppf4"
+    },
+    {
+      "id": "fld_pkq6o56kmr",
+      "name": "discount_pct",
+      "label": "%discount_pct%",
+      "type": "decimal",
+      "scale": 4,
+      "default": "0"
+    },
+    {
+      "id": "fld_tajk864x37",
+      "name": "tax",
+      "label": "%tax%",
+      "type": "link",
+      "target": "erp_pricing.tax",
+      "target_id": "mdl_shfete7izv",
+      "index": "plain"
+    },
+    {
+      "id": "fld_j4v82o83hz",
+      "name": "tax_amount",
+      "label": "%tax_amount%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_z0ohyoxjew",
+      "name": "qty_returned",
+      "label": "%qty_returned%",
+      "type": "decimal",
+      "scale": 6,
+      "default": "0"
+    },
+    {
+      "id": "fld_0qvliv3i2j",
+      "name": "order_uom",
+      "label": "%order_uom%",
+      "type": "link",
+      "target": "uom.uom",
+      "target_id": "mdl_gidmmkjdj5",
+      "help": "The unit the line was entered in when it differs from the item's own unit."
+    },
+    {
+      "id": "fld_0ddor77vgl",
+      "name": "order_qty",
+      "label": "%order_qty%",
+      "type": "decimal",
+      "scale": 6,
+      "help": "Quantity in the order unit; `qty` is always in the item's own unit."
+    },
+    {
+      "id": "fld_24ql9ev046",
+      "name": "order_unit_price",
+      "label": "%order_unit_price%",
+      "type": "decimal",
+      "scale": 6,
+      "help": "Price per order unit; `unit_price` is per item unit."
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_uagdu4neyo",
+      "fields": [
+        "so",
+        "line_no"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "so",
+      "line_no",
+      "item",
+      "qty",
+      "unit_price"
+    ]
+  }
+}

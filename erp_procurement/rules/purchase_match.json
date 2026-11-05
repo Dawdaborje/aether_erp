@@ -1,0 +1,56 @@
+{
+  "model": "purchase_match",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "purchase_reader",
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "create",
+      "roles": [
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "create"
+      ]
+    }
+  ],
+  "restrict": [
+    {
+      "name": "sealed",
+      "operations": [
+        "write",
+        "delete"
+      ],
+      "when": {
+        "seq": {
+          "lt": 0
+        }
+      }
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "company",
+        "po_line",
+        "receipt_line",
+        "bill_line",
+        "qty",
+        "kind",
+        "seq"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

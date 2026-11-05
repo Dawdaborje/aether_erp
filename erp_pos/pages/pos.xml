@@ -1,0 +1,15 @@
+<page roles="pos_reader,pos_cashier,pos_manager" route="/erp/pos" title="Point of sale" icon="store" sort="40">
+  <header title="Point of sale" subtitle="Cashier sessions, carts and payments."/>
+  <view type="dashboard" source="pos_dashboard">
+    <stat label="Open sessions" field="open_sessions"/>
+    <stat label="Sales" field="sales"/>
+    <stat label="Takings" field="takings"/>
+    <stat label="Open carts" field="open_carts"/>
+  </view>
+  <buttonbox>
+    <button label="New sale" href="/erp/pos/sales/new" variant="secondary"/>
+    <button label="Sales" href="/erp/pos/sales" variant="secondary"/>
+    <button label="Sessions" href="/erp/pos/sessions" variant="secondary"/>
+    <button label="Profiles" href="/erp/pos/profiles" variant="secondary"/>
+  </buttonbox>
+</page>

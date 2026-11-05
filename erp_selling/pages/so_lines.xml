@@ -1,0 +1,17 @@
+<page roles="sales_reader,sales_user,sales_admin" route="/erp/selling/sos/{id}" title="Order lines" model="so_line" menu="false">
+  <view type="list" model="so_line" source="list_so_lines" create="/erp/selling/sos/{id}/new" create_label="Add line">
+    <columns>
+      <column field="line_no" label="#"/>
+      <column field="item" label="Item"/>
+      <column field="qty" label="Qty"/>
+      <column field="unit_price" label="Price"/>
+      <column field="discount_pct" label="Discount %"/>
+      <column field="amount" label="Net"/>
+      <column field="tax_amount" label="Tax"/>
+      <column field="qty_delivered" label="Delivered"/>
+      <column field="qty_invoiced" label="Invoiced"/>
+      <column field="qty_returned" label="Returned"/>
+    </columns>
+    <empty title="No lines yet" description="Add what the customer is buying."/>
+  </view>
+</page>

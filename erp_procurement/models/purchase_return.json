@@ -1,0 +1,99 @@
+{
+  "model_id": "mdl_90oezgdt56",
+  "name": "purchase_return",
+  "label": "%purchase_return%",
+  "plural_label": "%purchase_returns%",
+  "icon": "undo-2",
+  "title_field": "number",
+  "fields": [
+    {
+      "id": "fld_8xrlyyptsc",
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_3iz1eyklng",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_g2gt4ntkmq",
+      "name": "po",
+      "label": "%po%",
+      "type": "link",
+      "required": true,
+      "target": "po",
+      "index": "plain"
+    },
+    {
+      "id": "fld_jyrddzk8vo",
+      "name": "supplier",
+      "label": "%supplier%",
+      "type": "link",
+      "required": true,
+      "target": "party.party",
+      "target_id": "mdl_mr76tss5ic",
+      "index": "plain"
+    },
+    {
+      "id": "fld_l19fmwbr00",
+      "name": "stock_move",
+      "label": "%stock_move%",
+      "type": "link",
+      "target": "erp_inventory.stock_move",
+      "index": "plain",
+      "target_id": "mdl_euypr4b86s"
+    },
+    {
+      "id": "fld_aoknal44xe",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_m9sk7wwsij",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_cg7pga6gvv",
+          "value": "posted",
+          "label": "%posted%"
+        }
+      ],
+      "default": "draft"
+    },
+    {
+      "id": "fld_vfazzipcp5",
+      "name": "return_date",
+      "label": "%return_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_9e7zmohed4",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "string",
+      "max_length": 200
+    }
+  ],
+  "view": {
+    "list": [
+      "number",
+      "po",
+      "supplier",
+      "state",
+      "return_date"
+    ]
+  }
+}

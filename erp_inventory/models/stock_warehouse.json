@@ -1,0 +1,100 @@
+{
+  "model_id": "mdl_bu5hotrqqi",
+  "name": "stock_warehouse",
+  "label": "%stock_warehouse%",
+  "plural_label": "%stock_warehouses%",
+  "icon": "warehouse",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_kv5zl0rlb7",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 40,
+      "index": "plain"
+    },
+    {
+      "id": "fld_w3bev4f5xg",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 160
+    },
+    {
+      "id": "fld_8za6l53vcb",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_7ce8jc7edy",
+      "name": "parent",
+      "label": "%parent%",
+      "type": "link",
+      "target": "stock_warehouse",
+      "hierarchy": true
+    },
+    {
+      "id": "fld_zqrjrduyci",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_rkgo7qgbb5",
+          "value": "stock",
+          "label": "%stock%"
+        },
+        {
+          "id": "opt_7etirrosjc",
+          "value": "view",
+          "label": "%view%"
+        },
+        {
+          "id": "opt_d2zymlxdu5",
+          "value": "transit",
+          "label": "%transit%"
+        },
+        {
+          "id": "opt_zo3viqm5hm",
+          "value": "scrap",
+          "label": "%scrap%"
+        }
+      ],
+      "required": true,
+      "default": "stock"
+    },
+    {
+      "id": "fld_6xke4twscn",
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_krjxpiv2dw",
+      "fields": [
+        "company",
+        "code"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "code",
+      "name",
+      "kind",
+      "active"
+    ]
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "model_id": "mdl_scounter001",
+  "name": "sales_counter",
+  "label": "%sales_counter%",
+  "plural_label": "%sales_counters%",
+  "icon": "hash",
+  "title_field": "prefix",
+  "fields": [
+    {
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain",
+      "id": "fld_nl2jx64u6d"
+    },
+    {
+      "name": "prefix",
+      "label": "%prefix%",
+      "type": "string",
+      "required": true,
+      "max_length": 16,
+      "index": "plain",
+      "id": "fld_2j3kclpwzy"
+    },
+    {
+      "name": "year",
+      "label": "%year%",
+      "type": "int",
+      "required": true,
+      "index": "plain",
+      "id": "fld_lgjclywfsa"
+    },
+    {
+      "name": "next",
+      "label": "%next%",
+      "type": "int",
+      "required": true,
+      "default": 1,
+      "id": "fld_fla6rf4reu"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_hxzwccnmbb",
+      "fields": [
+        "company",
+        "prefix",
+        "year"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "company",
+      "prefix",
+      "year",
+      "next"
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "model": "pos_profile",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "pos_reader",
+        "pos_cashier",
+        "pos_manager"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "pos_manager"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "company",
+        "name",
+        "warehouse",
+        "price_list",
+        "currency",
+        "active"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

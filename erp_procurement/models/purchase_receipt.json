@@ -1,0 +1,95 @@
+{
+  "model_id": "mdl_smldpsd8r2",
+  "name": "purchase_receipt",
+  "label": "%purchase_receipt%",
+  "plural_label": "%purchase_receipts%",
+  "icon": "package-check",
+  "title_field": "number",
+  "fields": [
+    {
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "max_length": 40,
+      "index": "plain",
+      "id": "fld_ya7cjmlyzg"
+    },
+    {
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain",
+      "id": "fld_cdg4ayw7l9"
+    },
+    {
+      "name": "po",
+      "label": "%po%",
+      "type": "link",
+      "required": true,
+      "target": "po",
+      "index": "plain",
+      "id": "fld_rd5uaj7jq0"
+    },
+    {
+      "name": "supplier",
+      "label": "%supplier%",
+      "type": "link",
+      "required": true,
+      "target": "party.party",
+      "target_id": "mdl_mr76tss5ic",
+      "id": "fld_huat9ptttb"
+    },
+    {
+      "name": "stock_move",
+      "label": "%stock_move%",
+      "type": "link",
+      "target": "erp_inventory.stock_move",
+      "target_id": "mdl_euypr4b86s",
+      "index": "plain",
+      "id": "fld_jrsr6tz26b"
+    },
+    {
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "draft",
+      "options": [
+        {
+          "id": "opt_82uy918fn6",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_bfd6bug2zg",
+          "value": "posted",
+          "label": "%posted%"
+        },
+        {
+          "id": "opt_yusg10jopm",
+          "value": "void",
+          "label": "%void%"
+        }
+      ],
+      "id": "fld_87a7w6kt3e"
+    },
+    {
+      "name": "receipt_date",
+      "label": "%receipt_date%",
+      "type": "date",
+      "required": true,
+      "id": "fld_2z0futkqob"
+    }
+  ],
+  "view": {
+    "list": [
+      "number",
+      "po",
+      "state",
+      "receipt_date"
+    ]
+  }
+}

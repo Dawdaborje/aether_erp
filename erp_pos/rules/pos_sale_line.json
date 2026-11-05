@@ -1,0 +1,47 @@
+{
+  "model": "pos_sale_line",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "pos_reader",
+        "pos_cashier",
+        "pos_manager"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "pos_cashier",
+        "pos_manager"
+      ],
+      "operations": [
+        "create",
+        "write",
+        "delete"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "sale",
+        "line_no",
+        "item",
+        "qty",
+        "unit_price",
+        "discount_pct",
+        "tax",
+        "amount",
+        "tax_amount",
+        "lot"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

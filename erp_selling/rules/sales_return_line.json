@@ -1,0 +1,43 @@
+{
+  "model": "sales_return_line",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "sales_reader",
+        "sales_user",
+        "sales_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "sales_user",
+        "sales_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "return",
+        "line_no",
+        "so_line",
+        "item",
+        "qty",
+        "unit_cost",
+        "warehouse"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

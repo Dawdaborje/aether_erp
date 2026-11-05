@@ -1,0 +1,60 @@
+[plugin]
+name = "erp_item"
+icon_path = "assets/logo.svg"
+label = "Items"
+version = "0.1.0"
+description = "Stock and non-stock items, with valuation settings for each company."
+long_description = """
+A lean item master: category tree, SKU, unit of measure, and whether the item is stocked.
+Per-company rows hold the valuation method; standard cost is an append-only dated rate table.
+Warehouses and the stock ledger live in the inventory plugin. Written in Rust.
+See docs/design.md in this plugin (erp_item/docs/design.md).
+"""
+authors = [{ name = "Aether", email = "hello@aether.local" }]
+dependencies = ["company", "uom", "party"]
+capabilities = ["db::query", "db::mutate", "import::run", "export::run", "storage::read", "storage::delete", "media::store"]
+access_models = [
+  { name = "item_category", permissions = ["read", "write"] },
+  { name = "item", permissions = ["read", "write"] },
+  { name = "item_company", permissions = ["read", "write"] },
+  { name = "item_standard_cost", permissions = ["read", "write"] },
+  { name = "item_supplier", permissions = ["read", "write"] },
+  { name = "item_customer", permissions = ["read", "write"] },
+  { name = "item_uom", permissions = ["read", "write"] },
+]
+is_builtin = false
+wasm_file = "out/plugin.wasm"
+
+[[command]]
+name = "seed"
+function = "seed_items"
+help = "Create starter item categories (idempotent)"
+on_install = true
+on_upgrade = true
+
+[media_guard]
+function = "can_read_media"
+
+[[roles]]
+name = "item_admin"
+label = "Item administrator"
+description = "Creates and changes categories, items and company settings."
+
+[[roles]]
+name = "item_reader"
+label = "Item reader"
+description = "Reads the item master."
+
+[app]
+roles = ["item_reader", "item_admin"]
+icon = "package"
+route = "/erp/items"
+description = "Items and categories"
+standalone = true
+
+[plugin.api]
+version = "0.1"
+
+[plugin.meta]
+kind = "addon"
+workspace = "erp"

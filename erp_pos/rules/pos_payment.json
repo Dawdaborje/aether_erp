@@ -1,0 +1,40 @@
+{
+  "model": "pos_payment",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "pos_reader",
+        "pos_cashier",
+        "pos_manager"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "pos_cashier",
+        "pos_manager"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "sale",
+        "session",
+        "method",
+        "amount"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

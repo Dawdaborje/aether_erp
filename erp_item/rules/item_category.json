@@ -1,0 +1,15 @@
+{
+  "model": "item_category",
+  "access": [
+    {
+      "name": "read",
+      "roles": ["item_reader", "item_admin"],
+      "operations": ["read"]
+    },
+    {
+      "name": "admin",
+      "roles": ["item_admin"],
+      "operations": ["read", "create", "write"]
+    }
+  ]
+}

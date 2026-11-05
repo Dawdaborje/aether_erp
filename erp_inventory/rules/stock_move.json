@@ -1,0 +1,64 @@
+{
+  "model": "stock_move",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "stock_reader",
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "post",
+      "roles": [
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "restrict": [
+    {
+      "name": "sealed",
+      "operations": [
+        "write",
+        "delete"
+      ],
+      "when": {
+        "seq": {
+          "lt": 0
+        }
+      }
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "number",
+        "company",
+        "kind",
+        "state",
+        "posting_date",
+        "currency",
+        "total_value",
+        "source_kind",
+        "source_id",
+        "source_version",
+        "idem_key",
+        "reverses",
+        "reason",
+        "seq"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

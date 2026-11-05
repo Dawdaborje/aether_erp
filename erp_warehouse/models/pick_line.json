@@ -1,0 +1,74 @@
+{
+  "name": "pick_line",
+  "icon": "list",
+  "title_field": "item",
+  "fields": [
+    {
+      "id": "fld_53j7exrkf0",
+      "name": "pick",
+      "label": "%pick%",
+      "type": "link",
+      "required": true,
+      "target": "pick_list",
+      "index": "plain"
+    },
+    {
+      "id": "fld_9ywym9abjf",
+      "name": "position",
+      "label": "%position%",
+      "type": "int"
+    },
+    {
+      "id": "fld_h8enkgmede",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain",
+      "required": true
+    },
+    {
+      "id": "fld_fvoa57k7sr",
+      "name": "lot",
+      "label": "%lot%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_cdk2l99u9e",
+      "name": "bin",
+      "label": "%bin%",
+      "type": "link",
+      "target": "wh_bin"
+    },
+    {
+      "id": "fld_hjfepdog6y",
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "min": "0.000001"
+    },
+    {
+      "id": "fld_y7dtny5v69",
+      "name": "qty_picked",
+      "label": "%qty_picked%",
+      "type": "decimal",
+      "scale": 6,
+      "default": "0"
+    }
+  ],
+  "view": {
+    "list": [
+      "item",
+      "bin",
+      "qty",
+      "qty_picked"
+    ]
+  },
+  "model_id": "mdl_einfdrt6zr",
+  "label": "%pick_line%",
+  "plural_label": "%pick_lines%"
+}

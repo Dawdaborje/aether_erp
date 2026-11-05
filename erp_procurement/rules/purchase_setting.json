@@ -1,0 +1,39 @@
+{
+  "model": "purchase_setting",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "purchase_reader",
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "purchase_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "company",
+        "po_approval_limit",
+        "over_receipt_pct",
+        "bill_match_on"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

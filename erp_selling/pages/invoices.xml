@@ -1,0 +1,18 @@
+<page roles="sales_reader,sales_user,sales_admin" route="/erp/selling/invoices" title="Invoices &amp; credit notes" model="sales_invoice" menu="false">
+  <view type="list" model="sales_invoice" source="list_invoices" open="/erp/selling/invoices/{id}">
+    <search/>
+    <columns>
+      <column field="number" label="Number"/>
+      <column field="kind" label="Kind" fieldType="badge"/>
+      <column field="customer" label="Customer"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="invoice_date" label="Date"/>
+      <column field="due_date" label="Due"/>
+      <column field="total" label="Total"/>
+    </columns>
+    <actions>
+      <action name="approve_invoice" label="Approve" function="approve_invoice" confirm="Approve this invoice?"/>
+    </actions>
+    <empty title="No invoices yet" description="Invoices are created from delivered orders."/>
+  </view>
+</page>

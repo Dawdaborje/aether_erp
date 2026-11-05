@@ -1,0 +1,17 @@
+<page roles="pos_reader,pos_cashier,pos_manager" route="/erp/pos/sessions" title="Sessions" model="pos_session" menu="false">
+  <view type="list" model="pos_session" source="list_sessions" open="/erp/pos/sessions/{id}" create="/erp/pos/sessions/new" create_label="Open session">
+    <columns>
+      <column field="number" label="Session"/>
+      <column field="cashier" label="Cashier"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="opened_on" label="Opened"/>
+      <column field="opening_cash" label="Float"/>
+      <column field="cash_sales" label="Cash taken"/>
+      <column field="card_sales" label="Other taken"/>
+      <column field="expected_cash" label="Expected cash"/>
+      <column field="counted_cash" label="Counted"/>
+      <column field="difference" label="Difference"/>
+    </columns>
+    <empty title="No sessions" description="Open a session to start selling."/>
+  </view>
+</page>

@@ -1,0 +1,19 @@
+<page roles="replenish_reader,replenish_admin" route="/erp/replenishment" title="Replenishment" model="replenish_request" icon="refresh-cw" sort="33">
+  <view type="list" model="replenish_request" source="list_requests" create="/erp/replenishment/evaluate" create_label="Check reorder rules">
+    <search/>
+    <columns>
+      <column field="item" label="Item"/>
+      <column field="warehouse" label="Warehouse"/>
+      <column field="qty" label="Qty"/>
+      <column field="route" label="Route" fieldType="badge"/>
+      <column field="reason" label="Reason" fieldType="badge"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="needed_by" label="Needed by"/>
+    </columns>
+    <actions>
+      <action name="convert_request" label="Order / make" function="convert_request" confirm="Create the purchase or manufacturing order?"/>
+      <action name="cancel_request" label="Cancel" function="cancel_request" confirm="Cancel this request?" danger="true"/>
+    </actions>
+    <empty title="Nothing to replenish" description="Check the reorder rules to find shortfalls."/>
+  </view>
+</page>

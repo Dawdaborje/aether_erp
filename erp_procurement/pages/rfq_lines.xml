@@ -1,0 +1,11 @@
+<page roles="purchase_reader,purchase_user,purchase_admin" route="/erp/procurement/rfqs/{id}" title="Request lines" model="rfq_line" menu="false">
+  <view type="list" model="rfq_line" source="list_rfq_lines" create="/erp/procurement/rfqs/{id}/new" create_label="Add line">
+    <columns>
+      <column field="line_no" label="#"/>
+      <column field="item" label="Item"/>
+      <column field="qty" label="Qty"/>
+      <column field="unit_price" label="Quoted price"/>
+    </columns>
+    <empty title="No lines yet" description="Add what you want priced."/>
+  </view>
+</page>

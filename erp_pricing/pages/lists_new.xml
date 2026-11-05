@@ -1,0 +1,11 @@
+<page roles="pricing_admin" route="/erp/pricing/lists/new" title="New price list" model="price_list" menu="false">
+  <view type="form" function="create_price_list" submit="Add list" success="List added" redirect="/erp/pricing/lists">
+    <group title="Price list" cols="2">
+      <field name="code" label="Code" required="true"/>
+      <field name="name" label="Name" required="true"/>
+      <field name="kind" label="Kind" fieldType="selection" options="sell, buy"/>
+      <field name="currency" label="Currency code"/>
+      <field name="is_default" label="Default for its kind" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

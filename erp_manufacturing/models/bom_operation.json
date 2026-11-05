@@ -1,0 +1,80 @@
+{
+  "model_id": "mdl_dsnzmizyzj",
+  "name": "bom_operation",
+  "label": "%bom_operation%",
+  "plural_label": "%bom_operations%",
+  "icon": "git-merge",
+  "title_field": "name",
+  "fields": [
+    {
+      "id": "fld_o47h56ixce",
+      "name": "bom",
+      "label": "%bom%",
+      "type": "link",
+      "required": true,
+      "target": "bom",
+      "index": "plain"
+    },
+    {
+      "id": "fld_cmvwtslnsk",
+      "name": "seq",
+      "label": "%seq%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_1xh9sawkk2",
+      "name": "name",
+      "label": "%name%",
+      "type": "string",
+      "required": true,
+      "max_length": 120
+    },
+    {
+      "id": "fld_w5ow2i6dne",
+      "name": "work_center",
+      "label": "%work_center%",
+      "type": "link",
+      "required": true,
+      "target": "work_center",
+      "index": "plain"
+    },
+    {
+      "id": "fld_655vqvdkoh",
+      "name": "setup_minutes",
+      "label": "%setup_minutes%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_fg7qb98pqv",
+      "name": "cycle_minutes",
+      "label": "%cycle_minutes%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0",
+      "help": "Minutes per BOM output batch."
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_mgvmnclkfi",
+      "fields": [
+        "bom",
+        "seq"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "bom",
+      "seq",
+      "name",
+      "work_center",
+      "setup_minutes",
+      "cycle_minutes"
+    ]
+  }
+}

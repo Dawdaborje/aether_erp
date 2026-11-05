@@ -1,0 +1,63 @@
+{
+  "model": "stock_layer",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "stock_reader",
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "create",
+      "roles": [
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "restrict": [
+    {
+      "name": "sealed",
+      "operations": [
+        "write",
+        "delete"
+      ],
+      "when": {
+        "seq": {
+          "lt": 0
+        }
+      }
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "company",
+        "item",
+        "warehouse",
+        "lot",
+        "receipt_line",
+        "seq",
+        "qty_in",
+        "value_in",
+        "remaining_qty",
+        "remaining_value",
+        "unit_cost",
+        "valuation_method",
+        "opened_at"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

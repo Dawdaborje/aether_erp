@@ -1,0 +1,95 @@
+{
+  "model_id": "mdl_j0el25koia",
+  "name": "stock_count",
+  "label": "%stock_count%",
+  "plural_label": "%stock_counts%",
+  "icon": "clipboard-check",
+  "title_field": "count_date",
+  "fields": [
+    {
+      "id": "fld_isnkmot4gn",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_yk1rj78vnx",
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "required": true,
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "index": "plain"
+    },
+    {
+      "id": "fld_xvdqdjabi5",
+      "name": "count_date",
+      "label": "%count_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_4zodk4oug4",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_0c5djvrfio",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_u532fs6elk",
+          "value": "posted",
+          "label": "%posted%"
+        },
+        {
+          "id": "opt_5zsmjc23jv",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ],
+      "default": "draft"
+    },
+    {
+      "id": "fld_cqgl50jwjw",
+      "name": "note",
+      "label": "%note%",
+      "type": "string",
+      "max_length": 200
+    },
+    {
+      "id": "fld_09fwbfym5q",
+      "name": "move_up",
+      "label": "%move_up%",
+      "type": "link",
+      "target": "stock_move",
+      "index": "plain",
+      "help": "Adjustment move for counted gains."
+    },
+    {
+      "id": "fld_8is9r8s0ow",
+      "name": "move_down",
+      "label": "%move_down%",
+      "type": "link",
+      "target": "stock_move",
+      "index": "plain",
+      "help": "Adjustment move for counted losses."
+    }
+  ],
+  "view": {
+    "list": [
+      "count_date",
+      "warehouse",
+      "state",
+      "note"
+    ]
+  }
+}

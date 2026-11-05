@@ -1,0 +1,13 @@
+<page roles="item_reader,item_admin" route="/erp/items/categories" title="Categories" model="item_category" icon="folder-tree" sort="11">
+  <view type="list" model="item_category" source="list_categories" create="/erp/items/categories/new" create_label="New category">
+    <search/>
+    <columns>
+      <column field="code" label="Code"/>
+      <column field="name" label="Name"/>
+      <column field="parent" label="Parent"/>
+      <column field="valuation_method" label="Valuation" fieldType="badge"/>
+      <column field="active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No categories yet" description="Categories group items and give a default valuation method."/>
+  </view>
+</page>

@@ -1,0 +1,47 @@
+{
+  "model": "quotation_line",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "sales_reader",
+        "sales_user",
+        "sales_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "sales_user",
+        "sales_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "quotation",
+        "line_no",
+        "item",
+        "qty",
+        "uom",
+        "unit_price",
+        "discount_pct",
+        "tax",
+        "tax_amount",
+        "amount",
+        "optional"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

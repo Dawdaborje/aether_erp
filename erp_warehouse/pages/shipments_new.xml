@@ -1,0 +1,10 @@
+<page roles="wh_user,wh_admin" route="/erp/warehouse/shipments/new" title="New shipment" model="shipment" menu="false">
+  <view type="form" function="create_shipment" submit="Create shipment" success="Shipment created" redirect="/erp/warehouse/shipments">
+    <group title="Shipment" cols="2">
+      <field name="company" label="Company" required="true" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="pick" label="Pick list" source="list_pick_lists" optionLabel="number" entity="picks"/>
+      <field name="carrier" label="Carrier"/>
+      <field name="tracking" label="Tracking"/>
+    </group>
+  </view>
+</page>

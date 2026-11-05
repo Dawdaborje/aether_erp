@@ -1,0 +1,14 @@
+<page roles="sales_reader,sales_user,sales_admin" route="/erp/selling/invoices/{id}" title="Invoice lines" model="sales_invoice_line" menu="false">
+  <view type="list" model="sales_invoice_line" source="list_invoice_lines">
+    <columns>
+      <column field="line_no" label="#"/>
+      <column field="item" label="Item"/>
+      <column field="qty" label="Qty"/>
+      <column field="unit_price" label="Price"/>
+      <column field="discount_pct" label="Discount %"/>
+      <column field="amount" label="Net"/>
+      <column field="tax_amount" label="Tax"/>
+    </columns>
+    <empty title="No lines" description="This invoice has no lines."/>
+  </view>
+</page>

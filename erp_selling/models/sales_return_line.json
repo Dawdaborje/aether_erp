@@ -1,0 +1,89 @@
+{
+  "model_id": "mdl_7vm1wdbcsl",
+  "name": "sales_return_line",
+  "label": "%sales_return_line%",
+  "plural_label": "%sales_return_lines%",
+  "icon": "list",
+  "title_field": "line_no",
+  "fields": [
+    {
+      "id": "fld_krlcmns6kk",
+      "name": "return",
+      "label": "%return%",
+      "type": "link",
+      "required": true,
+      "target": "sales_return",
+      "index": "plain"
+    },
+    {
+      "id": "fld_jzn3t7vr7q",
+      "name": "line_no",
+      "label": "%line_no%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_e10jxy8ogu",
+      "name": "so_line",
+      "label": "%so_line%",
+      "type": "link",
+      "required": true,
+      "target": "so_line",
+      "index": "plain"
+    },
+    {
+      "id": "fld_hqbhve3d04",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain"
+    },
+    {
+      "id": "fld_ope5of5g16",
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "required": true,
+      "scale": 6
+    },
+    {
+      "id": "fld_d9mzgvd096",
+      "name": "unit_cost",
+      "label": "%unit_cost%",
+      "type": "decimal",
+      "scale": 6,
+      "default": "0",
+      "help": "Cost the goods carried when delivered."
+    },
+    {
+      "id": "fld_7upcv1j7xu",
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "index": "plain"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_gm4itau9u5",
+      "fields": [
+        "return",
+        "line_no"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "return",
+      "line_no",
+      "item",
+      "qty"
+    ]
+  }
+}

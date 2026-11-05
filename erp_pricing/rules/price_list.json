@@ -1,0 +1,47 @@
+{
+  "model": "price_list",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "pricing_reader",
+        "pricing_admin",
+        "erp_procurement.purchase_reader",
+        "erp_procurement.purchase_user",
+        "erp_procurement.purchase_admin",
+        "erp_selling.sales_reader",
+        "erp_selling.sales_user",
+        "erp_selling.sales_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "pricing_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "code",
+        "name",
+        "kind",
+        "currency",
+        "company",
+        "is_default",
+        "active"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

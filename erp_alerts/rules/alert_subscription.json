@@ -1,0 +1,45 @@
+{
+  "model": "alert_subscription",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "alerts_user",
+        "alerts_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "alerts_user",
+        "alerts_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "user",
+        "company",
+        "active",
+        "expiry_days",
+        "lots",
+        "late_mos",
+        "overdue_bills",
+        "open_requests",
+        "rejected_inspections",
+        "last_sent"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

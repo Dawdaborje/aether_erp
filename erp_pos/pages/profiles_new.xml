@@ -1,0 +1,11 @@
+<page roles="pos_manager" route="/erp/pos/profiles/new" title="New POS profile" model="pos_profile" menu="false">
+  <view type="form" function="create_profile" submit="Add profile" success="Profile added" redirect="/erp/pos/profiles">
+    <group title="Profile" cols="2">
+      <field name="name" label="Name" required="true"/>
+      <field name="company" label="Company" required="true" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="warehouse" label="Sell from warehouse" required="true" source="erp_inventory.search_warehouses" optionLabel="name" entity="warehouses"/>
+      <field name="price_list" label="Sell price list" source="erp_pricing.list_price_lists" optionLabel="name" entity="price lists"/>
+      <field name="currency" label="Currency code"/>
+    </group>
+  </view>
+</page>

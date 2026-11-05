@@ -1,0 +1,131 @@
+{
+  "name": "shipment",
+  "icon": "truck",
+  "title_field": "number",
+  "fields": [
+    {
+      "id": "fld_7t17mljfpv",
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "max_length": 32,
+      "index": "unique",
+      "sequence": {
+        "pattern": "SH-{YYYY}-{#####}",
+        "reset": "yearly",
+        "scope": "company",
+        "assign_on": {
+          "field": "state",
+          "values": [
+            "shipped"
+          ]
+        }
+      }
+    },
+    {
+      "id": "fld_g0de8bc9st",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_8swwnkydgc",
+      "name": "pick",
+      "label": "%pick%",
+      "type": "link",
+      "target": "pick_list",
+      "index": "plain"
+    },
+    {
+      "id": "fld_hoqlyxvn6k",
+      "name": "carrier",
+      "label": "%carrier%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_mz5ukz385b",
+      "name": "tracking",
+      "label": "%tracking%",
+      "type": "string",
+      "max_length": 120
+    },
+    {
+      "id": "fld_dccwx8yl0e",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "draft",
+      "track": true,
+      "options": [
+        {
+          "id": "opt_mvcj6v804x",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_11z2tc7q48",
+          "value": "shipped",
+          "label": "%shipped%"
+        },
+        {
+          "id": "opt_7yj8tau0oi",
+          "value": "delivered",
+          "label": "%delivered%"
+        },
+        {
+          "id": "opt_p9qqsucm30",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_ptqz73ttgn",
+      "name": "shipped_on",
+      "label": "%shipped_on%",
+      "type": "date"
+    },
+    {
+      "id": "fld_cwg2nn7bjn",
+      "name": "packages",
+      "label": "%packages%",
+      "type": "child",
+      "target": "shipment_package",
+      "inverse": "shipment",
+      "order": "position"
+    },
+    {
+      "id": "fld_fl9wpyywh3",
+      "name": "package_count",
+      "label": "%package_count%",
+      "type": "int",
+      "compute": "count(packages)"
+    }
+  ],
+  "chatter": {
+    "enabled": true,
+    "messages": true,
+    "notes": true,
+    "followers": true,
+    "track_changes": true
+  },
+  "view": {
+    "list": [
+      "number",
+      "carrier",
+      "tracking",
+      "state",
+      "shipped_on",
+      "package_count"
+    ]
+  },
+  "model_id": "mdl_1eg0bbzl43",
+  "label": "%shipment%",
+  "plural_label": "%shipments%"
+}

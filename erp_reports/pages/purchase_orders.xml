@@ -1,0 +1,10 @@
+<page roles="reports_reader" route="/erp/reports/purchase_orders" title="Purchase orders by state" menu="false">
+  <view type="list" source="purchase_orders_by_state">
+    <columns>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="orders" label="Orders"/>
+      <column field="value" label="Value"/>
+    </columns>
+    <empty title="Nothing to report" description="Purchase orders appear here."/>
+  </view>
+</page>

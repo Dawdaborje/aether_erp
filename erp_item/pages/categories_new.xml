@@ -1,0 +1,10 @@
+<page roles="item_admin" route="/erp/items/categories/new" title="New category" model="item_category" menu="false">
+  <view type="form" function="create_category" submit="Add category" success="Category added" redirect="/erp/items/categories">
+    <group title="Category" cols="2">
+      <field name="code" label="Code" required="true"/>
+      <field name="name" label="Name" required="true"/>
+      <field name="parent" label="Parent" source="list_categories" entity="categories"/>
+      <field name="valuation_method" label="Valuation" fieldType="selection" options="fifo, average, standard"/>
+    </group>
+  </view>
+</page>

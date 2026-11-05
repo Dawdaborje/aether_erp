@@ -1,0 +1,12 @@
+<page roles="reports_reader" route="/erp/reports/manufacturing" title="Manufacturing by state" menu="false">
+  <view type="list" source="mfg_by_state">
+    <columns>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="orders" label="Orders"/>
+      <column field="qty" label="Quantity"/>
+      <column field="late" label="Late"/>
+      <column field="labour" label="Labour cost"/>
+    </columns>
+    <empty title="Nothing to report" description="Manufacturing orders appear here."/>
+  </view>
+</page>

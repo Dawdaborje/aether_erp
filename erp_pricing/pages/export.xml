@@ -1,0 +1,3 @@
+<page roles="pricing_reader,pricing_admin" route="/erp/pricing/export/{model}" title="Export" menu="false">
+  <viewer source="export_data" height="480"/>
+</page>

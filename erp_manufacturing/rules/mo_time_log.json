@@ -1,0 +1,39 @@
+{
+  "model": "mo_time_log",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "mfg_reader",
+        "mfg_user",
+        "mfg_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "mfg_user",
+        "mfg_admin"
+      ],
+      "operations": [
+        "create"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "operation",
+        "minutes",
+        "logged_on",
+        "note"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

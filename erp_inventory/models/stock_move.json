@@ -1,0 +1,183 @@
+{
+  "model_id": "mdl_euypr4b86s",
+  "name": "stock_move",
+  "label": "%stock_move%",
+  "plural_label": "%stock_moves%",
+  "icon": "arrow-left-right",
+  "title_field": "number",
+  "fields": [
+    {
+      "id": "fld_dy5fbs0w9g",
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "max_length": 40,
+      "index": "plain"
+    },
+    {
+      "id": "fld_rs9aj9izst",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_yo8bg5zw2l",
+      "name": "kind",
+      "label": "%kind%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_tlc66txr7s",
+          "value": "receipt",
+          "label": "%receipt%"
+        },
+        {
+          "id": "opt_vbkq64ifb2",
+          "value": "issue",
+          "label": "%issue%"
+        },
+        {
+          "id": "opt_fast3ga3eh",
+          "value": "transfer",
+          "label": "%transfer%"
+        },
+        {
+          "id": "opt_sdskxv6bfg",
+          "value": "adjust",
+          "label": "%adjust%"
+        },
+        {
+          "id": "opt_uxirmxqjry",
+          "value": "manufacture_consume",
+          "label": "%manufacture_consume%"
+        },
+        {
+          "id": "opt_uwnoyhvwvs",
+          "value": "manufacture_produce",
+          "label": "%manufacture_produce%"
+        },
+        {
+          "id": "opt_xtf4vijuaj",
+          "value": "void",
+          "label": "%void%"
+        }
+      ],
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_rxoqf1f2iu",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_qlmpw2f7vz",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_s6bm3yklsz",
+          "value": "posted",
+          "label": "%posted%"
+        },
+        {
+          "id": "opt_c7j5aoqkeh",
+          "value": "void",
+          "label": "%void%"
+        }
+      ],
+      "required": true,
+      "default": "draft",
+      "index": "plain"
+    },
+    {
+      "id": "fld_thrljky876",
+      "name": "posting_date",
+      "label": "%posting_date%",
+      "type": "date",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_k19wpb1q3q",
+      "name": "currency",
+      "label": "%currency%",
+      "type": "string",
+      "max_length": 8,
+      "required": true
+    },
+    {
+      "id": "fld_ehl3cll7t0",
+      "name": "total_value",
+      "label": "%total_value%",
+      "type": "decimal",
+      "scale": 6,
+      "default": "0"
+    },
+    {
+      "id": "fld_lybkwqtpnp",
+      "name": "source_kind",
+      "label": "%source_kind%",
+      "type": "string",
+      "max_length": 80
+    },
+    {
+      "id": "fld_dewngkthv1",
+      "name": "source_id",
+      "label": "%source_id%",
+      "type": "string",
+      "max_length": 80,
+      "index": "plain"
+    },
+    {
+      "id": "fld_v6vmq69bls",
+      "name": "source_version",
+      "label": "%source_version%",
+      "type": "int",
+      "default": 1
+    },
+    {
+      "id": "fld_181wrumcxr",
+      "name": "idem_key",
+      "label": "%idem_key%",
+      "type": "string",
+      "max_length": 160,
+      "index": "unique"
+    },
+    {
+      "id": "fld_y7jx3qym37",
+      "name": "reverses",
+      "label": "%reverses%",
+      "type": "link",
+      "target": "stock_move"
+    },
+    {
+      "id": "fld_5fzktergnr",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "string",
+      "max_length": 300
+    },
+    {
+      "id": "fld_hqosf11w3f",
+      "name": "seq",
+      "label": "%seq%",
+      "type": "int",
+      "index": "plain"
+    }
+  ],
+  "view": {
+    "list": [
+      "number",
+      "kind",
+      "state",
+      "posting_date",
+      "total_value"
+    ]
+  }
+}

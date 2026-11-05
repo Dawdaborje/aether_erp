@@ -1,0 +1,123 @@
+{
+  "model_id": "mdl_50sr1xfxdb",
+  "name": "quotation_line",
+  "label": "%quotation_line%",
+  "plural_label": "%quotation_lines%",
+  "icon": "list",
+  "title_field": "line_no",
+  "fields": [
+    {
+      "id": "fld_oyp62y5bes",
+      "name": "quotation",
+      "label": "%quotation%",
+      "type": "link",
+      "required": true,
+      "target": "quotation",
+      "index": "plain"
+    },
+    {
+      "id": "fld_xudrgc8n3z",
+      "name": "line_no",
+      "label": "%line_no%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_vjhtokfh3r",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain"
+    },
+    {
+      "id": "fld_deexfykzxd",
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "required": true,
+      "scale": 6
+    },
+    {
+      "id": "fld_4cs6jy4b8z",
+      "name": "uom",
+      "label": "%uom%",
+      "type": "link",
+      "target": "uom.uom",
+      "target_id": "mdl_gidmmkjdj5",
+      "index": "plain"
+    },
+    {
+      "id": "fld_voxmiy05bd",
+      "name": "unit_price",
+      "label": "%unit_price%",
+      "type": "decimal",
+      "required": true,
+      "scale": 6
+    },
+    {
+      "id": "fld_y3l17j5zuj",
+      "name": "discount_pct",
+      "label": "%discount_pct%",
+      "type": "decimal",
+      "scale": 4,
+      "default": "0"
+    },
+    {
+      "id": "fld_q1wz01wvuw",
+      "name": "tax",
+      "label": "%tax%",
+      "type": "link",
+      "target": "erp_pricing.tax",
+      "target_id": "mdl_shfete7izv",
+      "index": "plain"
+    },
+    {
+      "id": "fld_9sp6roe208",
+      "name": "tax_amount",
+      "label": "%tax_amount%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_by0gvztgy7",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "scale": 2,
+      "default": "0"
+    },
+    {
+      "id": "fld_aczspupuoi",
+      "name": "optional",
+      "label": "%optional%",
+      "type": "bool",
+      "default": false,
+      "help": "Offered as an add-on; left off the order unless taken."
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_uudc0dssga",
+      "fields": [
+        "quotation",
+        "line_no"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "quotation",
+      "line_no",
+      "item",
+      "qty",
+      "unit_price",
+      "amount",
+      "optional"
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+<page roles="pricing_reader,pricing_admin" route="/erp/pricing/lists/{id}" title="Prices" model="price_list_item" menu="false">
+  <view type="list" model="price_list_item" source="list_price_list_items" create="/erp/pricing/lists/{id}/new" create_label="Add price">
+    <search/>
+    <columns>
+      <column field="item" label="Item"/>
+      <column field="party" label="Only for"/>
+      <column field="min_qty" label="From qty"/>
+      <column field="unit_price" label="Price"/>
+      <column field="discount_pct" label="Discount %"/>
+      <column field="valid_from" label="From"/>
+      <column field="valid_to" label="To"/>
+    </columns>
+    <empty title="No prices yet" description="Add the first price for this list."/>
+  </view>
+</page>

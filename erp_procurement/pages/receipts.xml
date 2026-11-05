@@ -1,0 +1,13 @@
+<page roles="purchase_reader,purchase_user,purchase_admin" route="/erp/procurement/receipts" title="Receipts" model="purchase_receipt" menu="false">
+  <view type="list" model="purchase_receipt" source="list_receipts">
+    <search/>
+    <columns>
+      <column field="number" label="Number"/>
+      <column field="po" label="Order"/>
+      <column field="supplier" label="Supplier"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="receipt_date" label="Date"/>
+    </columns>
+    <empty title="No receipts yet" description="Receive goods against a confirmed order."/>
+  </view>
+</page>

@@ -1,0 +1,15 @@
+<page roles="replenish_admin" route="/erp/replenishment/rules/new" title="New reorder rule" model="reorder_rule" menu="false">
+  <view type="form" function="create_rule" submit="Add rule" success="Rule added" redirect="/erp/replenishment/rules">
+    <group title="Rule" cols="2">
+      <field name="company" label="Company" required="true" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="item" label="Item" required="true" source="erp_item.search_items" optionLabel="name" entity="items"/>
+      <field name="warehouse" label="Warehouse" required="true" source="erp_inventory.search_warehouses" optionLabel="name" entity="warehouses"/>
+      <field name="min_qty" label="Minimum" required="true" fieldType="float"/>
+      <field name="max_qty" label="Maximum" required="true" fieldType="float"/>
+      <field name="multiple" label="Order multiple" fieldType="float"/>
+      <field name="route" label="Route" fieldType="selection" options="buy, make"/>
+      <field name="supplier" label="Supplier" source="party.list_parties" optionLabel="display_name" entity="parties"/>
+      <field name="lead_days" label="Lead days" fieldType="integer"/>
+    </group>
+  </view>
+</page>

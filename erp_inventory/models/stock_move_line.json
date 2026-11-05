@@ -1,0 +1,138 @@
+{
+  "model_id": "mdl_rvmfe85gbb",
+  "name": "stock_move_line",
+  "label": "%stock_move_line%",
+  "plural_label": "%stock_move_lines%",
+  "icon": "list",
+  "title_field": "line_no",
+  "fields": [
+    {
+      "id": "fld_o5b0r6hutk",
+      "name": "move",
+      "label": "%move%",
+      "type": "link",
+      "required": true,
+      "target": "stock_move",
+      "index": "plain"
+    },
+    {
+      "id": "fld_02rl0c3jb6",
+      "name": "line_no",
+      "label": "%line_no%",
+      "type": "int",
+      "required": true
+    },
+    {
+      "id": "fld_5hgdtz4zdr",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain"
+    },
+    {
+      "id": "fld_qd4psav2nq",
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "help": "Signed: positive into warehouse, negative out. Transfer uses warehouse_from + warehouse."
+    },
+    {
+      "id": "fld_gaqjr29ycm",
+      "name": "uom",
+      "label": "%uom%",
+      "type": "link",
+      "required": true,
+      "target": "uom.uom",
+      "target_id": "mdl_gidmmkjdj5"
+    },
+    {
+      "id": "fld_uioa5lpsam",
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "required": true,
+      "target": "stock_warehouse",
+      "index": "plain",
+      "help": "Destination (or sole) warehouse."
+    },
+    {
+      "id": "fld_e9tre6v3ai",
+      "name": "warehouse_from",
+      "label": "%warehouse_from%",
+      "type": "link",
+      "target": "stock_warehouse",
+      "help": "Source warehouse on a transfer."
+    },
+    {
+      "id": "fld_p378ghxrj4",
+      "name": "lot",
+      "label": "%lot%",
+      "type": "string",
+      "max_length": 80,
+      "index": "plain"
+    },
+    {
+      "id": "fld_i6rqivoyt5",
+      "name": "unit_cost",
+      "label": "%unit_cost%",
+      "type": "decimal",
+      "scale": 6,
+      "default": "0"
+    },
+    {
+      "id": "fld_aewopyf3di",
+      "name": "value",
+      "label": "%value%",
+      "type": "decimal",
+      "scale": 6,
+      "default": "0"
+    },
+    {
+      "id": "fld_2o2vuxwq5r",
+      "name": "valuation_method",
+      "label": "%valuation_method%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_vymos4ptrv",
+          "value": "fifo",
+          "label": "%fifo%"
+        },
+        {
+          "id": "opt_53dsmge4oh",
+          "value": "average",
+          "label": "%average%"
+        },
+        {
+          "id": "opt_6j7xi7clll",
+          "value": "standard",
+          "label": "%standard%"
+        }
+      ]
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_whabl7lu2a",
+      "fields": [
+        "move",
+        "line_no"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "move",
+      "line_no",
+      "item",
+      "qty",
+      "value"
+    ]
+  }
+}

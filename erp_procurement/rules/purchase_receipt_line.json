@@ -1,0 +1,43 @@
+{
+  "model": "purchase_receipt_line",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "purchase_reader",
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "receipt",
+        "line_no",
+        "po_line",
+        "item",
+        "qty",
+        "warehouse",
+        "unit_price"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

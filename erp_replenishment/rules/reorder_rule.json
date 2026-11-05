@@ -1,0 +1,45 @@
+{
+  "model": "reorder_rule",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "replenish_reader",
+        "replenish_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "replenish_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "company",
+        "item",
+        "warehouse",
+        "min_qty",
+        "max_qty",
+        "multiple",
+        "route",
+        "supplier",
+        "bom",
+        "lead_days",
+        "active"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

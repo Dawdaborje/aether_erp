@@ -1,0 +1,15 @@
+<page roles="sales_reader,sales_user,sales_admin" route="/erp/selling/quotations/{id}" title="Quotation lines" model="quotation_line" menu="false">
+  <view type="list" model="quotation_line" source="list_quotation_lines" create="/erp/selling/quotations/{id}/new" create_label="Add line">
+    <columns>
+      <column field="line_no" label="#"/>
+      <column field="item" label="Item"/>
+      <column field="qty" label="Qty"/>
+      <column field="unit_price" label="Price"/>
+      <column field="discount_pct" label="Discount %"/>
+      <column field="amount" label="Net"/>
+      <column field="tax_amount" label="Tax"/>
+      <column field="optional" label="Optional" fieldType="boolean"/>
+    </columns>
+    <empty title="No lines yet" description="Add what you are offering."/>
+  </view>
+</page>

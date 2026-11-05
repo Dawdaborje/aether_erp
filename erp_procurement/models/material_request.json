@@ -1,0 +1,155 @@
+{
+  "model_id": "mdl_jomwizfd0q",
+  "name": "material_request",
+  "label": "%material_request%",
+  "plural_label": "%material_requests%",
+  "icon": "clipboard-list",
+  "title_field": "number",
+  "fields": [
+    {
+      "id": "fld_dv6pk8343t",
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "max_length": 32,
+      "index": "unique",
+      "sequence": {
+        "pattern": "MR-{YYYY}-{#####}",
+        "reset": "yearly"
+      }
+    },
+    {
+      "id": "fld_ahokfblykd",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_7f1wp8xnco",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "draft",
+      "track": true,
+      "options": [
+        {
+          "id": "opt_drilraxt6d",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_ysbeannnqy",
+          "value": "submitted",
+          "label": "%submitted%"
+        },
+        {
+          "id": "opt_yxgw222k6o",
+          "value": "approved",
+          "label": "%approved%"
+        },
+        {
+          "id": "opt_nfbqqko7tr",
+          "value": "ordered",
+          "label": "%ordered%"
+        },
+        {
+          "id": "opt_vs0z21n8ia",
+          "value": "rejected",
+          "label": "%rejected%"
+        },
+        {
+          "id": "opt_x8j0z7x20y",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_kysbl29tqu",
+      "name": "request_date",
+      "label": "%request_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_d87wypc5dr",
+      "name": "needed_by",
+      "label": "%needed_by%",
+      "type": "date",
+      "help": "When the goods are needed."
+    },
+    {
+      "id": "fld_dtz5xp6dfn",
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "help": "Where the goods are wanted."
+    },
+    {
+      "id": "fld_l22rrcv5t7",
+      "name": "notes",
+      "label": "%notes%",
+      "type": "text"
+    },
+    {
+      "id": "fld_0vatzo9o0j",
+      "name": "lines",
+      "label": "%lines%",
+      "type": "child",
+      "target": "material_request_line",
+      "inverse": "request",
+      "order": "position"
+    },
+    {
+      "id": "fld_132rsuxh8l",
+      "name": "line_count",
+      "label": "%line_count%",
+      "type": "int",
+      "compute": "count(lines)"
+    }
+  ],
+  "checks": [
+    {
+      "require": {
+        "or": [
+          {
+            "needed_by": {
+              "null": true
+            }
+          },
+          {
+            "needed_by": {
+              "gte": {
+                "field": "request_date"
+              }
+            }
+          }
+        ]
+      },
+      "message": "the date needed is before the request date"
+    }
+  ],
+  "chatter": {
+    "enabled": true,
+    "messages": true,
+    "notes": true,
+    "followers": true,
+    "track_changes": true
+  },
+  "view": {
+    "list": [
+      "number",
+      "state",
+      "request_date",
+      "needed_by",
+      "line_count"
+    ]
+  }
+}

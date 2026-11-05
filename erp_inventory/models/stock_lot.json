@@ -1,0 +1,77 @@
+{
+  "model_id": "mdl_r47an7u1pn",
+  "name": "stock_lot",
+  "label": "%stock_lot%",
+  "plural_label": "%stock_lots%",
+  "icon": "tag",
+  "title_field": "code",
+  "fields": [
+    {
+      "id": "fld_lfds8xax54",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_qxe443dk5c",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain"
+    },
+    {
+      "id": "fld_bjjd4be4fp",
+      "name": "code",
+      "label": "%code%",
+      "type": "string",
+      "required": true,
+      "max_length": 64
+    },
+    {
+      "id": "fld_5qknusxdpx",
+      "name": "expiry_date",
+      "label": "%expiry_date%",
+      "type": "date",
+      "index": "plain"
+    },
+    {
+      "id": "fld_zrz5xiyarg",
+      "name": "mfg_date",
+      "label": "%mfg_date%",
+      "type": "date"
+    },
+    {
+      "id": "fld_1eqn405m0b",
+      "name": "note",
+      "label": "%note%",
+      "type": "string",
+      "max_length": 200
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_pyczngyv0c",
+      "fields": [
+        "company",
+        "item",
+        "code"
+      ],
+      "unique": true
+    }
+  ],
+  "view": {
+    "list": [
+      "item",
+      "code",
+      "expiry_date",
+      "mfg_date"
+    ]
+  }
+}

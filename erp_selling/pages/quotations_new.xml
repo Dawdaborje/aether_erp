@@ -1,0 +1,14 @@
+<page roles="sales_user,sales_admin" route="/erp/selling/quotations/new" title="New quotation" model="quotation" menu="false">
+  <view type="form" function="create_quotation" submit="Create quotation" success="Quotation created" redirect="/erp/selling/quotations">
+    <group title="Quotation" cols="2">
+      <field name="company" label="Company" required="true" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="customer" label="Customer" required="true" source="party.list_parties" optionLabel="display_name" entity="parties"/>
+      <field name="quote_date" label="Date" fieldType="date"/>
+      <field name="valid_until" label="Valid until" fieldType="date"/>
+      <field name="warehouse" label="Deliver from" source="erp_inventory.search_warehouses" optionLabel="name" entity="warehouses"/>
+      <field name="payment_term" label="Payment term" source="erp_pricing.list_payment_terms" optionLabel="name" entity="terms"/>
+      <field name="price_list" label="Sell price list" source="erp_pricing.list_price_lists" optionLabel="name" entity="price_lists"/>
+      <field name="notes" label="Notes"/>
+    </group>
+  </view>
+</page>

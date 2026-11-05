@@ -1,0 +1,54 @@
+{
+  "model_id": "mdl_vfsamtwpjz",
+  "name": "mfg_counter",
+  "label": "%mfg_counter%",
+  "plural_label": "%mfg_counters%",
+  "icon": "hash",
+  "title_field": "prefix",
+  "fields": [
+    {
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain",
+      "id": "fld_yuwv15y20r"
+    },
+    {
+      "name": "prefix",
+      "label": "%prefix%",
+      "type": "string",
+      "required": true,
+      "max_length": 20,
+      "id": "fld_d7xh0tlhie"
+    },
+    {
+      "name": "year",
+      "label": "%year%",
+      "type": "int",
+      "required": true,
+      "id": "fld_l81k5n9ope"
+    },
+    {
+      "name": "next",
+      "label": "%next%",
+      "type": "int",
+      "required": true,
+      "default": 1,
+      "id": "fld_266omsm2du"
+    }
+  ],
+  "indexes": [
+    {
+      "id": "idx_is03jtxls6",
+      "fields": [
+        "company",
+        "prefix",
+        "year"
+      ],
+      "unique": true
+    }
+  ]
+}

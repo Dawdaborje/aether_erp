@@ -1,0 +1,18 @@
+<page roles="purchase_reader,purchase_user,purchase_admin" route="/erp/procurement/rfqs" title="Quotation requests" model="rfq" menu="false">
+  <view type="list" model="rfq" source="list_rfqs" open="/erp/procurement/rfqs/{id}" create="/erp/procurement/rfqs/new" create_label="New request">
+    <search/>
+    <columns>
+      <column field="number" label="Number"/>
+      <column field="supplier" label="Supplier"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="rfq_date" label="Date"/>
+      <column field="request_group" label="Group"/>
+    </columns>
+    <actions>
+      <action name="send_rfq" label="Send" function="send_rfq" confirm="Send this request?"/>
+      <action name="award_rfq" label="Award" function="award_rfq" confirm="Award and turn into a purchase order?"/>
+      <action name="cancel_rfq" label="Cancel" function="cancel_rfq" confirm="Cancel this request?" danger="true"/>
+    </actions>
+    <empty title="No quotation requests" description="Ask suppliers for prices before ordering."/>
+  </view>
+</page>

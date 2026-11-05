@@ -1,0 +1,12 @@
+<page roles="stock_reader,stock_user,stock_admin" route="/erp/inventory/lots" title="Lots &amp; serials" model="stock_lot" menu="false">
+  <view type="list" model="stock_lot" source="list_lots" create="/erp/inventory/lots/new" create_label="Set expiry">
+    <search/>
+    <columns>
+      <column field="item" label="Item"/>
+      <column field="code" label="Lot / serial"/>
+      <column field="expiry_date" label="Expires"/>
+      <column field="mfg_date" label="Made"/>
+    </columns>
+    <empty title="No lots yet" description="Lots are registered when tracked items are received."/>
+  </view>
+</page>

@@ -1,0 +1,44 @@
+{
+  "model": "bom_line",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "mfg_reader",
+        "mfg_user",
+        "mfg_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "mfg_user",
+        "mfg_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "bom",
+        "line_no",
+        "item",
+        "qty",
+        "uom",
+        "scrap_pct",
+        "is_byproduct",
+        "sub_bom"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

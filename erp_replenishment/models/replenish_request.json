@@ -1,0 +1,187 @@
+{
+  "model_id": "mdl_77tmid1lu2",
+  "name": "replenish_request",
+  "label": "%replenish_request%",
+  "plural_label": "%replenish_requests%",
+  "icon": "clipboard-list",
+  "title_field": "item",
+  "fields": [
+    {
+      "id": "fld_gjdivknr7x",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_7zyyjoj2s8",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain"
+    },
+    {
+      "id": "fld_rmn4teta5q",
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "required": true,
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "index": "plain"
+    },
+    {
+      "id": "fld_d8946g50tk",
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "required": true,
+      "scale": 6
+    },
+    {
+      "id": "fld_xrmogzb930",
+      "name": "route",
+      "label": "%route%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_gyoxy9lr51",
+          "value": "buy",
+          "label": "%buy%"
+        },
+        {
+          "id": "opt_10tt1o3br1",
+          "value": "make",
+          "label": "%make%"
+        }
+      ],
+      "default": "buy"
+    },
+    {
+      "id": "fld_oml3i34eac",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_swabtkrlzn",
+          "value": "open",
+          "label": "%open%"
+        },
+        {
+          "id": "opt_knehrsjwg9",
+          "value": "converted",
+          "label": "%converted%"
+        },
+        {
+          "id": "opt_wsdigc36gw",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ],
+      "default": "open"
+    },
+    {
+      "id": "fld_zgclxgqot2",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_z6m0g7n675",
+          "value": "reorder",
+          "label": "%reorder%"
+        },
+        {
+          "id": "opt_rkb648w35q",
+          "value": "demand",
+          "label": "%demand%"
+        },
+        {
+          "id": "opt_q8sw41iltr",
+          "value": "manual",
+          "label": "%manual%"
+        }
+      ],
+      "default": "reorder"
+    },
+    {
+      "id": "fld_slplcs1e5t",
+      "name": "rule",
+      "label": "%rule%",
+      "type": "link",
+      "target": "reorder_rule",
+      "index": "plain"
+    },
+    {
+      "id": "fld_mib7f2svvn",
+      "name": "supplier",
+      "label": "%supplier%",
+      "type": "link",
+      "target": "party.party",
+      "target_id": "mdl_mr76tss5ic",
+      "index": "plain"
+    },
+    {
+      "id": "fld_v7vm7ynyy4",
+      "name": "demand_kind",
+      "label": "%demand_kind%",
+      "type": "string",
+      "max_length": 64
+    },
+    {
+      "id": "fld_pio5i5ikmv",
+      "name": "demand_id",
+      "label": "%demand_id%",
+      "type": "string",
+      "max_length": 64
+    },
+    {
+      "id": "fld_9a09ein1ll",
+      "name": "needed_by",
+      "label": "%needed_by%",
+      "type": "date"
+    },
+    {
+      "id": "fld_1vh4i2m9q9",
+      "name": "result_kind",
+      "label": "%result_kind%",
+      "type": "string",
+      "max_length": 32,
+      "help": "po or mo once converted."
+    },
+    {
+      "id": "fld_tpkihcrgph",
+      "name": "result_id",
+      "label": "%result_id%",
+      "type": "string",
+      "max_length": 64
+    },
+    {
+      "id": "fld_c3qxbvw7rz",
+      "name": "note",
+      "label": "%note%",
+      "type": "string",
+      "max_length": 200
+    }
+  ],
+  "view": {
+    "list": [
+      "item",
+      "warehouse",
+      "qty",
+      "route",
+      "state",
+      "reason"
+    ]
+  }
+}

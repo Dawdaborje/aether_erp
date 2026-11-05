@@ -1,0 +1,9 @@
+<page roles="stock_reader,stock_user,stock_admin" route="/erp/inventory/landed/{id}" title="Charges" model="stock_landed_charge" menu="false">
+  <view type="list" model="stock_landed_charge" source="list_landed_charges" create="/erp/inventory/landed/{id}/new" create_label="Add charge">
+    <columns>
+      <column field="description" label="Description"/>
+      <column field="amount" label="Amount"/>
+    </columns>
+    <empty title="No charges yet" description="Add freight, duty or handling."/>
+  </view>
+</page>

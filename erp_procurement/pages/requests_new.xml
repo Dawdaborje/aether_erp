@@ -1,0 +1,14 @@
+<page roles="purchase_user,purchase_admin" route="/erp/procurement/requests/new" title="New material request" model="material_request" menu="false">
+  <view type="form" function="create_material_request" submit="Create request" success="Request created" redirect="/erp/procurement/requests">
+    <group title="Request" cols="2">
+      <field name="company" label="Company" required="true" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="warehouse" label="Deliver to" source="erp_inventory.search_warehouses" optionLabel="name" entity="warehouses"/>
+      <field name="needed_by" label="Needed by" fieldType="date"/>
+      <field name="notes" label="Notes"/>
+    </group>
+    <group title="First item" cols="2">
+      <field name="item" label="Item" required="true" source="erp_item.search_items" optionLabel="name" entity="items"/>
+      <field name="qty" label="Quantity" required="true" fieldType="float"/>
+    </group>
+  </view>
+</page>

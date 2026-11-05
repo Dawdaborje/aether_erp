@@ -1,0 +1,39 @@
+{
+  "model": "customer_credit",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "sales_reader",
+        "sales_user",
+        "sales_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "sales_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "company",
+        "customer",
+        "credit_limit",
+        "on_hold"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

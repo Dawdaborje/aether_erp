@@ -1,0 +1,17 @@
+<page roles="purchase_reader,purchase_user,purchase_admin" route="/erp/procurement/pos/{id}" title="Order lines" model="po_line" menu="false">
+  <view type="list" model="po_line" source="list_po_lines" create="/erp/procurement/pos/{id}/new" create_label="Add line">
+    <columns>
+      <column field="line_no" label="#"/>
+      <column field="item" label="Item"/>
+      <column field="qty" label="Qty"/>
+      <column field="unit_price" label="Price"/>
+      <column field="discount_pct" label="Discount %"/>
+      <column field="amount" label="Net"/>
+      <column field="tax_amount" label="Tax"/>
+      <column field="qty_received" label="Received"/>
+      <column field="qty_billed" label="Billed"/>
+      <column field="qty_returned" label="Returned"/>
+    </columns>
+    <empty title="No lines yet" description="Add what you are buying."/>
+  </view>
+</page>

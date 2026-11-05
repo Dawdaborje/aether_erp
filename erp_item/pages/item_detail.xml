@@ -1,0 +1,13 @@
+<page roles="item_admin" route="/erp/items/{id}" title="Item" model="item" menu="false">
+  <view type="form" function="set_item" submit="Save" success="Saved" redirect="/erp/items" source="get_item">
+    <group title="Item" cols="2">
+      <field name="name" label="Name"/>
+      <field name="category" label="Category" source="list_categories" entity="categories"/>
+      <field name="uom" label="Unit" source="uom.list_units" optionLabel="code" entity="units"/>
+      <field name="tracking" label="Tracking" fieldType="selection" options="none, lot, serial"/>
+      <field name="is_stocked" label="Stocked" fieldType="boolean"/>
+      <field name="expiry_days" label="Shelf life (days)" fieldType="integer"/>
+      <field name="active" label="Active" fieldType="boolean"/>
+    </group>
+  </view>
+</page>

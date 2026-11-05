@@ -1,0 +1,42 @@
+{
+  "model": "bom_operation",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "mfg_reader",
+        "mfg_user",
+        "mfg_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "mfg_user",
+        "mfg_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "bom",
+        "seq",
+        "name",
+        "work_center",
+        "setup_minutes",
+        "cycle_minutes"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

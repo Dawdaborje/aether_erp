@@ -1,0 +1,91 @@
+{
+  "name": "putaway_rule",
+  "icon": "route",
+  "title_field": "priority",
+  "fields": [
+    {
+      "id": "fld_u4dxfjrlx2",
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "index": "plain",
+      "required": true
+    },
+    {
+      "id": "fld_xbaa075hhv",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain",
+      "help": "Rule for this item, or leave empty to use the category."
+    },
+    {
+      "id": "fld_gya77or5pm",
+      "name": "category",
+      "label": "%category%",
+      "type": "link",
+      "target": "erp_item.item_category",
+      "target_id": "mdl_qeo4r928f6",
+      "index": "plain"
+    },
+    {
+      "id": "fld_94la9oqye0",
+      "name": "bin",
+      "label": "%bin%",
+      "type": "link",
+      "required": true,
+      "target": "wh_bin",
+      "index": "plain"
+    },
+    {
+      "id": "fld_a726374bz8",
+      "name": "priority",
+      "label": "%priority%",
+      "type": "int",
+      "default": 10,
+      "help": "Lower runs first."
+    },
+    {
+      "id": "fld_w8ddvzj2z1",
+      "name": "active",
+      "label": "%active%",
+      "type": "bool",
+      "default": true
+    }
+  ],
+  "checks": [
+    {
+      "require": {
+        "or": [
+          {
+            "item": {
+              "null": false
+            }
+          },
+          {
+            "category": {
+              "null": false
+            }
+          }
+        ]
+      },
+      "message": "a rule needs an item or a category"
+    }
+  ],
+  "view": {
+    "list": [
+      "warehouse",
+      "item",
+      "category",
+      "bin",
+      "priority"
+    ]
+  },
+  "model_id": "mdl_7wroptgk5f",
+  "label": "%putaway_rule%",
+  "plural_label": "%putaway_rules%"
+}

@@ -1,0 +1,39 @@
+{
+  "model": "stock_landed_charge",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "stock_reader",
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "stock_user",
+        "stock_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "landed",
+        "description",
+        "amount"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

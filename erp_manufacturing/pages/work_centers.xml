@@ -1,0 +1,12 @@
+<page roles="mfg_reader,mfg_user,mfg_admin" route="/erp/manufacturing/work-centers" title="Work centers" model="work_center" menu="false">
+  <view type="list" model="work_center" source="list_work_centers" create="/erp/manufacturing/work-centers/new" create_label="New work center">
+    <search/>
+    <columns>
+      <column field="code" label="Code"/>
+      <column field="name" label="Name"/>
+      <column field="cost_per_hour" label="Cost per hour"/>
+      <column field="active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No work centers yet" description="Add where operations are done."/>
+  </view>
+</page>

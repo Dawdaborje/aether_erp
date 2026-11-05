@@ -1,0 +1,34 @@
+{
+  "model_id": "mdl_whset00001",
+  "name": "wh_setting",
+  "label": "%wh_setting%",
+  "plural_label": "%wh_settings%",
+  "icon": "settings",
+  "title_field": "company",
+  "fields": [
+    {
+      "id": "fld_whs0cmp001",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "unique"
+    },
+    {
+      "id": "fld_whs0blk001",
+      "name": "block_pick_on_mismatch",
+      "label": "%block_pick_on_mismatch%",
+      "type": "bool",
+      "default": false,
+      "help": "Confirming a pick is refused while the bins hold more of an item than the stock ledger has. Fix it with a bin movement or a count, then confirm again."
+    }
+  ],
+  "view": {
+    "list": [
+      "company",
+      "block_pick_on_mismatch"
+    ]
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "model_id": "mdl_aysve5j1bu",
+  "name": "stock_layer",
+  "label": "%stock_layer%",
+  "plural_label": "%stock_layers%",
+  "icon": "layers",
+  "title_field": "seq",
+  "fields": [
+    {
+      "id": "fld_91pyz4x59k",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_wrm73sdazi",
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "index": "plain"
+    },
+    {
+      "id": "fld_bnspk9bvbb",
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "required": true,
+      "target": "stock_warehouse",
+      "index": "plain"
+    },
+    {
+      "id": "fld_2p73a9n09h",
+      "name": "lot",
+      "label": "%lot%",
+      "type": "string",
+      "max_length": 80,
+      "index": "plain"
+    },
+    {
+      "id": "fld_22iulsgubp",
+      "name": "receipt_line",
+      "label": "%receipt_line%",
+      "type": "link",
+      "target": "stock_move_line",
+      "index": "plain"
+    },
+    {
+      "id": "fld_tou9vgrhqm",
+      "name": "seq",
+      "label": "%seq%",
+      "type": "int",
+      "required": true,
+      "index": "plain"
+    },
+    {
+      "id": "fld_w48qbi8ba8",
+      "name": "qty_in",
+      "label": "%qty_in%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true
+    },
+    {
+      "id": "fld_7svnfzr091",
+      "name": "value_in",
+      "label": "%value_in%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true
+    },
+    {
+      "id": "fld_15z4k3kt3v",
+      "name": "remaining_qty",
+      "label": "%remaining_qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true
+    },
+    {
+      "id": "fld_5s93891is5",
+      "name": "remaining_value",
+      "label": "%remaining_value%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true
+    },
+    {
+      "id": "fld_zvw8a6mm6q",
+      "name": "unit_cost",
+      "label": "%unit_cost%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true
+    },
+    {
+      "id": "fld_z7yjtdp3ff",
+      "name": "valuation_method",
+      "label": "%valuation_method%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_s3y7yjvjns",
+          "value": "fifo",
+          "label": "%fifo%"
+        },
+        {
+          "id": "opt_bvawuhmbr2",
+          "value": "average",
+          "label": "%average%"
+        },
+        {
+          "id": "opt_c2bmztv2a5",
+          "value": "standard",
+          "label": "%standard%"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "fld_nwj2nhwaq0",
+      "name": "opened_at",
+      "label": "%opened_at%",
+      "type": "date",
+      "required": true
+    }
+  ],
+  "view": {
+    "list": [
+      "item",
+      "warehouse",
+      "remaining_qty",
+      "remaining_value",
+      "valuation_method"
+    ]
+  }
+}

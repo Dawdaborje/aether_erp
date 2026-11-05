@@ -1,0 +1,49 @@
+{
+  "model_id": "mdl_qee9af07rg",
+  "name": "tax_component",
+  "label": "%tax_component%",
+  "plural_label": "%tax_components%",
+  "icon": "layers",
+  "title_field": "position",
+  "fields": [
+    {
+      "id": "fld_zols6chcei",
+      "name": "group",
+      "label": "%group%",
+      "type": "link",
+      "required": true,
+      "target": "tax",
+      "index": "plain"
+    },
+    {
+      "id": "fld_m128vxda0b",
+      "name": "position",
+      "label": "%position%",
+      "type": "int"
+    },
+    {
+      "id": "fld_b8nymlydn3",
+      "name": "component",
+      "label": "%component%",
+      "type": "link",
+      "required": true,
+      "target": "tax",
+      "index": "plain"
+    },
+    {
+      "id": "fld_vt1mxpe9fi",
+      "name": "compound",
+      "label": "%compound%",
+      "type": "bool",
+      "default": false,
+      "help": "Applies to the price plus the taxes before it, not to the price alone."
+    }
+  ],
+  "view": {
+    "list": [
+      "position",
+      "component",
+      "compound"
+    ]
+  }
+}

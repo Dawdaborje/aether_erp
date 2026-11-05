@@ -1,0 +1,20 @@
+<page roles="purchase_reader,purchase_user,purchase_admin" route="/erp/procurement/requests" title="Material requests" model="material_request" menu="false">
+  <view type="list" model="material_request" source="list_material_requests" create="/erp/procurement/requests/new" create_label="New request">
+    <search/>
+    <columns>
+      <column field="number" label="Number"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="request_date" label="Requested"/>
+      <column field="needed_by" label="Needed by"/>
+      <column field="line_count" label="Lines"/>
+    </columns>
+    <actions>
+      <action name="submit" label="Submit" function="submit_material_request" confirm="Submit this request for approval?"/>
+      <action name="approve" label="Approve" function="approve_material_request" confirm="Approve this request?"/>
+      <action name="reject" label="Reject" function="reject_material_request" confirm="Reject this request?" danger="true"/>
+      <action name="order" label="Order" function="order_material_request" confirm="Create purchase orders from this request?"/>
+      <action name="cancel" label="Cancel" function="cancel_material_request" confirm="Cancel this request?" danger="true"/>
+    </actions>
+    <empty title="No material requests" description="Ask for items here; approved requests turn into purchase orders."/>
+  </view>
+</page>

@@ -1,0 +1,10 @@
+<page roles="stock_user,stock_admin" route="/erp/inventory/counts/new" title="New stock count" model="stock_count" menu="false">
+  <view type="form" function="create_count" submit="Start count" success="Count started" redirect="/erp/inventory/counts">
+    <group title="Count" cols="2">
+      <field name="company" label="Company" required="true" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="warehouse" label="Warehouse" required="true" source="search_warehouses" entity="warehouses"/>
+      <field name="count_date" label="Date" fieldType="date"/>
+      <field name="note" label="Note"/>
+    </group>
+  </view>
+</page>

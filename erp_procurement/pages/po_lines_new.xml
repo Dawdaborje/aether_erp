@@ -1,0 +1,13 @@
+<page roles="purchase_user,purchase_admin" route="/erp/procurement/pos/{id}/new" title="Add order line" model="po_line" menu="false">
+  <view type="form" function="add_po_line" submit="Add line" success="Line added" redirect="/erp/procurement/pos/{id}">
+    <group title="Line" cols="2">
+      <field name="item" label="Item" required="true" source="erp_item.search_items" optionLabel="name" entity="items"/>
+      <field name="qty" label="Quantity" required="true" fieldType="float"/>
+      <field name="uom" label="Unit (blank = item unit)" source="uom.list_units" optionLabel="code" entity="units"/>
+      <field name="unit_price" label="Unit price (blank = price list)" fieldType="float"/>
+      <field name="discount_pct" label="Discount %" fieldType="float"/>
+      <field name="tax" label="Tax" source="erp_pricing.search_taxes" optionLabel="name" entity="taxes"/>
+      <field name="warehouse" label="Warehouse" source="erp_inventory.search_warehouses" optionLabel="name" entity="warehouses"/>
+    </group>
+  </view>
+</page>

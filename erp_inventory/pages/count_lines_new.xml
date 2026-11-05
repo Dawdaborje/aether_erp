@@ -1,0 +1,10 @@
+<page roles="stock_user,stock_admin" route="/erp/inventory/counts/{id}/new" title="Count an item" model="stock_count_line" menu="false">
+  <view type="form" function="set_count_line" submit="Save" success="Saved" redirect="/erp/inventory/counts/{id}">
+    <group title="Counted" cols="2">
+      <field name="item" label="Item" required="true" source="erp_item.search_items" optionLabel="name" entity="items"/>
+      <field name="lot" label="Lot or serial"/>
+      <field name="counted_qty" label="Counted quantity" required="true" fieldType="float"/>
+      <field name="unit_cost" label="Unit cost (for a gain)" fieldType="float"/>
+    </group>
+  </view>
+</page>

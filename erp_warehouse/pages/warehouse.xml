@@ -1,0 +1,13 @@
+<page roles="wh_reader,wh_user,wh_admin" route="/erp/warehouse" title="Warehouse" model="wh_bin" icon="warehouse" sort="36">
+  <view type="list" model="wh_bin" source="list_bins" create="/erp/warehouse/bins/new" create_label="New bin">
+    <search/>
+    <columns>
+      <column field="warehouse" label="Warehouse"/>
+      <column field="code" label="Code"/>
+      <column field="name" label="Name"/>
+      <column field="kind" label="Kind" fieldType="badge"/>
+      <column field="active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No bins yet" description="Add bins to say where stock sits inside a warehouse."/>
+  </view>
+</page>

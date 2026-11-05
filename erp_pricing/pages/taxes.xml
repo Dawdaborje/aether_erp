@@ -1,0 +1,15 @@
+<page roles="pricing_reader,pricing_admin" route="/erp/pricing/taxes" title="Taxes" model="tax" menu="false">
+  <view type="list" model="tax" source="search_taxes" create="/erp/pricing/taxes/new" create_label="New tax">
+    <search/>
+    <columns>
+      <column field="code" label="Code"/>
+      <column field="name" label="Name"/>
+      <column field="kind" label="Kind" fieldType="badge"/>
+      <column field="rate" label="Rate"/>
+      <column field="applies_to" label="Applies to" fieldType="badge"/>
+      <column field="price_includes_tax" label="Price includes tax" fieldType="boolean"/>
+      <column field="active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No taxes yet" description="Add the tax rates your documents use."/>
+  </view>
+</page>

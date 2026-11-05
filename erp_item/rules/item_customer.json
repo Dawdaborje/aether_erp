@@ -1,0 +1,38 @@
+{
+  "model": "item_customer",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "item_reader",
+        "item_admin",
+        "erp_inventory.stock_reader",
+        "erp_inventory.stock_user",
+        "erp_inventory.stock_admin",
+        "erp_procurement.purchase_reader",
+        "erp_procurement.purchase_user",
+        "erp_procurement.purchase_admin",
+        "erp_manufacturing.mfg_reader",
+        "erp_manufacturing.mfg_user",
+        "erp_manufacturing.mfg_admin",
+        "erp_selling.sales_reader",
+        "erp_selling.sales_user",
+        "erp_selling.sales_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "item_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    }
+  ]
+}

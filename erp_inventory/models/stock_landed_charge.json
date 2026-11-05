@@ -1,0 +1,42 @@
+{
+  "model_id": "mdl_8dvcm6zlkl",
+  "name": "stock_landed_charge",
+  "label": "%stock_landed_charge%",
+  "plural_label": "%stock_landed_charges%",
+  "icon": "coins",
+  "title_field": "description",
+  "fields": [
+    {
+      "id": "fld_4qrxodyb9s",
+      "name": "landed",
+      "label": "%landed%",
+      "type": "link",
+      "required": true,
+      "target": "stock_landed_cost",
+      "index": "plain"
+    },
+    {
+      "id": "fld_i65am9u8y5",
+      "name": "description",
+      "label": "%description%",
+      "type": "string",
+      "required": true,
+      "max_length": 200
+    },
+    {
+      "id": "fld_w4qewbm5gk",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "required": true,
+      "scale": 2
+    }
+  ],
+  "view": {
+    "list": [
+      "landed",
+      "description",
+      "amount"
+    ]
+  }
+}

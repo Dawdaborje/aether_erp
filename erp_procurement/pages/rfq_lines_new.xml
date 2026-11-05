@@ -1,0 +1,9 @@
+<page roles="purchase_user,purchase_admin" route="/erp/procurement/rfqs/{id}/new" title="Add request line" model="rfq_line" menu="false">
+  <view type="form" function="add_rfq_line" submit="Add line" success="Line added" redirect="/erp/procurement/rfqs/{id}">
+    <group title="Line" cols="2">
+      <field name="item" label="Item" required="true" source="erp_item.search_items" optionLabel="name" entity="items"/>
+      <field name="qty" label="Quantity" required="true" fieldType="float"/>
+      <field name="unit_price" label="Expected price" required="true" fieldType="float"/>
+    </group>
+  </view>
+</page>

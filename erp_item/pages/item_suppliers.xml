@@ -1,0 +1,12 @@
+<page roles="item_reader,item_admin" route="/erp/items/{id}/suppliers" title="Suppliers" model="item_supplier" menu="false">
+  <view type="list" model="item_supplier" source="list_item_suppliers" create="/erp/items/{id}/suppliers/new" create_label="Add supplier">
+    <columns>
+      <column field="supplier" label="Supplier"/>
+      <column field="supplier_sku" label="Supplier code"/>
+      <column field="min_qty" label="Min qty"/>
+      <column field="lead_days" label="Lead days"/>
+      <column field="is_preferred" label="Preferred" fieldType="boolean"/>
+    </columns>
+    <empty title="No suppliers yet" description="Add who sells this item and their code for it."/>
+  </view>
+</page>

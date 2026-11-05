@@ -1,0 +1,41 @@
+{
+  "model": "mo_unbuild",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "mfg_reader",
+        "mfg_user",
+        "mfg_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "mfg_user",
+        "mfg_admin"
+      ],
+      "operations": [
+        "create"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "mo",
+        "qty",
+        "posting_date",
+        "consume_move",
+        "produce_move",
+        "reason"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

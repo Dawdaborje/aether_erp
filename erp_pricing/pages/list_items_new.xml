@@ -1,0 +1,13 @@
+<page roles="pricing_admin" route="/erp/pricing/lists/{id}/new" title="Add price" model="price_list_item" menu="false">
+  <view type="form" function="set_item_price" submit="Add price" success="Price added" redirect="/erp/pricing/lists/{id}">
+    <group title="Price" cols="2">
+      <field name="item" label="Item" required="true" source="erp_item.search_items" optionLabel="name" entity="items"/>
+      <field name="unit_price" label="Unit price" required="true" fieldType="float"/>
+      <field name="min_qty" label="From quantity" fieldType="float"/>
+      <field name="discount_pct" label="Discount %" fieldType="float"/>
+      <field name="party" label="Only for party" source="party.list_parties" optionLabel="display_name" entity="parties"/>
+      <field name="valid_from" label="Valid from" fieldType="date"/>
+      <field name="valid_to" label="Valid to" fieldType="date"/>
+    </group>
+  </view>
+</page>

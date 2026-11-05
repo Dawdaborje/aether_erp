@@ -1,0 +1,17 @@
+<page roles="mfg_reader,mfg_user,mfg_admin" route="/erp/manufacturing/mos/{id}" title="Operations" model="mo_operation" menu="false">
+  <view type="list" model="mo_operation" source="list_mo_operations">
+    <columns>
+      <column field="seq" label="#"/>
+      <column field="name" label="Name"/>
+      <column field="work_center" label="Work center"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="planned_minutes" label="Planned min"/>
+      <column field="actual_minutes" label="Actual min"/>
+    </columns>
+    <actions>
+      <action name="start_operation" label="Start" function="start_operation"/>
+      <action name="finish_operation" label="Finish" function="finish_operation" confirm="Finish this operation?"/>
+    </actions>
+    <empty title="No operations" description="This order has no routing."/>
+  </view>
+</page>

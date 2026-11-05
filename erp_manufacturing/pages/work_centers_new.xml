@@ -1,0 +1,10 @@
+<page roles="mfg_admin" route="/erp/manufacturing/work-centers/new" title="New work center" model="work_center" menu="false">
+  <view type="form" function="create_work_center" submit="Add" success="Added" redirect="/erp/manufacturing/work-centers">
+    <group title="Work center" cols="2">
+      <field name="company" label="Company" required="true" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="code" label="Code" required="true"/>
+      <field name="name" label="Name" required="true"/>
+      <field name="cost_per_hour" label="Cost per hour" fieldType="float"/>
+    </group>
+  </view>
+</page>

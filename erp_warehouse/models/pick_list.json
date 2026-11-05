@@ -1,0 +1,128 @@
+{
+  "name": "pick_list",
+  "icon": "list-checks",
+  "title_field": "number",
+  "fields": [
+    {
+      "id": "fld_w91osnlarb",
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "max_length": 32,
+      "index": "unique",
+      "sequence": {
+        "pattern": "PK-{YYYY}-{#####}",
+        "reset": "yearly",
+        "scope": "company",
+        "assign_on": {
+          "field": "state",
+          "values": [
+            "released"
+          ]
+        }
+      }
+    },
+    {
+      "id": "fld_m09j80jqnm",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_3uw4ril6ja",
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "index": "plain",
+      "required": true
+    },
+    {
+      "id": "fld_wvnxn049s2",
+      "name": "source_kind",
+      "label": "%source_kind%",
+      "type": "string",
+      "max_length": 80,
+      "index": "plain"
+    },
+    {
+      "id": "fld_vjinivo8iq",
+      "name": "source_id",
+      "label": "%source_id%",
+      "type": "string",
+      "max_length": 80,
+      "index": "plain"
+    },
+    {
+      "id": "fld_mj6hp9atu8",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "default": "draft",
+      "track": true,
+      "options": [
+        {
+          "id": "opt_baw6v6q728",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_492j8wzvvv",
+          "value": "released",
+          "label": "%released%"
+        },
+        {
+          "id": "opt_e401wsdlb0",
+          "value": "picked",
+          "label": "%picked%"
+        },
+        {
+          "id": "opt_l5jmmge0h6",
+          "value": "cancelled",
+          "label": "%cancelled%"
+        }
+      ]
+    },
+    {
+      "id": "fld_ikpzz98cpw",
+      "name": "lines",
+      "label": "%lines%",
+      "type": "child",
+      "target": "pick_line",
+      "inverse": "pick",
+      "order": "position"
+    },
+    {
+      "id": "fld_lqa1mqgnze",
+      "name": "line_count",
+      "label": "%line_count%",
+      "type": "int",
+      "compute": "count(lines)"
+    }
+  ],
+  "chatter": {
+    "enabled": true,
+    "messages": true,
+    "notes": true,
+    "followers": true,
+    "track_changes": true
+  },
+  "view": {
+    "list": [
+      "number",
+      "warehouse",
+      "source_kind",
+      "state",
+      "line_count"
+    ]
+  },
+  "model_id": "mdl_ib125uscyg",
+  "label": "%pick_list%",
+  "plural_label": "%pick_lists%"
+}

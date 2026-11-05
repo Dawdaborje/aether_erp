@@ -1,0 +1,20 @@
+<page roles="sales_reader,sales_user,sales_admin" route="/erp/selling/quotations" title="Quotations" model="quotation" menu="false">
+  <view type="list" model="quotation" source="list_quotations" open="/erp/selling/quotations/{id}" create="/erp/selling/quotations/new" create_label="New quotation">
+    <search/>
+    <columns>
+      <column field="number" label="Number"/>
+      <column field="customer" label="Customer"/>
+      <column field="state" label="State" fieldType="badge"/>
+      <column field="quote_date" label="Date"/>
+      <column field="valid_until" label="Valid until"/>
+      <column field="total" label="Total"/>
+    </columns>
+    <actions>
+      <action name="send_quotation" label="Send" function="send_quotation" confirm="Send this quotation?"/>
+      <action name="accept_quotation" label="Accepted" function="accept_quotation" confirm="Mark as accepted?"/>
+      <action name="convert_quotation_to_so" label="Make order" function="convert_quotation_to_so" confirm="Turn this quotation into a sales order?"/>
+      <action name="reject_quotation" label="Rejected" function="reject_quotation" confirm="Mark as rejected?" danger="true"/>
+    </actions>
+    <empty title="No quotations yet" description="Use New to price an offer for a customer."/>
+  </view>
+</page>

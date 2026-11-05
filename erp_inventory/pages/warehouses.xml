@@ -1,0 +1,13 @@
+<page roles="stock_reader,stock_user,stock_admin" route="/erp/inventory/warehouses" title="Warehouses" model="stock_warehouse" menu="false">
+  <view type="list" model="stock_warehouse" source="search_warehouses" create="/erp/inventory/warehouses/new" create_label="New warehouse">
+    <search/>
+    <columns>
+      <column field="code" label="Code"/>
+      <column field="name" label="Name"/>
+      <column field="kind" label="Kind" fieldType="badge"/>
+      <column field="parent" label="Parent"/>
+      <column field="active" label="Active" fieldType="boolean"/>
+    </columns>
+    <empty title="No warehouses yet" description="Add a warehouse before receiving stock."/>
+  </view>
+</page>

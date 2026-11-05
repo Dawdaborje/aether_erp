@@ -1,0 +1,11 @@
+<page roles="mfg_user,mfg_admin" route="/erp/manufacturing/mos/new" title="New manufacturing order" model="mo" menu="false">
+  <view type="form" function="create_mo" submit="Create order" success="Order created" redirect="/erp/manufacturing/mos">
+    <group title="Order" cols="2">
+      <field name="company" label="Company" required="true" source="company.list_companies" optionLabel="name" entity="companies"/>
+      <field name="bom" label="Bill of materials" required="true" source="list_boms" optionLabel="code" entity="boms"/>
+      <field name="qty" label="Quantity" required="true" fieldType="float"/>
+      <field name="warehouse" label="Warehouse" required="true" source="erp_inventory.search_warehouses" optionLabel="name" entity="warehouses"/>
+      <field name="planned_date" label="Planned date" fieldType="date"/>
+    </group>
+  </view>
+</page>

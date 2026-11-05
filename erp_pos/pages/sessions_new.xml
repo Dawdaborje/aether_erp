@@ -1,0 +1,8 @@
+<page roles="pos_cashier,pos_manager" route="/erp/pos/sessions/new" title="Open session" model="pos_session" menu="false">
+  <view type="form" function="open_session" submit="Open" success="Session open" redirect="/erp/pos/sessions">
+    <group title="Session" cols="2">
+      <field name="profile" label="Profile" required="true" source="list_profiles" optionLabel="name" entity="profiles"/>
+      <field name="opening_cash" label="Cash in the drawer" fieldType="float"/>
+    </group>
+  </view>
+</page>

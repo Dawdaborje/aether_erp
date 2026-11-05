@@ -1,0 +1,51 @@
+{
+  "model": "pos_sale",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "pos_reader",
+        "pos_cashier",
+        "pos_manager"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "pos_cashier",
+        "pos_manager"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "number",
+        "session",
+        "profile",
+        "company",
+        "customer",
+        "state",
+        "sale_date",
+        "subtotal",
+        "tax_total",
+        "total",
+        "paid",
+        "change",
+        "stock_move",
+        "void_reason",
+        "currency"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+<page roles="reports_reader" route="/erp/reports/sales" title="Sales report" menu="false">
+  <view type="list" source="sales_report">
+    <columns>
+      <column field="invoice_date" label="Month"/>
+      <column field="customer" label="Customer"/>
+      <column field="documents" label="Invoices"/>
+      <column field="amount" label="Invoiced"/>
+      <column field="notes" label="Credit notes"/>
+      <column field="net" label="Net"/>
+      <column field="tax" label="Tax"/>
+    </columns>
+    <empty title="Nothing to report" description="Approved invoices appear here."/>
+  </view>
+</page>

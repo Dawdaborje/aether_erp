@@ -1,0 +1,99 @@
+{
+  "model_id": "mdl_d8lh2gx1ag",
+  "name": "sales_return",
+  "label": "%sales_return%",
+  "plural_label": "%sales_returns%",
+  "icon": "undo-2",
+  "title_field": "number",
+  "fields": [
+    {
+      "id": "fld_at5m1qg2f1",
+      "name": "number",
+      "label": "%number%",
+      "type": "string",
+      "max_length": 40,
+      "index": "unique"
+    },
+    {
+      "id": "fld_6cn3omh7jt",
+      "name": "company",
+      "label": "%company%",
+      "type": "link",
+      "required": true,
+      "target": "company.company",
+      "target_id": "mdl_d7q6tyyshp",
+      "index": "plain"
+    },
+    {
+      "id": "fld_9v78xzb3qz",
+      "name": "so",
+      "label": "%so%",
+      "type": "link",
+      "required": true,
+      "target": "so",
+      "index": "plain"
+    },
+    {
+      "id": "fld_98139urdqn",
+      "name": "customer",
+      "label": "%customer%",
+      "type": "link",
+      "required": true,
+      "target": "party.party",
+      "target_id": "mdl_mr76tss5ic",
+      "index": "plain"
+    },
+    {
+      "id": "fld_02xywo67re",
+      "name": "stock_move",
+      "label": "%stock_move%",
+      "type": "link",
+      "target": "erp_inventory.stock_move",
+      "index": "plain",
+      "target_id": "mdl_euypr4b86s"
+    },
+    {
+      "id": "fld_edcg1zsq3s",
+      "name": "state",
+      "label": "%state%",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "id": "opt_nmi6sba8ym",
+          "value": "draft",
+          "label": "%draft%"
+        },
+        {
+          "id": "opt_z9b6r6p20v",
+          "value": "posted",
+          "label": "%posted%"
+        }
+      ],
+      "default": "draft"
+    },
+    {
+      "id": "fld_c7d1is8gvb",
+      "name": "return_date",
+      "label": "%return_date%",
+      "type": "date",
+      "required": true
+    },
+    {
+      "id": "fld_qi4wxg26u0",
+      "name": "reason",
+      "label": "%reason%",
+      "type": "string",
+      "max_length": 200
+    }
+  ],
+  "view": {
+    "list": [
+      "number",
+      "so",
+      "customer",
+      "state",
+      "return_date"
+    ]
+  }
+}

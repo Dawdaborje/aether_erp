@@ -1,0 +1,70 @@
+{
+  "model_id": "mdl_xg9edn581u",
+  "name": "pos_payment",
+  "label": "%pos_payment%",
+  "plural_label": "%pos_payments%",
+  "icon": "banknote",
+  "title_field": "method",
+  "fields": [
+    {
+      "id": "fld_6i76bofbci",
+      "name": "sale",
+      "label": "%sale%",
+      "type": "link",
+      "target": "pos_sale",
+      "index": "plain",
+      "required": true
+    },
+    {
+      "id": "fld_xgy29db8p5",
+      "name": "session",
+      "label": "%session%",
+      "type": "link",
+      "target": "pos_session",
+      "index": "plain",
+      "required": true
+    },
+    {
+      "id": "fld_a4d5rgn5s7",
+      "name": "method",
+      "label": "%method%",
+      "type": "select",
+      "options": [
+        {
+          "id": "opt_qa3e68f7e4",
+          "value": "cash",
+          "label": "%cash%"
+        },
+        {
+          "id": "opt_qeqpno35ye",
+          "value": "card",
+          "label": "%card%"
+        },
+        {
+          "id": "opt_4scmejvqti",
+          "value": "other",
+          "label": "%other%"
+        }
+      ],
+      "required": true
+    },
+    {
+      "id": "fld_s333h9mtf4",
+      "name": "amount",
+      "label": "%amount%",
+      "type": "decimal",
+      "scale": 2,
+      "required": true
+    }
+  ],
+  "checks": [
+    {
+      "require": {
+        "amount": {
+          "gt": "0"
+        }
+      },
+      "message": "a payment must be above zero"
+    }
+  ]
+}

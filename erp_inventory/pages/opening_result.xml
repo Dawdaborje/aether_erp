@@ -1,0 +1,10 @@
+<page roles="stock_user,stock_admin" route="/erp/inventory/opening/{report}" title="Opening stock result" menu="false">
+  <view type="list" source="opening_stock_report">
+    <columns>
+      <column field="row" label="Row"/>
+      <column field="item" label="Item"/>
+      <column field="message" label="Result"/>
+    </columns>
+    <empty title="Nothing to show" description="Check a file to see its result."/>
+  </view>
+</page>

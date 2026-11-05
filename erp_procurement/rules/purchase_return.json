@@ -1,0 +1,44 @@
+{
+  "model": "purchase_return",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "purchase_reader",
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "create",
+        "write"
+      ]
+    }
+  ],
+  "fields": [
+    {
+      "fields": [
+        "number",
+        "company",
+        "po",
+        "supplier",
+        "stock_move",
+        "state",
+        "return_date",
+        "reason"
+      ],
+      "write_roles": [
+        "via:self"
+      ]
+    }
+  ]
+}

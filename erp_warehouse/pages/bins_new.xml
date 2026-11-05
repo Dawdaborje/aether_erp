@@ -1,0 +1,11 @@
+<page roles="wh_admin" route="/erp/warehouse/bins/new" title="New bin" model="wh_bin" menu="false">
+  <view type="form" function="create_bin" submit="Add bin" success="Bin added" redirect="/erp/warehouse">
+    <group title="Bin" cols="2">
+      <field name="warehouse" label="Warehouse" required="true" source="erp_inventory.list_warehouses" entity="warehouses"/>
+      <field name="code" label="Code" required="true"/>
+      <field name="name" label="Name"/>
+      <field name="parent" label="Inside" source="list_bins" optionLabel="code" entity="bins"/>
+      <field name="kind" label="Kind" fieldType="selection" options="storage, receiving, shipping, quarantine"/>
+    </group>
+  </view>
+</page>

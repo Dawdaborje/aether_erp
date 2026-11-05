@@ -1,0 +1,77 @@
+{
+  "model_id": "mdl_rtmmi014ia",
+  "name": "purchase_receipt_line",
+  "label": "%purchase_receipt_line%",
+  "plural_label": "%purchase_receipt_lines%",
+  "icon": "list",
+  "title_field": "line_no",
+  "fields": [
+    {
+      "name": "receipt",
+      "label": "%receipt%",
+      "type": "link",
+      "required": true,
+      "target": "purchase_receipt",
+      "index": "plain",
+      "id": "fld_5jv6vmtkax"
+    },
+    {
+      "name": "line_no",
+      "label": "%line_no%",
+      "type": "int",
+      "required": true,
+      "id": "fld_pjwxtmjqjk"
+    },
+    {
+      "name": "po_line",
+      "label": "%po_line%",
+      "type": "link",
+      "required": true,
+      "target": "po_line",
+      "index": "plain",
+      "id": "fld_w5qrsnhfdf"
+    },
+    {
+      "name": "item",
+      "label": "%item%",
+      "type": "link",
+      "required": true,
+      "target": "erp_item.item",
+      "target_id": "mdl_fdy39c3m99",
+      "id": "fld_7w4gb1js0q"
+    },
+    {
+      "name": "qty",
+      "label": "%qty%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "id": "fld_gygccgtyd7"
+    },
+    {
+      "name": "warehouse",
+      "label": "%warehouse%",
+      "type": "link",
+      "required": true,
+      "target": "erp_inventory.stock_warehouse",
+      "target_id": "mdl_bu5hotrqqi",
+      "id": "fld_7aytspkc3d"
+    },
+    {
+      "name": "unit_price",
+      "label": "%unit_price%",
+      "type": "decimal",
+      "scale": 6,
+      "required": true,
+      "id": "fld_e21smqsdth"
+    }
+  ],
+  "view": {
+    "list": [
+      "receipt",
+      "line_no",
+      "item",
+      "qty"
+    ]
+  }
+}

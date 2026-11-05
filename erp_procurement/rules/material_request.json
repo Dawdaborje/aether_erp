@@ -1,0 +1,121 @@
+{
+  "model": "material_request",
+  "access": [
+    {
+      "name": "read",
+      "roles": [
+        "purchase_reader",
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "read"
+      ]
+    },
+    {
+      "name": "write",
+      "roles": [
+        "purchase_user",
+        "purchase_admin"
+      ],
+      "operations": [
+        "read",
+        "create",
+        "write"
+      ]
+    },
+    {
+      "name": "admin",
+      "roles": [
+        "purchase_admin"
+      ],
+      "operations": [
+        "delete"
+      ]
+    }
+  ],
+  "restrict": [
+    {
+      "name": "draft_only",
+      "operations": [
+        "delete"
+      ],
+      "exempt_roles": [
+        "purchase_admin"
+      ],
+      "when": {
+        "state": "draft"
+      }
+    }
+  ],
+  "workflow": {
+    "field": "state",
+    "initial": [
+      "draft"
+    ],
+    "transitions": [
+      {
+        "name": "submit",
+        "label": "Submit",
+        "from": [
+          "draft",
+          "rejected"
+        ],
+        "to": "submitted",
+        "roles": [
+          "purchase_user",
+          "purchase_admin"
+        ]
+      },
+      {
+        "name": "approve",
+        "label": "Approve",
+        "from": [
+          "submitted"
+        ],
+        "to": "approved",
+        "roles": [
+          "purchase_admin"
+        ]
+      },
+      {
+        "name": "reject",
+        "label": "Reject",
+        "from": [
+          "submitted"
+        ],
+        "to": "rejected",
+        "roles": [
+          "purchase_admin"
+        ]
+      },
+      {
+        "name": "order",
+        "label": "Order",
+        "from": [
+          "approved"
+        ],
+        "to": "ordered",
+        "roles": [
+          "purchase_user",
+          "purchase_admin"
+        ]
+      },
+      {
+        "name": "cancel",
+        "label": "Cancel",
+        "from": [
+          "draft",
+          "submitted",
+          "approved",
+          "rejected"
+        ],
+        "to": "cancelled",
+        "roles": [
+          "purchase_user",
+          "purchase_admin"
+        ]
+      }
+    ]
+  }
+}
