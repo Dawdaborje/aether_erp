@@ -1,17 +1,76 @@
-<page roles="purchase_reader,purchase_user,purchase_admin" route="/erp/procurement/pos/{id}" title="Order lines" model="po_line" menu="false">
-  <view type="list" model="po_line" source="list_po_lines" create="/erp/procurement/pos/{id}/new" create_label="Add line">
-    <columns>
-      <column field="line_no" label="#"/>
-      <column field="item" label="Item"/>
-      <column field="qty" label="Qty"/>
-      <column field="unit_price" label="Price"/>
-      <column field="discount_pct" label="Discount %"/>
-      <column field="amount" label="Net"/>
-      <column field="tax_amount" label="Tax"/>
-      <column field="qty_received" label="Received"/>
-      <column field="qty_billed" label="Billed"/>
-      <column field="qty_returned" label="Returned"/>
-    </columns>
-    <empty title="No lines yet" description="Add what you are buying."/>
+<page roles="purchase_reader,purchase_user,purchase_admin" route="/erp/procurement/pos/{id}" title="Purchase order" model="po" menu="false">
+  <view type="form" source="get_po_doc" function="update_po" submit="Save">
+    <header>
+      <button label="Confirm" function="confirm_po" confirm="Confirm this order?" showWhen="state=draft"/>
+      <button label="Approve" function="approve_po" confirm="Approve this order?" showWhen="state=to_approve"/>
+      <button label="Send back" function="reject_po" confirm="Send this order back to draft?" variant="outline" showWhen="state=to_approve"/>
+      <button label="Receive all" function="receive_all_po" confirm="Receive everything still open?" showWhen="state=confirmed,state=partially_received"/>
+      <button label="Bill received" function="bill_all_po" confirm="Bill everything received and not yet billed?" variant="outline" showWhen="state=confirmed,state=partially_received,state=received"/>
+      <button label="Cancel order" function="cancel_po" confirm="Cancel this order?" danger="true" showWhen="state=draft,state=to_approve,state=confirmed"/>
+      <button label="Download PDF" function="po_pdf" variant="outline" showWhen="state!=draft"/>
+      <button label="Email to supplier" function="email_po" confirm="Email this order to the supplier?" variant="outline" showWhen="state!=draft"/>
+    </header>
+    <statusbar field="state" options="draft, to_approve, confirmed, partially_received, received, closed"/>
+    <group title="Order" cols="2">
+      <field name="number" label="Number" readonly="true"/>
+      <field name="supplier" label="Supplier" fieldType="many2one" entity="parties" readonly="true"/>
+      <field name="order_date" label="Order date" fieldType="date"/>
+      <field name="warehouse" label="Warehouse" source="erp_inventory.search_warehouses" optionLabel="name" entity="warehouses"/>
+      <field name="payment_term" label="Payment term" source="erp_pricing.list_payment_terms" optionLabel="name" entity="terms"/>
+      <field name="price_list" label="Buy price list" source="erp_pricing.list_price_lists" optionLabel="name" entity="price_lists"/>
+      <field name="notes" label="Notes" fieldType="text" colspan="2"/>
+    </group>
+    <group title="Totals" cols="3">
+      <field name="subtotal" label="Subtotal" readonly="true"/>
+      <field name="tax_total" label="Tax" readonly="true"/>
+      <field name="total" label="Total" readonly="true"/>
+    </group>
+    <notebook>
+      <page title="Lines">
+        <modal name="line" title="Add line" edit_title="Edit line" label="Add line" width="lg">
+          <view type="form" function="add_po_line" submit="Add line" success="Line added"
+                edit_source="get_po_line" edit_function="update_po_line" edit_submit="Save line" edit_success="Line saved">
+            <group title="Line" cols="2">
+              <field name="item" label="Item" required="true" source="erp_item.search_items" optionLabel="name" entity="items"/>
+              <field name="qty" label="Quantity" required="true" fieldType="float"/>
+              <field name="uom" label="Unit (blank = item unit)" source="uom.list_units" optionLabel="code" entity="units"/>
+              <field name="unit_price" label="Unit price (blank = price list)" fieldType="float"/>
+              <field name="discount_pct" label="Discount %" fieldType="float"/>
+              <field name="tax" label="Tax" source="erp_pricing.search_taxes" optionLabel="name" entity="taxes"/>
+              <field name="warehouse" label="Warehouse" source="erp_inventory.search_warehouses" optionLabel="name" entity="warehouses"/>
+            </group>
+          </view>
+        </modal>
+        <view type="list" model="po_line" source="list_po_lines" edit="line">
+          <columns>
+            <column field="line_no" label="#"/>
+            <column field="item" label="Item"/>
+            <column field="qty" label="Qty"/>
+            <column field="unit_price" label="Price"/>
+            <column field="discount_pct" label="Discount %"/>
+            <column field="amount" label="Net"/>
+            <column field="tax_amount" label="Tax"/>
+            <column field="qty_received" label="Received"/>
+            <column field="qty_billed" label="Billed"/>
+            <column field="qty_returned" label="Returned"/>
+          </columns>
+          <actions>
+            <action name="remove" label="Remove" function="remove_po_line" confirm="Remove this line?" danger="true"/>
+          </actions>
+          <empty title="No lines yet" description="Add what you are buying. Lines can be edited or removed while the order is a draft."/>
+        </view>
+      </page>
+      <page title="History">
+        <view type="list" source="po_history">
+          <columns>
+            <column field="at" label="When" fieldType="datetime"/>
+            <column field="who" label="By"/>
+            <column field="what" label="What"/>
+            <column field="change" label="Change"/>
+          </columns>
+          <empty title="No history yet" description="Every change to this document and its lines is listed here, newest first. Removed lines are not listed; the total changing shows them."/>
+        </view>
+      </page>
+    </notebook>
   </view>
 </page>

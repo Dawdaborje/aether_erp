@@ -121,5 +121,9 @@
       "planned_minutes",
       "actual_minutes"
     ]
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

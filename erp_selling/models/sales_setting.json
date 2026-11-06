@@ -21,7 +21,8 @@
       "name": "enforce_credit_limit",
       "label": "%enforce_credit_limit%",
       "type": "bool",
-      "default": false
+      "default": false,
+      "track": true
     },
     {
       "id": "fld_rsv0nconf1",
@@ -29,7 +30,8 @@
       "label": "%reserve_on_confirm%",
       "type": "bool",
       "default": false,
-      "help": "Confirming an order holds the free stock for it, so another order cannot promise the same units. Delivery uses the hold; cancelling gives it back."
+      "help": "Confirming an order holds the free stock for it, so another order cannot promise the same units. Delivery uses the hold; cancelling gives it back.",
+      "track": true
     },
     {
       "id": "fld_n68kgr3n6d",
@@ -38,7 +40,8 @@
       "type": "link",
       "target": "erp_pricing.payment_term",
       "target_id": "mdl_fkq90to5up",
-      "index": "plain"
+      "index": "plain",
+      "track": true
     },
     {
       "id": "fld_ik7cil0ciq",
@@ -47,14 +50,16 @@
       "type": "link",
       "target": "erp_pricing.price_list",
       "target_id": "mdl_unkbz5sj7z",
-      "index": "plain"
+      "index": "plain",
+      "track": true
     },
     {
       "id": "fld_cwgv6rfgu7",
       "name": "quote_valid_days",
       "label": "%quote_valid_days%",
       "type": "int",
-      "default": 30
+      "default": 30,
+      "track": true
     },
     {
       "id": "fld_4k6642wt7i",
@@ -62,7 +67,8 @@
       "label": "%require_inspection%",
       "type": "bool",
       "default": false,
-      "help": "With the quality plugin installed, goods are only received (or delivered) against an accepted inspection of the order."
+      "help": "With the quality plugin installed, goods are only received (or delivered) against an accepted inspection of the order.",
+      "track": true
     }
   ],
   "view": {
@@ -71,5 +77,16 @@
       "enforce_credit_limit",
       "quote_valid_days"
     ]
+  },
+  "chatter": {
+    "enabled": true,
+    "messages": false,
+    "notes": true,
+    "followers": false,
+    "track_changes": true
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

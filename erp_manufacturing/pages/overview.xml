@@ -1,0 +1,3 @@
+<page roles="mfg_reader,mfg_user,mfg_admin" route="/erp/manufacturing/overview" title="Overview" icon="layout-dashboard" sort="32">
+  <view type="board" source="manufacturing_board" drill="manufacturing_board_drill"/>
+</page>

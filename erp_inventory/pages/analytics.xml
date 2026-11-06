@@ -1,0 +1,3 @@
+<page roles="stock_reader,stock_user,stock_admin" route="/erp/inventory/analytics" title="Analytics" icon="chart-no-axes-combined" sort="32">
+  <view type="board" source="analytics_board" drill="analytics_board_drill"/>
+</page>

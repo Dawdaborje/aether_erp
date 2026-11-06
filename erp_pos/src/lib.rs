@@ -3,3 +3,5 @@
 mod common;
 mod sale;
 mod session;
+mod board;
+mod board_kit;

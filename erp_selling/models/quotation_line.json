@@ -119,5 +119,9 @@
       "amount",
       "optional"
     ]
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

@@ -930,6 +930,437 @@ fn do_cancel_so(input: Id) -> Result<Record> {
     Ok(cancelled)
 }
 
+// ---- the order as one document: header edit, line edit / remove, deliver and invoice everything left ----
+
+#[derive(Deserialize)]
+struct UpdateSo {
+    id: String,
+    #[serde(default)]
+    order_date: Option<String>,
+    #[serde(default)]
+    warehouse: Option<String>,
+    #[serde(default)]
+    payment_term: Option<String>,
+    #[serde(default)]
+    price_list: Option<String>,
+    #[serde(default)]
+    notes: Option<String>,
+}
+
+fn require_draft(so: &Record, what: &str) -> Result<()> {
+    if text(so, "state") != Some("draft") {
+        return Err(Error::msg(format!("{what} can only be changed while the order is a draft (state: {})", text(so, "state").unwrap_or("unknown"))));
+    }
+    Ok(())
+}
+
+fn do_update_so(input: UpdateSo) -> Result<Record> {
+    require_user()?;
+    let so = require("so", &input.id, "sales order")?;
+    require_draft(&so, "the header")?;
+    let mut data = json!({});
+    if let Some(d) = input.order_date.filter(|d| !d.is_empty()) {
+        parse_date(&d)?;
+        data["order_date"] = json!(d);
+    }
+    if let Some(wh) = input.warehouse.filter(|w| !w.is_empty()) {
+        let _ = require("erp_inventory.stock_warehouse", &wh, "warehouse")?;
+        data["warehouse"] = json!(wh);
+    }
+    if let Some(term) = input.payment_term.filter(|t| !t.is_empty()) {
+        let _ = require("erp_pricing.payment_term", &term, "payment term")?;
+        data["payment_term"] = json!(term);
+    }
+    if let Some(list) = input.price_list.filter(|l| !l.is_empty()) {
+        let _ = require("erp_pricing.price_list", &list, "price list")?;
+        data["price_list"] = json!(list);
+    }
+    if let Some(notes) = input.notes {
+        data["notes"] = json!(notes);
+    }
+    db::update("so", &input.id, &data)?.ok_or_else(|| Error::msg("the order is gone"))
+}
+
+/// The order flattened for the document form.
+fn do_get_so_doc(input: Id) -> Result<Record> {
+    require_reader()?;
+    require("so", &input.id, "sales order")
+}
+
+/// One line as the edit dialog shows it: quantity and price in the unit the line was entered in.
+fn do_get_so_line(input: Id) -> Result<Value> {
+    require_reader()?;
+    let line = require("so_line", &input.id, "order line")?;
+    let entered = line.get("order_uom").is_some();
+    let pick = |own: &str, entered_field: &str| -> Value {
+        if entered { line.get(entered_field).cloned().unwrap_or(Value::Null) } else { line.get(own).cloned().unwrap_or(Value::Null) }
+    };
+    Ok(json!({
+        "id": line.get("id"),
+        "item": line.get("item"),
+        "qty": pick("qty", "order_qty"),
+        "uom": line.get("order_uom").or_else(|| line.get("uom")),
+        "unit_price": pick("unit_price", "order_unit_price"),
+        "discount_pct": line.get("discount_pct"),
+        "tax": line.get("tax"),
+        "warehouse": line.get("warehouse"),
+    }))
+}
+
+fn recompute_so(so_id: &str) -> Result<()> {
+    let (subtotal, tax_total) = sum_lines(&so_lines(so_id)?)?;
+    let _: Option<Record> = db::update(
+        "so",
+        so_id,
+        &json!({ "subtotal": subtotal, "tax_total": tax_total, "total": subtotal.checked_add(tax_total)? }),
+    )?;
+    Ok(())
+}
+
+#[derive(Deserialize)]
+struct UpdateSoLine {
+    id: String,
+    item: String,
+    qty: Decimal,
+    #[serde(default)]
+    unit_price: Option<Decimal>,
+    #[serde(default)]
+    discount_pct: Option<Decimal>,
+    #[serde(default)]
+    tax: Option<String>,
+    #[serde(default)]
+    warehouse: Option<String>,
+    #[serde(default)]
+    uom: Option<String>,
+}
+
+/// Change a line of a draft order. The new line is built first (so a bad value changes nothing), then it takes
+/// the old line's place.
+fn do_update_so_line(input: UpdateSoLine) -> Result<Record> {
+    require_user()?;
+    let old = require("so_line", &input.id, "order line")?;
+    let so_id = text(&old, "so").ok_or_else(|| Error::msg("the line has no order"))?.to_string();
+    let so = require("so", &so_id, "sales order")?;
+    require_draft(&so, "lines")?;
+    let added = do_add_so_line(AddSoLine {
+        so: so_id.clone(),
+        item: input.item,
+        qty: input.qty,
+        unit_price: input.unit_price,
+        discount_pct: input.discount_pct,
+        tax: input.tax,
+        warehouse: input.warehouse,
+        uom: input.uom,
+    })?;
+    let kept = fold_line("so_line", &old, &added, &["so", "line_no"])?;
+    recompute_so(&so_id)?;
+    Ok(kept)
+}
+
+
+/// Move the values of a freshly built line onto an existing one and drop the new row, so the existing line keeps
+/// its id (and its history) through an edit. Values the new row does not have are cleared.
+fn fold_line(model: &str, old: &Record, new: &Record, keep: &[&str]) -> Result<Record> {
+    let (Some(old_obj), Some(new_obj)) = (old.as_object(), new.as_object()) else {
+        return Err(Error::msg("the line is not a record"));
+    };
+    let mut patch = serde_json::Map::new();
+    for (k, v) in new_obj {
+        if k != "id" && !keep.contains(&k.as_str()) {
+            patch.insert(k.clone(), v.clone());
+        }
+    }
+    for k in old_obj.keys() {
+        if k != "id" && !keep.contains(&k.as_str()) && !new_obj.contains_key(k) {
+            patch.insert(k.clone(), Value::Null);
+        }
+    }
+    let updated = db::update(model, id_of(old)?, &Value::Object(patch))?.ok_or_else(|| Error::msg("the line is gone"))?;
+    let _: Option<Record> = db::delete(model, id_of(new)?)?;
+    Ok(updated)
+}
+
+fn do_remove_so_line(input: Id) -> Result<Record> {
+    require_user()?;
+    let line = require("so_line", &input.id, "order line")?;
+    let so_id = text(&line, "so").ok_or_else(|| Error::msg("the line has no order"))?.to_string();
+    let so = require("so", &so_id, "sales order")?;
+    require_draft(&so, "lines")?;
+    let gone = db::delete("so_line", &input.id)?.ok_or_else(|| Error::msg("the line is gone"))?;
+    recompute_so(&so_id)?;
+    Ok(gone)
+}
+
+/// Deliver whatever is still open on every line, from the order's own warehouse and the usual lot choice.
+fn do_deliver_all_so(input: Id) -> Result<Value> {
+    require_user()?;
+    let so = require("so", &input.id, "sales order")?;
+    let lines = so_lines(&input.id)?;
+    let mut todo = Vec::new();
+    for line in &lines {
+        let left = qty_of(line, "qty")?.checked_sub(qty_of(line, "qty_delivered")?)?;
+        if !left.is_zero() && !left.is_negative() {
+            let warehouse = text(line, "warehouse").or_else(|| text(&so, "warehouse")).map(str::to_string);
+            if warehouse.is_none() {
+                return Err(Error::msg("set a warehouse on the order (or on each line) before delivering"));
+            }
+            todo.push(DeliverLine { so_line: id_of(line)?.to_string(), qty: left, warehouse, lot: None });
+        }
+    }
+    if todo.is_empty() {
+        return Err(Error::msg("everything on the order is already delivered"));
+    }
+    do_deliver_so(DeliverSo { so: input.id, delivery_date: None, lines: todo })
+}
+
+/// Invoice everything delivered and not yet invoiced.
+fn do_invoice_all_so(input: Id) -> Result<Record> {
+    require_user()?;
+    let lines = so_lines(&input.id)?;
+    let mut todo = Vec::new();
+    for line in &lines {
+        let left = qty_of(line, "qty_delivered")?.checked_sub(qty_of(line, "qty_invoiced")?)?;
+        if !left.is_zero() && !left.is_negative() {
+            todo.push(InvoiceLineIn { so_line: id_of(line)?.to_string(), qty: left, unit_price: None, delivery_line: None });
+        }
+    }
+    if todo.is_empty() {
+        return Err(Error::msg("nothing delivered is waiting to be invoiced"));
+    }
+    do_create_invoice(CreateInvoice { so: input.id, invoice_date: None, lines: todo })
+}
+
+// ---- the sales invoice as one document ----
+
+#[derive(Deserialize)]
+struct UpdateInvoice {
+    id: String,
+    #[serde(default)]
+    invoice_date: Option<String>,
+    #[serde(default)]
+    due_date: Option<String>,
+}
+
+/// A draft invoice that is not a credit note; everything else is read-only.
+fn editable_invoice(id: &str) -> Result<Record> {
+    let invoice = require("sales_invoice", id, "invoice")?;
+    if text(&invoice, "state") != Some("draft") {
+        return Err(Error::msg(format!(
+            "an invoice can only be changed while it is a draft (state: {})",
+            text(&invoice, "state").unwrap_or("unknown")
+        )));
+    }
+    if text(&invoice, "kind") == Some("credit_note") {
+        return Err(Error::msg("credit notes are not edited here"));
+    }
+    Ok(invoice)
+}
+
+fn invoice_lines(invoice_id: &str) -> Result<Vec<Record>> {
+    let mut rows: Vec<Record> = db::find("sales_invoice_line").filter("invoice", invoice_id).limit(500).all()?;
+    rows.sort_by_key(|r| r.get("line_no").and_then(Value::as_i64).unwrap_or(0));
+    Ok(rows)
+}
+
+fn recompute_invoice(invoice_id: &str) -> Result<()> {
+    let (subtotal, tax_total) = sum_lines(&invoice_lines(invoice_id)?)?;
+    let _: Option<Record> = db::update(
+        "sales_invoice",
+        invoice_id,
+        &json!({ "subtotal": subtotal, "tax_total": tax_total, "total": subtotal.checked_add(tax_total)? }),
+    )?;
+    Ok(())
+}
+
+fn do_update_invoice(input: UpdateInvoice) -> Result<Record> {
+    require_user()?;
+    editable_invoice(&input.id)?;
+    let mut data = json!({});
+    if let Some(d) = input.invoice_date.filter(|d| !d.is_empty()) {
+        parse_date(&d)?;
+        data["invoice_date"] = json!(d);
+    }
+    if let Some(d) = input.due_date.filter(|d| !d.is_empty()) {
+        parse_date(&d)?;
+        data["due_date"] = json!(d);
+    }
+    db::update("sales_invoice", &input.id, &data)?.ok_or_else(|| Error::msg("the invoice is gone"))
+}
+
+fn do_get_invoice_doc(input: Id) -> Result<Record> {
+    require_reader()?;
+    require("sales_invoice", &input.id, "invoice")
+}
+
+fn do_get_invoice_line(input: Id) -> Result<Record> {
+    require_reader()?;
+    require("sales_invoice_line", &input.id, "invoice line")
+}
+
+#[derive(Deserialize)]
+struct UpdateInvoiceLine {
+    id: String,
+    qty: Decimal,
+    #[serde(default)]
+    unit_price: Option<Decimal>,
+}
+
+/// Change the quantity or price of a draft invoice line. The quantity may go up to what is delivered and not yet
+/// invoiced on the order line (counting this line's own quantity back in).
+fn do_update_invoice_line(input: UpdateInvoiceLine) -> Result<Record> {
+    require_user()?;
+    let line = require("sales_invoice_line", &input.id, "invoice line")?;
+    let invoice_id = text(&line, "invoice").ok_or_else(|| Error::msg("the line has no invoice"))?.to_string();
+    editable_invoice(&invoice_id)?;
+    let qty = input.qty.with_scale(QTY_SCALE)?;
+    if qty.is_zero() || qty.is_negative() {
+        return Err(Error::msg("invoice quantity must be greater than zero"));
+    }
+    let so_line = require("so_line", text(&line, "so_line").unwrap_or_default(), "order line")?;
+    let old_qty = qty_of(&line, "qty")?;
+    let invoiced_elsewhere = qty_of(&so_line, "qty_invoiced")?.checked_sub(old_qty)?;
+    let open = qty_of(&so_line, "qty_delivered")?.checked_sub(invoiced_elsewhere)?;
+    if qty > open {
+        return Err(Error::msg(format!("cannot invoice {qty}: only {open} delivered and not invoiced elsewhere")));
+    }
+    let unit_price = input.unit_price.unwrap_or(price_of(&line, "unit_price")?).with_scale(PRICE_SCALE)?;
+    if unit_price.is_negative() {
+        return Err(Error::msg("unit price must not be negative"));
+    }
+    let discount_pct = dec(&line, "discount_pct", 4)?;
+    let tax = text(&line, "tax").map(str::to_string);
+    let priced = price_line(qty, unit_price, discount_pct, tax.as_deref())?;
+    let updated = db::update(
+        "sales_invoice_line",
+        &input.id,
+        &json!({ "qty": qty, "unit_price": unit_price, "amount": priced.net, "tax_amount": priced.tax }),
+    )?
+    .ok_or_else(|| Error::msg("the line is gone"))?;
+    let _: Option<Record> =
+        db::update("so_line", id_of(&so_line)?, &json!({ "qty_invoiced": invoiced_elsewhere.checked_add(qty)? }))?;
+    recompute_invoice(&invoice_id)?;
+    Ok(updated)
+}
+
+#[derive(Deserialize)]
+struct AddInvoiceLine {
+    #[serde(alias = "id")]
+    invoice: String,
+    so_line: String,
+    qty: Decimal,
+    #[serde(default)]
+    unit_price: Option<Decimal>,
+}
+
+/// Add a line to a draft invoice from an order line that still has delivered, uninvoiced quantity.
+fn do_add_invoice_line(input: AddInvoiceLine) -> Result<Record> {
+    require_user()?;
+    let invoice = editable_invoice(&input.invoice)?;
+    let so_line = require("so_line", &input.so_line, "order line")?;
+    if text(&so_line, "so") != text(&invoice, "so") {
+        return Err(Error::msg("that order line belongs to another sales order"));
+    }
+    let qty = input.qty.with_scale(QTY_SCALE)?;
+    if qty.is_zero() || qty.is_negative() {
+        return Err(Error::msg("invoice quantity must be greater than zero"));
+    }
+    let invoiced = qty_of(&so_line, "qty_invoiced")?;
+    let open = qty_of(&so_line, "qty_delivered")?.checked_sub(invoiced)?;
+    if qty > open {
+        return Err(Error::msg(format!("cannot invoice {qty}: only {open} delivered and not yet invoiced")));
+    }
+    let unit_price = input.unit_price.unwrap_or(price_of(&so_line, "unit_price")?).with_scale(PRICE_SCALE)?;
+    if unit_price.is_negative() {
+        return Err(Error::msg("unit price must not be negative"));
+    }
+    let discount_pct = dec(&so_line, "discount_pct", 4)?;
+    let tax = text(&so_line, "tax").map(str::to_string);
+    let priced = price_line(qty, unit_price, discount_pct, tax.as_deref())?;
+    let line_no = invoice_lines(&input.invoice)?
+        .iter()
+        .map(|r| r.get("line_no").and_then(Value::as_i64).unwrap_or(0))
+        .max()
+        .unwrap_or(0)
+        + 1;
+    let mut data = json!({
+        "invoice": input.invoice,
+        "line_no": line_no,
+        "so_line": id_of(&so_line)?,
+        "item": text(&so_line, "item"),
+        "qty": qty,
+        "unit_price": unit_price,
+        "discount_pct": discount_pct,
+        "amount": priced.net,
+        "tax_amount": priced.tax,
+    });
+    if let Some(t) = &tax {
+        data["tax"] = json!(t);
+    }
+    let line: Record = db::create("sales_invoice_line", &data).map_err(|e| e.or("could not add the line"))?;
+    let _: Option<Record> = db::update("so_line", id_of(&so_line)?, &json!({ "qty_invoiced": invoiced.checked_add(qty)? }))?;
+    recompute_invoice(&input.invoice)?;
+    Ok(line)
+}
+
+/// Order lines of this invoice's order with something delivered and not yet invoiced, for the add-line picker.
+fn do_list_invoiceable_lines(input: Id) -> Result<Vec<Value>> {
+    require_reader()?;
+    let invoice = require("sales_invoice", &input.id, "invoice")?;
+    let mut out = Vec::new();
+    for line in so_lines(text(&invoice, "so").unwrap_or_default())? {
+        let open = qty_of(&line, "qty_delivered")?.checked_sub(qty_of(&line, "qty_invoiced")?)?;
+        if open.is_zero() || open.is_negative() {
+            continue;
+        }
+        let item = text(&line, "item").unwrap_or_default();
+        let name = db::get::<Record>("erp_item.item", item)?
+            .and_then(|i| text(&i, "name").map(str::to_string))
+            .unwrap_or_else(|| item.to_string());
+        out.push(json!({
+            "id": line.get("id"),
+            "display_name": format!("#{} {}: {} to invoice", line.get("line_no").and_then(Value::as_i64).unwrap_or(0), name, open),
+        }));
+    }
+    Ok(out)
+}
+
+/// Give a line's quantity back to the order (it can be invoiced again) and delete the line.
+fn release_invoice_line(line: &Record) -> Result<()> {
+    if let Some(sl) = text(line, "so_line") {
+        if let Some(so_line) = db::get::<Record>("so_line", sl)? {
+            let back = qty_of(&so_line, "qty_invoiced")?.checked_sub(qty_of(line, "qty")?)?;
+            let back = if back.is_negative() { Decimal::zero(QTY_SCALE) } else { back };
+            let _: Option<Record> = db::update("so_line", sl, &json!({ "qty_invoiced": back }))?;
+        }
+    }
+    let _: Option<Record> = db::delete("sales_invoice_line", id_of(line)?)?;
+    Ok(())
+}
+
+fn do_remove_invoice_line(input: Id) -> Result<Record> {
+    require_user()?;
+    let line = require("sales_invoice_line", &input.id, "invoice line")?;
+    let invoice_id = text(&line, "invoice").ok_or_else(|| Error::msg("the line has no invoice"))?.to_string();
+    editable_invoice(&invoice_id)?;
+    if invoice_lines(&invoice_id)?.len() <= 1 {
+        return Err(Error::msg("this is the last line: use Discard draft to drop the whole invoice"));
+    }
+    release_invoice_line(&line)?;
+    recompute_invoice(&invoice_id)?;
+    Ok(line)
+}
+
+/// Drop a draft invoice: its quantities go back to the order to be invoiced again.
+fn do_discard_invoice(input: Id) -> Result<Record> {
+    require_user()?;
+    editable_invoice(&input.id)?;
+    for line in &invoice_lines(&input.id)? {
+        release_invoice_line(line)?;
+    }
+    recompute_invoice(&input.id)?;
+    db::update("sales_invoice", &input.id, &json!({ "state": "cancelled" }))?.ok_or_else(|| Error::msg("the invoice is gone"))
+}
+
 /// In-crate entry points so quotations can open orders without crossing the handler boundary.
 pub(crate) fn api_create_so(input: Value) -> Result<Record> {
     do_create_so(serde_json::from_value(input).map_err(|e| Error::msg(format!("order: {e}")))?)
@@ -950,4 +1381,19 @@ handler! {
     fn create_invoice(input: CreateInvoice) -> Record { do_create_invoice(input) }
     fn approve_invoice(input: Id) -> Record { do_approve_invoice(input) }
     fn get_so(input: Id) -> Value { do_get_so(input) }
+    fn update_so(input: UpdateSo) -> Record { do_update_so(input) }
+    fn get_so_doc(input: Id) -> Record { do_get_so_doc(input) }
+    fn get_so_line(input: Id) -> Value { do_get_so_line(input) }
+    fn update_so_line(input: UpdateSoLine) -> Record { do_update_so_line(input) }
+    fn remove_so_line(input: Id) -> Record { do_remove_so_line(input) }
+    fn deliver_all_so(input: Id) -> Value { do_deliver_all_so(input) }
+    fn update_invoice(input: UpdateInvoice) -> Record { do_update_invoice(input) }
+    fn get_invoice_doc(input: Id) -> Record { do_get_invoice_doc(input) }
+    fn get_invoice_line(input: Id) -> Record { do_get_invoice_line(input) }
+    fn update_invoice_line(input: UpdateInvoiceLine) -> Record { do_update_invoice_line(input) }
+    fn remove_invoice_line(input: Id) -> Record { do_remove_invoice_line(input) }
+    fn add_invoice_line(input: AddInvoiceLine) -> Record { do_add_invoice_line(input) }
+    fn list_invoiceable_lines(input: Id) -> Vec<Value> { do_list_invoiceable_lines(input) }
+    fn discard_invoice(input: Id) -> Record { do_discard_invoice(input) }
+    fn invoice_all_so(input: Id) -> Record { do_invoice_all_so(input) }
 }

@@ -13,7 +13,8 @@
       "type": "string",
       "required": true,
       "max_length": 64,
-      "index": "unique"
+      "index": "unique",
+      "track": true
     },
     {
       "id": "fld_tvpn6hfznh",
@@ -21,7 +22,8 @@
       "label": "%name%",
       "type": "string",
       "required": true,
-      "max_length": 200
+      "max_length": 200,
+      "track": true
     },
     {
       "id": "fld_141p6ys2qk",
@@ -29,7 +31,8 @@
       "label": "%category%",
       "type": "link",
       "target": "item_category",
-      "index": "plain"
+      "index": "plain",
+      "track": true
     },
     {
       "id": "fld_qh1ctjnyaf",
@@ -39,7 +42,8 @@
       "required": true,
       "target": "uom.uom",
       "target_id": "mdl_gidmmkjdj5",
-      "index": "plain"
+      "index": "plain",
+      "track": true
     },
     {
       "id": "fld_h6qaooopla",
@@ -64,7 +68,8 @@
         }
       ],
       "default": "none",
-      "required": true
+      "required": true,
+      "track": true
     },
     {
       "id": "fld_w2e210uvjm",
@@ -72,21 +77,24 @@
       "label": "%is_stocked%",
       "type": "bool",
       "default": true,
-      "help": "When false the item is purchasable or saleable but never enters the stock ledger."
+      "help": "When false the item is purchasable or saleable but never enters the stock ledger.",
+      "track": true
     },
     {
       "id": "fld_d1w9ii9zkl",
       "name": "active",
       "label": "%active%",
       "type": "bool",
-      "default": true
+      "default": true,
+      "track": true
     },
     {
       "id": "fld_mkrzav2bly",
       "name": "expiry_days",
       "label": "%expiry_days%",
       "type": "int",
-      "help": "Shelf life in days from receipt; sets the lot expiry when none is given."
+      "help": "Shelf life in days from receipt; sets the lot expiry when none is given.",
+      "track": true
     }
   ],
   "view": {
@@ -133,5 +141,16 @@
       },
       "message": "shelf life needs a lot or serial tracked item"
     }
-  ]
+  ],
+  "chatter": {
+    "enabled": true,
+    "messages": false,
+    "notes": true,
+    "followers": false,
+    "track_changes": true
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
+  }
 }

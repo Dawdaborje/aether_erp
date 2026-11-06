@@ -166,5 +166,9 @@
       "qty",
       "unit_price"
     ]
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

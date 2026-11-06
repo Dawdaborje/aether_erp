@@ -32,7 +32,8 @@
       "target": "party.party",
       "target_id": "mdl_mr76tss5ic",
       "index": "plain",
-      "id": "fld_zxswnwv7j6"
+      "id": "fld_zxswnwv7j6",
+      "track": true
     },
     {
       "name": "deal",
@@ -90,7 +91,8 @@
           "label": "%cancelled%"
         }
       ],
-      "id": "fld_hdfqpumlca"
+      "id": "fld_hdfqpumlca",
+      "track": true
     },
     {
       "name": "order_date",
@@ -98,7 +100,8 @@
       "type": "date",
       "required": true,
       "index": "plain",
-      "id": "fld_yfut6x4niv"
+      "id": "fld_yfut6x4niv",
+      "track": true
     },
     {
       "name": "warehouse",
@@ -106,7 +109,8 @@
       "type": "link",
       "target": "erp_inventory.stock_warehouse",
       "target_id": "mdl_bu5hotrqqi",
-      "id": "fld_ch7kvga3l3"
+      "id": "fld_ch7kvga3l3",
+      "track": true
     },
     {
       "name": "total",
@@ -114,14 +118,16 @@
       "type": "decimal",
       "scale": 2,
       "default": "0",
-      "id": "fld_zpoozthccm"
+      "id": "fld_zpoozthccm",
+      "track": true
     },
     {
       "name": "notes",
       "label": "%notes%",
       "type": "string",
       "max_length": 500,
-      "id": "fld_j6jsptg6is"
+      "id": "fld_j6jsptg6is",
+      "track": true
     },
     {
       "id": "fld_lwo1op9zk6",
@@ -129,7 +135,8 @@
       "label": "%subtotal%",
       "type": "decimal",
       "scale": 2,
-      "default": "0"
+      "default": "0",
+      "track": true
     },
     {
       "id": "fld_4rqawja3yp",
@@ -137,7 +144,8 @@
       "label": "%tax_total%",
       "type": "decimal",
       "scale": 2,
-      "default": "0"
+      "default": "0",
+      "track": true
     },
     {
       "id": "fld_w39nz5855h",
@@ -146,7 +154,8 @@
       "type": "link",
       "target": "erp_pricing.payment_term",
       "target_id": "mdl_fkq90to5up",
-      "index": "plain"
+      "index": "plain",
+      "track": true
     },
     {
       "id": "fld_nt4zh0pn3r",
@@ -155,7 +164,8 @@
       "type": "link",
       "target": "erp_pricing.price_list",
       "target_id": "mdl_unkbz5sj7z",
-      "index": "plain"
+      "index": "plain",
+      "track": true
     }
   ],
   "view": {
@@ -167,5 +177,16 @@
       "order_date",
       "total"
     ]
+  },
+  "chatter": {
+    "enabled": true,
+    "messages": false,
+    "notes": true,
+    "followers": false,
+    "track_changes": true
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

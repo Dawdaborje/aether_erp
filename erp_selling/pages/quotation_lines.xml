@@ -1,15 +1,74 @@
-<page roles="sales_reader,sales_user,sales_admin" route="/erp/selling/quotations/{id}" title="Quotation lines" model="quotation_line" menu="false">
-  <view type="list" model="quotation_line" source="list_quotation_lines" create="/erp/selling/quotations/{id}/new" create_label="Add line">
-    <columns>
-      <column field="line_no" label="#"/>
-      <column field="item" label="Item"/>
-      <column field="qty" label="Qty"/>
-      <column field="unit_price" label="Price"/>
-      <column field="discount_pct" label="Discount %"/>
-      <column field="amount" label="Net"/>
-      <column field="tax_amount" label="Tax"/>
-      <column field="optional" label="Optional" fieldType="boolean"/>
-    </columns>
-    <empty title="No lines yet" description="Add what you are offering."/>
+<page roles="sales_reader,sales_user,sales_admin" route="/erp/selling/quotations/{id}" title="Quotation" model="quotation" menu="false">
+  <view type="form" source="get_quotation_doc" function="update_quotation" submit="Save">
+    <header>
+      <button label="Send" function="send_quotation" confirm="Send this quotation? It gets its number." showWhen="state=draft"/>
+      <button label="Accepted" function="accept_quotation" confirm="Mark as accepted?" variant="outline" showWhen="state=sent"/>
+      <button label="Make order" function="convert_quotation_to_so" confirm="Turn this quotation into a sales order?" showWhen="state=sent,state=accepted"/>
+      <button label="Make order with optional lines" function="convert_quotation_with_optional" confirm="Turn this quotation into a sales order, optional lines included?" variant="outline" showWhen="state=sent,state=accepted"/>
+      <button label="Rejected" function="reject_quotation" confirm="Mark as rejected?" danger="true" showWhen="state=sent,state=accepted"/>
+      <button label="Download PDF" function="quotation_pdf" variant="outline" showWhen="state!=draft"/>
+      <button label="Email to customer" function="email_quotation" confirm="Email this to the customer?" variant="outline" showWhen="state!=draft"/>
+    </header>
+    <statusbar field="state" options="draft, sent, accepted, converted"/>
+    <group title="Quotation" cols="2">
+      <field name="number" label="Number" readonly="true"/>
+      <field name="customer" label="Customer" fieldType="many2one" entity="customers" readonly="true"/>
+      <field name="quote_date" label="Date" fieldType="date"/>
+      <field name="valid_until" label="Valid until" fieldType="date"/>
+      <field name="warehouse" label="Warehouse" source="erp_inventory.search_warehouses" optionLabel="name" entity="warehouses"/>
+      <field name="payment_term" label="Payment term" source="erp_pricing.list_payment_terms" optionLabel="name" entity="terms"/>
+      <field name="price_list" label="Sell price list" source="erp_pricing.list_price_lists" optionLabel="name" entity="price_lists"/>
+      <field name="so" label="Order" readonly="true"/>
+      <field name="notes" label="Notes" fieldType="text" colspan="2"/>
+    </group>
+    <group title="Totals (optional lines not included)" cols="3">
+      <field name="subtotal" label="Subtotal" readonly="true"/>
+      <field name="tax_total" label="Tax" readonly="true"/>
+      <field name="total" label="Total" readonly="true"/>
+    </group>
+    <notebook>
+      <page title="Lines">
+        <modal name="line" title="Add line" edit_title="Edit line" label="Add line" width="lg">
+          <view type="form" function="add_quotation_line" submit="Add line" success="Line added"
+                edit_source="get_quotation_line" edit_function="update_quotation_line" edit_submit="Save line" edit_success="Line saved">
+            <group title="Line" cols="2">
+              <field name="item" label="Item" required="true" source="erp_item.search_items" optionLabel="name" entity="items"/>
+              <field name="qty" label="Quantity" required="true" fieldType="float"/>
+              <field name="unit_price" label="Unit price (blank = price list)" fieldType="float"/>
+              <field name="discount_pct" label="Discount %" fieldType="float"/>
+              <field name="tax" label="Tax" source="erp_pricing.search_taxes" optionLabel="name" entity="taxes"/>
+              <field name="optional" label="Optional add-on" fieldType="boolean"/>
+            </group>
+          </view>
+        </modal>
+        <view type="list" model="quotation_line" source="list_quotation_lines" edit="line">
+          <columns>
+            <column field="line_no" label="#"/>
+            <column field="item" label="Item"/>
+            <column field="qty" label="Qty"/>
+            <column field="unit_price" label="Price"/>
+            <column field="discount_pct" label="Discount %"/>
+            <column field="amount" label="Net"/>
+            <column field="tax_amount" label="Tax"/>
+            <column field="optional" label="Optional" fieldType="boolean"/>
+          </columns>
+          <actions>
+            <action name="remove" label="Remove" function="remove_quotation_line" confirm="Remove this line?" danger="true"/>
+          </actions>
+          <empty title="No lines yet" description="Add what you are offering. Lines can be edited or removed while the quotation is a draft."/>
+        </view>
+      </page>
+      <page title="History">
+        <view type="list" source="quotation_history">
+          <columns>
+            <column field="at" label="When" fieldType="datetime"/>
+            <column field="who" label="By"/>
+            <column field="what" label="What"/>
+            <column field="change" label="Change"/>
+          </columns>
+          <empty title="No history yet" description="Every change to this document and its lines is listed here, newest first. Removed lines are not listed; the total changing shows them."/>
+        </view>
+      </page>
+    </notebook>
   </view>
 </page>

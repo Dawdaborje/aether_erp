@@ -1,14 +1,65 @@
-<page roles="sales_reader,sales_user,sales_admin" route="/erp/selling/invoices/{id}" title="Invoice lines" model="sales_invoice_line" menu="false">
-  <view type="list" model="sales_invoice_line" source="list_invoice_lines">
-    <columns>
-      <column field="line_no" label="#"/>
-      <column field="item" label="Item"/>
-      <column field="qty" label="Qty"/>
-      <column field="unit_price" label="Price"/>
-      <column field="discount_pct" label="Discount %"/>
-      <column field="amount" label="Net"/>
-      <column field="tax_amount" label="Tax"/>
-    </columns>
-    <empty title="No lines" description="This invoice has no lines."/>
+<page roles="sales_reader,sales_user,sales_admin" route="/erp/selling/invoices/{id}" title="Invoice" model="sales_invoice" menu="false">
+  <view type="form" source="get_invoice_doc" function="update_invoice" submit="Save">
+    <header>
+      <button label="Approve" function="approve_invoice" confirm="Approve this invoice? It is posted to the books." showWhen="state=draft"/>
+      <button label="Discard draft" function="discard_invoice" confirm="Discard this draft? Its quantities can be invoiced again." danger="true" showWhen="state=draft"/>
+      <button label="Download PDF" function="invoice_pdf" variant="outline" showWhen="state!=draft"/>
+      <button label="Email to customer" function="email_invoice" confirm="Email this to the customer?" variant="outline" showWhen="state!=draft"/>
+    </header>
+    <statusbar field="state" options="draft, approved"/>
+    <group title="Invoice" cols="2">
+      <field name="number" label="Number" readonly="true"/>
+      <field name="kind" label="Kind" readonly="true"/>
+      <field name="customer" label="Customer" fieldType="many2one" entity="customers" readonly="true"/>
+      <field name="so" label="Order" readonly="true"/>
+      <field name="invoice_date" label="Invoice date" fieldType="date"/>
+      <field name="due_date" label="Due date" fieldType="date"/>
+      <field name="reason" label="Reason" readonly="true" colspan="2"/>
+    </group>
+    <group title="Totals" cols="3">
+      <field name="subtotal" label="Subtotal" readonly="true"/>
+      <field name="tax_total" label="Tax" readonly="true"/>
+      <field name="total" label="Total" readonly="true"/>
+    </group>
+    <notebook>
+      <page title="Lines">
+        <modal name="line" title="Add line" edit_title="Edit line" label="Add line" width="md">
+          <view type="form" function="add_invoice_line" submit="Add line" success="Line added"
+                edit_source="get_invoice_line" edit_function="update_invoice_line" edit_submit="Save line" edit_success="Line saved">
+            <group title="Line" cols="2">
+              <field name="so_line" label="Order line (new lines only)" source="list_invoiceable_lines" optionLabel="display_name" entity="order lines"/>
+              <field name="qty" label="Quantity" required="true" fieldType="float"/>
+              <field name="unit_price" label="Unit price" fieldType="float"/>
+            </group>
+          </view>
+        </modal>
+        <view type="list" model="sales_invoice_line" source="list_invoice_lines" edit="line">
+          <columns>
+            <column field="line_no" label="#"/>
+            <column field="item" label="Item"/>
+            <column field="qty" label="Qty"/>
+            <column field="unit_price" label="Price"/>
+            <column field="discount_pct" label="Discount %"/>
+            <column field="amount" label="Net"/>
+            <column field="tax_amount" label="Tax"/>
+          </columns>
+          <actions>
+            <action name="remove" label="Remove" function="remove_invoice_line" confirm="Remove this line? Its quantity can be invoiced again." danger="true"/>
+          </actions>
+          <empty title="No lines" description="This invoice has no lines."/>
+        </view>
+      </page>
+      <page title="History">
+        <view type="list" source="invoice_history">
+          <columns>
+            <column field="at" label="When" fieldType="datetime"/>
+            <column field="who" label="By"/>
+            <column field="what" label="What"/>
+            <column field="change" label="Change"/>
+          </columns>
+          <empty title="No history yet" description="Every change to this document and its lines is listed here, newest first. Removed lines are not listed; the total changing shows them."/>
+        </view>
+      </page>
+    </notebook>
   </view>
 </page>

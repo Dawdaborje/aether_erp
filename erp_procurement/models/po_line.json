@@ -175,5 +175,9 @@
       "unit_price",
       "amount"
     ]
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

@@ -1,0 +1,3 @@
+<page roles="stock_reader,stock_user,stock_admin" route="/erp/inventory/overview" title="Overview" icon="layout-dashboard" sort="31">
+  <view type="board" source="inventory_board" drill="inventory_board_drill"/>
+</page>

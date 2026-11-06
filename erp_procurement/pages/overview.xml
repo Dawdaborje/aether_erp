@@ -1,0 +1,3 @@
+<page roles="purchase_reader,purchase_user,purchase_admin" route="/erp/procurement/overview" title="Overview" icon="layout-dashboard" sort="31">
+  <view type="board" source="purchasing_board" drill="purchasing_board_drill"/>
+</page>

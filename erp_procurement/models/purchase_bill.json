@@ -74,14 +74,16 @@
           "label": "%cancelled%"
         }
       ],
-      "id": "fld_znfago2re0"
+      "id": "fld_znfago2re0",
+      "track": true
     },
     {
       "name": "bill_date",
       "label": "%bill_date%",
       "type": "date",
       "required": true,
-      "id": "fld_ure7szq12d"
+      "id": "fld_ure7szq12d",
+      "track": true
     },
     {
       "name": "total",
@@ -89,7 +91,8 @@
       "type": "decimal",
       "scale": 2,
       "default": "0",
-      "id": "fld_umks6y443p"
+      "id": "fld_umks6y443p",
+      "track": true
     },
     {
       "name": "release_to_pay",
@@ -114,7 +117,8 @@
         }
       ],
       "help": "yes: received covers billed; no: nothing received; exception: mismatch or price difference",
-      "id": "fld_ycsskues8u"
+      "id": "fld_ycsskues8u",
+      "track": true
     },
     {
       "name": "source_version",
@@ -129,7 +133,8 @@
       "label": "%subtotal%",
       "type": "decimal",
       "scale": 2,
-      "default": "0"
+      "default": "0",
+      "track": true
     },
     {
       "id": "fld_wyajl0tibd",
@@ -137,7 +142,8 @@
       "label": "%tax_total%",
       "type": "decimal",
       "scale": 2,
-      "default": "0"
+      "default": "0",
+      "track": true
     },
     {
       "id": "fld_m1dsue9ean",
@@ -146,13 +152,15 @@
       "type": "link",
       "target": "erp_pricing.payment_term",
       "target_id": "mdl_fkq90to5up",
-      "index": "plain"
+      "index": "plain",
+      "track": true
     },
     {
       "id": "fld_ndxpcr3j3x",
       "name": "due_date",
       "label": "%due_date%",
-      "type": "date"
+      "type": "date",
+      "track": true
     },
     {
       "id": "fld_k4zz41bnj2",
@@ -199,5 +207,16 @@
       "total",
       "release_to_pay"
     ]
+  },
+  "chatter": {
+    "enabled": true,
+    "messages": false,
+    "notes": true,
+    "followers": false,
+    "track_changes": true
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

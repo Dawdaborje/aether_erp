@@ -13,7 +13,8 @@
       "type": "string",
       "required": true,
       "max_length": 32,
-      "index": "unique"
+      "index": "unique",
+      "track": true
     },
     {
       "id": "fld_3n9n4anjfj",
@@ -21,7 +22,8 @@
       "label": "%name%",
       "type": "string",
       "required": true,
-      "max_length": 120
+      "max_length": 120,
+      "track": true
     },
     {
       "id": "fld_ox2twaazyb",
@@ -41,7 +43,8 @@
           "label": "%buy%"
         }
       ],
-      "default": "sell"
+      "default": "sell",
+      "track": true
     },
     {
       "id": "fld_9sbod9k4y1",
@@ -49,7 +52,8 @@
       "label": "%currency%",
       "type": "string",
       "max_length": 8,
-      "help": "ISO code; empty means any currency."
+      "help": "ISO code; empty means any currency.",
+      "track": true
     },
     {
       "id": "fld_26kr88u5u6",
@@ -65,14 +69,16 @@
       "label": "%is_default%",
       "type": "bool",
       "default": false,
-      "help": "Used when a document names no list (one per kind)."
+      "help": "Used when a document names no list (one per kind).",
+      "track": true
     },
     {
       "id": "fld_cgpoyulkxc",
       "name": "active",
       "label": "%active%",
       "type": "bool",
-      "default": true
+      "default": true,
+      "track": true
     }
   ],
   "view": {
@@ -84,5 +90,16 @@
       "is_default",
       "active"
     ]
+  },
+  "chatter": {
+    "enabled": true,
+    "messages": false,
+    "notes": true,
+    "followers": false,
+    "track_changes": true
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

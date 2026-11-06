@@ -72,14 +72,16 @@
           "label": "%cancelled%"
         }
       ],
-      "id": "fld_wvza3qogf2"
+      "id": "fld_wvza3qogf2",
+      "track": true
     },
     {
       "name": "invoice_date",
       "label": "%invoice_date%",
       "type": "date",
       "required": true,
-      "id": "fld_kbaivmmcui"
+      "id": "fld_kbaivmmcui",
+      "track": true
     },
     {
       "name": "total",
@@ -87,7 +89,8 @@
       "type": "decimal",
       "scale": 2,
       "default": "0",
-      "id": "fld_j3p2xg4rqo"
+      "id": "fld_j3p2xg4rqo",
+      "track": true
     },
     {
       "name": "source_version",
@@ -102,7 +105,8 @@
       "label": "%subtotal%",
       "type": "decimal",
       "scale": 2,
-      "default": "0"
+      "default": "0",
+      "track": true
     },
     {
       "id": "fld_tfp3pdr2je",
@@ -110,7 +114,8 @@
       "label": "%tax_total%",
       "type": "decimal",
       "scale": 2,
-      "default": "0"
+      "default": "0",
+      "track": true
     },
     {
       "id": "fld_272zhtlqe7",
@@ -119,13 +124,15 @@
       "type": "link",
       "target": "erp_pricing.payment_term",
       "target_id": "mdl_fkq90to5up",
-      "index": "plain"
+      "index": "plain",
+      "track": true
     },
     {
       "id": "fld_z0kbly4hht",
       "name": "due_date",
       "label": "%due_date%",
-      "type": "date"
+      "type": "date",
+      "track": true
     },
     {
       "id": "fld_4chgtu3svv",
@@ -171,5 +178,16 @@
       "invoice_date",
       "total"
     ]
+  },
+  "chatter": {
+    "enabled": true,
+    "messages": false,
+    "notes": true,
+    "followers": false,
+    "track_changes": true
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

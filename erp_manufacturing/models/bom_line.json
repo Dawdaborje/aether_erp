@@ -95,5 +95,9 @@
       "scrap_pct",
       "is_byproduct"
     ]
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

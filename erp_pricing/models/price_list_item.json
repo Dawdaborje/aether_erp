@@ -158,5 +158,9 @@
       },
       "message": "valid to is before valid from"
     }
-  ]
+  ],
+  "history": {
+    "enabled": true,
+    "fields": "all"
+  }
 }

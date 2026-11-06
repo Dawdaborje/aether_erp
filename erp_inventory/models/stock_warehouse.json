@@ -96,5 +96,9 @@
       "kind",
       "active"
     ]
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

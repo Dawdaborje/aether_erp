@@ -45,13 +45,13 @@ struct Id {
 }
 
 #[derive(Deserialize)]
-struct LogTime {
-    operation: String,
-    minutes: Decimal,
+pub(crate) struct LogTime {
+    pub(crate) operation: String,
+    pub(crate) minutes: Decimal,
     #[serde(default)]
-    logged_on: Option<String>,
+    pub(crate) logged_on: Option<String>,
     #[serde(default)]
-    note: Option<String>,
+    pub(crate) note: Option<String>,
 }
 
 fn non_negative(value: Option<Decimal>, what: &str) -> Result<Decimal> {
@@ -208,7 +208,7 @@ fn do_start_operation(input: Id) -> Result<Record> {
         .ok_or_else(|| Error::msg("the operation is gone"))
 }
 
-fn do_log_time(input: LogTime) -> Result<Record> {
+pub(crate) fn do_log_time(input: LogTime) -> Result<Record> {
     require_user()?;
     let op = operation_of_active_mo(&input.operation)?;
     if text(&op, "state") != Some("in_progress") {

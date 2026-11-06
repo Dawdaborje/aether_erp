@@ -1,0 +1,3 @@
+<page roles="replenish_reader,replenish_admin" route="/erp/replenishment/overview" title="Overview" icon="layout-dashboard" sort="35">
+  <view type="board" source="replenishment_board" drill="replenishment_board_drill"/>
+</page>

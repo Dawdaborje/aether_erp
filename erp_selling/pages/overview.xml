@@ -1,0 +1,3 @@
+<page roles="sales_reader,sales_user,sales_admin" route="/erp/selling/overview" title="Overview" icon="layout-dashboard" sort="30">
+  <view type="board" source="sales_board" drill="sales_board_drill"/>
+</page>

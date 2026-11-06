@@ -43,7 +43,8 @@
       "type": "decimal",
       "required": true,
       "scale": 6,
-      "help": "Replenish when available plus incoming falls below this."
+      "help": "Replenish when available plus incoming falls below this.",
+      "track": true
     },
     {
       "id": "fld_q16up8wedf",
@@ -52,7 +53,8 @@
       "type": "decimal",
       "required": true,
       "scale": 6,
-      "help": "Order up to this projected quantity."
+      "help": "Order up to this projected quantity.",
+      "track": true
     },
     {
       "id": "fld_cuwfrf7hrc",
@@ -61,7 +63,8 @@
       "type": "decimal",
       "scale": 6,
       "default": "1",
-      "help": "Order in multiples of this quantity."
+      "help": "Order in multiples of this quantity.",
+      "track": true
     },
     {
       "id": "fld_1sb78b5lqj",
@@ -81,7 +84,8 @@
           "label": "%make%"
         }
       ],
-      "default": "buy"
+      "default": "buy",
+      "track": true
     },
     {
       "id": "fld_bye7onyg3o",
@@ -91,7 +95,8 @@
       "target": "party.party",
       "target_id": "mdl_mr76tss5ic",
       "index": "plain",
-      "help": "Default supplier for the buy route."
+      "help": "Default supplier for the buy route.",
+      "track": true
     },
     {
       "id": "fld_3ljvfsgvu3",
@@ -101,21 +106,24 @@
       "target": "erp_manufacturing.bom",
       "index": "plain",
       "target_id": "mdl_q4zddrk8fw",
-      "help": "BOM for the make route (default: the item's active BOM)."
+      "help": "BOM for the make route (default: the item's active BOM).",
+      "track": true
     },
     {
       "id": "fld_8th1iy6jcy",
       "name": "lead_days",
       "label": "%lead_days%",
       "type": "int",
-      "default": 0
+      "default": 0,
+      "track": true
     },
     {
       "id": "fld_ehjv8obfkz",
       "name": "active",
       "label": "%active%",
       "type": "bool",
-      "default": true
+      "default": true,
+      "track": true
     }
   ],
   "indexes": [
@@ -138,5 +146,16 @@
       "route",
       "active"
     ]
+  },
+  "chatter": {
+    "enabled": true,
+    "messages": false,
+    "notes": true,
+    "followers": false,
+    "track_changes": true
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

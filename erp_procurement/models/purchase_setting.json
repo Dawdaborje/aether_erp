@@ -23,7 +23,8 @@
       "type": "decimal",
       "scale": 2,
       "default": "0",
-      "help": "Orders above this total wait for approval; 0 turns it off."
+      "help": "Orders above this total wait for approval; 0 turns it off.",
+      "track": true
     },
     {
       "id": "fld_nt8hs44zp8",
@@ -32,7 +33,8 @@
       "type": "decimal",
       "scale": 2,
       "default": "0",
-      "help": "Receive up to this percent beyond the ordered quantity."
+      "help": "Receive up to this percent beyond the ordered quantity.",
+      "track": true
     },
     {
       "id": "fld_b67ps86t5h",
@@ -53,7 +55,8 @@
         }
       ],
       "default": "received",
-      "help": "Quantity a bill is matched against for release to pay."
+      "help": "Quantity a bill is matched against for release to pay.",
+      "track": true
     },
     {
       "id": "fld_67noarsrrd",
@@ -61,7 +64,8 @@
       "label": "%require_inspection%",
       "type": "bool",
       "default": false,
-      "help": "With the quality plugin installed, goods are only received (or delivered) against an accepted inspection of the order."
+      "help": "With the quality plugin installed, goods are only received (or delivered) against an accepted inspection of the order.",
+      "track": true
     }
   ],
   "view": {
@@ -71,5 +75,16 @@
       "over_receipt_pct",
       "bill_match_on"
     ]
+  },
+  "chatter": {
+    "enabled": true,
+    "messages": false,
+    "notes": true,
+    "followers": false,
+    "track_changes": true
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

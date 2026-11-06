@@ -60,7 +60,8 @@
       "type": "decimal",
       "scale": 6,
       "required": true,
-      "id": "fld_cno6kmcnu6"
+      "id": "fld_cno6kmcnu6",
+      "track": true
     },
     {
       "name": "warehouse",
@@ -70,7 +71,8 @@
       "target": "erp_inventory.stock_warehouse",
       "target_id": "mdl_bu5hotrqqi",
       "help": "Consume from and produce into",
-      "id": "fld_o8r1zbgmt8"
+      "id": "fld_o8r1zbgmt8",
+      "track": true
     },
     {
       "name": "state",
@@ -111,7 +113,8 @@
           "label": "%cancelled%"
         }
       ],
-      "id": "fld_8wryblbwgy"
+      "id": "fld_8wryblbwgy",
+      "track": true
     },
     {
       "name": "consume_move",
@@ -133,7 +136,8 @@
       "name": "planned_date",
       "label": "%planned_date%",
       "type": "date",
-      "id": "fld_9zzgcs2efy"
+      "id": "fld_9zzgcs2efy",
+      "track": true
     },
     {
       "name": "bom_qty",
@@ -149,7 +153,8 @@
       "label": "%labour_cost%",
       "type": "decimal",
       "scale": 6,
-      "default": "0"
+      "default": "0",
+      "track": true
     },
     {
       "id": "fld_m969vgmnwz",
@@ -168,5 +173,16 @@
       "state",
       "warehouse"
     ]
+  },
+  "chatter": {
+    "enabled": true,
+    "messages": false,
+    "notes": true,
+    "followers": false,
+    "track_changes": true
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

@@ -1,14 +1,65 @@
-<page roles="purchase_reader,purchase_user,purchase_admin" route="/erp/procurement/bills/{id}" title="Bill lines" model="purchase_bill_line" menu="false">
-  <view type="list" model="purchase_bill_line" source="list_bill_lines">
-    <columns>
-      <column field="line_no" label="#"/>
-      <column field="item" label="Item"/>
-      <column field="qty" label="Qty"/>
-      <column field="unit_price" label="Price"/>
-      <column field="amount" label="Net"/>
-      <column field="tax_amount" label="Tax"/>
-      <column field="can_be_paid" label="Release" fieldType="badge"/>
-    </columns>
-    <empty title="No lines" description="This bill has no lines."/>
+<page roles="purchase_reader,purchase_user,purchase_admin" route="/erp/procurement/bills/{id}" title="Bill" model="purchase_bill" menu="false">
+  <view type="form" source="get_bill_doc" function="update_bill" submit="Save">
+    <header>
+      <button label="Approve" function="approve_bill" confirm="Approve this bill? It is posted to the books." showWhen="state=draft"/>
+      <button label="Discard draft" function="discard_bill" confirm="Discard this draft? Its quantities can be billed again." danger="true" showWhen="state=draft"/>
+      <button label="Download PDF" function="bill_pdf" variant="outline" showWhen="state!=draft"/>
+    </header>
+    <statusbar field="state" options="draft, approved"/>
+    <group title="Bill" cols="2">
+      <field name="number" label="Number" readonly="true"/>
+      <field name="kind" label="Kind" readonly="true"/>
+      <field name="supplier" label="Supplier" fieldType="many2one" entity="parties" readonly="true"/>
+      <field name="po" label="Order" readonly="true"/>
+      <field name="bill_date" label="Bill date" fieldType="date"/>
+      <field name="due_date" label="Due date" fieldType="date"/>
+      <field name="release_to_pay" label="Release to pay (three-way match)" readonly="true"/>
+      <field name="reason" label="Reason" readonly="true"/>
+    </group>
+    <group title="Totals" cols="3">
+      <field name="subtotal" label="Subtotal" readonly="true"/>
+      <field name="tax_total" label="Tax" readonly="true"/>
+      <field name="total" label="Total" readonly="true"/>
+    </group>
+    <notebook>
+      <page title="Lines">
+        <modal name="line" title="Add line" edit_title="Edit line" label="Add line" width="md">
+          <view type="form" function="add_bill_line" submit="Add line" success="Line added"
+                edit_source="get_bill_line" edit_function="update_bill_line" edit_submit="Save line" edit_success="Line saved">
+            <group title="Line" cols="2">
+              <field name="po_line" label="Order line (new lines only)" source="list_billable_lines" optionLabel="display_name" entity="order lines"/>
+              <field name="qty" label="Quantity" required="true" fieldType="float"/>
+              <field name="unit_price" label="Unit price (a price different from the order flags an exception)" fieldType="float"/>
+            </group>
+          </view>
+        </modal>
+        <view type="list" model="purchase_bill_line" source="list_bill_lines" edit="line">
+          <columns>
+            <column field="line_no" label="#"/>
+            <column field="item" label="Item"/>
+            <column field="qty" label="Qty"/>
+            <column field="unit_price" label="Price"/>
+            <column field="amount" label="Net"/>
+            <column field="tax_amount" label="Tax"/>
+            <column field="can_be_paid" label="Release" fieldType="badge"/>
+          </columns>
+          <actions>
+            <action name="remove" label="Remove" function="remove_bill_line" confirm="Remove this line? Its quantity can be billed again." danger="true"/>
+          </actions>
+          <empty title="No lines" description="This bill has no lines."/>
+        </view>
+      </page>
+      <page title="History">
+        <view type="list" source="bill_history">
+          <columns>
+            <column field="at" label="When" fieldType="datetime"/>
+            <column field="who" label="By"/>
+            <column field="what" label="What"/>
+            <column field="change" label="Change"/>
+          </columns>
+          <empty title="No history yet" description="Every change to this document and its lines is listed here, newest first. Removed lines are not listed; the total changing shows them."/>
+        </view>
+      </page>
+    </notebook>
   </view>
 </page>

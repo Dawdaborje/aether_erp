@@ -1,5 +1,8 @@
 //! Append-only stock ledger: warehouses, moves, layers and reservations.
 
+mod analytics;
+mod board;
+mod board_kit;
 mod common;
 mod counts;
 mod landed;

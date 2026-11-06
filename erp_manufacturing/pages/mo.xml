@@ -1,0 +1,89 @@
+<page roles="mfg_reader,mfg_user,mfg_admin" route="/erp/manufacturing/mos/{id}" title="Manufacturing order" model="mo" menu="false">
+  <view type="form" source="get_mo_doc" function="update_mo" submit="Save">
+    <header>
+      <button label="Confirm" function="confirm_mo" confirm="Confirm this order? Materials and operations are fixed at the current quantity." showWhen="state=draft"/>
+      <button label="Sub-assemblies" function="create_child_mos" confirm="Create orders for the sub-assemblies?" variant="outline" showWhen="state=draft,state=confirmed"/>
+      <button label="Reserve materials" function="reserve_mo" confirm="Reserve the materials?" variant="outline" showWhen="state=confirmed"/>
+      <button label="Complete" function="complete_mo" confirm="Consume the materials and produce the finished goods?" showWhen="state=confirmed,state=reserved,state=in_progress"/>
+      <button label="Unbuild" function="unbuild_mo" confirm="Take the finished goods back out of stock and return the components?" variant="outline" showWhen="state=done"/>
+      <button label="Cancel order" function="cancel_mo" confirm="Cancel this order?" danger="true" showWhen="state=draft,state=confirmed,state=reserved"/>
+    </header>
+    <statusbar field="state" options="draft, confirmed, reserved, in_progress, done"/>
+    <group title="Order" cols="2">
+      <field name="number" label="Number" readonly="true"/>
+      <field name="item" label="Item to make" readonly="true"/>
+      <field name="bom" label="Bill of materials" readonly="true"/>
+      <field name="qty" label="Quantity" fieldType="float"/>
+      <field name="warehouse" label="Warehouse" source="erp_inventory.search_warehouses" optionLabel="name" entity="warehouses"/>
+      <field name="planned_date" label="Planned date" fieldType="date"/>
+      <field name="parent_mo" label="Part of order" readonly="true"/>
+      <field name="labour_cost" label="Labour cost" readonly="true"/>
+    </group>
+    <notebook>
+      <page title="Materials">
+        <view type="list" source="list_mo_materials">
+          <columns>
+            <column field="line_no" label="#"/>
+            <column field="item_name" label="Item"/>
+            <column field="kind" label="Kind" fieldType="badge"/>
+            <column field="qty" label="Needed / made"/>
+            <column field="on_hand" label="On hand"/>
+            <column field="available" label="Available"/>
+            <column field="cover" label="Cover" fieldType="badge"/>
+          </columns>
+          <empty title="Nothing to show" description="This order's bill of materials has no lines."/>
+        </view>
+      </page>
+      <page title="Operations">
+        <modal name="time" title="Log time" edit_title="Log time" label="Log time" width="sm">
+          <view type="form" function="log_time" submit="Log time" success="Time logged"
+                edit_source="get_mo_operation" edit_function="log_operation_time" edit_submit="Log time" edit_success="Time logged">
+            <group title="Time" cols="2">
+              <field name="operation" label="Operation (running ones)" source="list_open_operations" optionLabel="display_name" entity="operations"/>
+              <field name="minutes" label="Minutes" required="true" fieldType="float"/>
+              <field name="logged_on" label="Day" fieldType="date"/>
+              <field name="note" label="Note" fieldType="text" colspan="2"/>
+            </group>
+          </view>
+        </modal>
+        <view type="list" model="mo_operation" source="list_mo_operations" edit="time">
+          <columns>
+            <column field="seq" label="#"/>
+            <column field="name" label="Name"/>
+            <column field="work_center" label="Work center"/>
+            <column field="state" label="State" fieldType="badge"/>
+            <column field="planned_minutes" label="Planned min"/>
+            <column field="actual_minutes" label="Actual min"/>
+          </columns>
+          <actions>
+            <action name="start_operation" label="Start" function="start_operation"/>
+            <action name="finish_operation" label="Finish" function="finish_operation" confirm="Finish this operation?"/>
+          </actions>
+          <empty title="No operations" description="Operations are copied from the bill of materials when the order is confirmed."/>
+        </view>
+      </page>
+      <page title="Sub-orders">
+        <view type="list" source="list_child_mos" open="/erp/manufacturing/mos/{id}">
+          <columns>
+            <column field="number" label="Order"/>
+            <column field="item" label="Item"/>
+            <column field="qty" label="Qty"/>
+            <column field="state" label="State" fieldType="badge"/>
+          </columns>
+          <empty title="No sub-orders" description="Use Sub-assemblies to plan the sub-assemblies this order needs."/>
+        </view>
+      </page>
+      <page title="History">
+        <view type="list" source="mo_history">
+          <columns>
+            <column field="at" label="When" fieldType="datetime"/>
+            <column field="who" label="By"/>
+            <column field="what" label="What"/>
+            <column field="change" label="Change"/>
+          </columns>
+          <empty title="No history yet" description="Every change to this document and its lines is listed here, newest first. Removed lines are not listed; the total changing shows them."/>
+        </view>
+      </page>
+    </notebook>
+  </view>
+</page>

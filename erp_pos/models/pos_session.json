@@ -62,7 +62,8 @@
         }
       ],
       "required": true,
-      "default": "open"
+      "default": "open",
+      "track": true
     },
     {
       "id": "fld_fjgvq4k7bn",
@@ -113,14 +114,27 @@
       "name": "counted_cash",
       "label": "%counted_cash%",
       "type": "decimal",
-      "scale": 2
+      "scale": 2,
+      "track": true
     },
     {
       "id": "fld_zfkkibj3j4",
       "name": "difference",
       "label": "%difference%",
       "type": "decimal",
-      "scale": 2
+      "scale": 2,
+      "track": true
     }
-  ]
+  ],
+  "chatter": {
+    "enabled": true,
+    "messages": false,
+    "notes": true,
+    "followers": false,
+    "track_changes": true
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
+  }
 }

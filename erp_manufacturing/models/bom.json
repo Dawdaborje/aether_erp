@@ -88,5 +88,9 @@
       "active",
       "version"
     ]
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

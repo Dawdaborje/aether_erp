@@ -112,5 +112,9 @@
       "qty",
       "amount"
     ]
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

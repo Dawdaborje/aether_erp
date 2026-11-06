@@ -138,5 +138,9 @@
       "amount",
       "can_be_paid"
     ]
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

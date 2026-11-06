@@ -133,5 +133,9 @@
       "applies_to",
       "active"
     ]
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

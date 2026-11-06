@@ -13,7 +13,7 @@ See docs/design.md in this plugin (erp_selling/docs/design.md).
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["erp_item", "erp_inventory", "company", "party", "uom", "currency", "crm_deal", "crm_customer", "erp_pricing"]
 optional_dependencies = ["erp_quality"]
-capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call"]
+capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call", "history::read", "report::export", "communication::send", "email::send"]
 access_models = [
   { name = "so", permissions = ["read", "write"] },
   { name = "so_line", permissions = ["read", "write"] },

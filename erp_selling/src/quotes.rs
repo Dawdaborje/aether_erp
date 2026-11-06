@@ -211,19 +211,174 @@ fn do_add_quote_line(input: AddQuoteLine) -> Result<Record> {
         data["tax"] = json!(t);
     }
     let line: Record = db::create("quotation_line", &data).map_err(|e| e.or("could not add the line"))?;
-    // Totals cover the firm lines only; optional lines are priced but not summed.
+    recompute_quote(id_of(&quote)?)?;
+    Ok(line)
+}
+
+// ---- the quotation as one document ----
+
+#[derive(Deserialize)]
+struct UpdateQuotation {
+    id: String,
+    #[serde(default)]
+    quote_date: Option<String>,
+    #[serde(default)]
+    valid_until: Option<String>,
+    #[serde(default)]
+    warehouse: Option<String>,
+    #[serde(default)]
+    payment_term: Option<String>,
+    #[serde(default)]
+    price_list: Option<String>,
+    #[serde(default)]
+    notes: Option<String>,
+}
+
+fn require_draft(quote: &Record, what: &str) -> Result<()> {
+    if text(quote, "state") != Some("draft") {
+        return Err(Error::msg(format!(
+            "{what} can only be changed while the quotation is a draft (state: {})",
+            text(quote, "state").unwrap_or("unknown")
+        )));
+    }
+    Ok(())
+}
+
+fn do_update_quotation(input: UpdateQuotation) -> Result<Record> {
+    require_user()?;
+    let quote = require("quotation", &input.id, "quotation")?;
+    require_draft(&quote, "the header")?;
+    let mut data = json!({});
+    if let Some(d) = input.quote_date.filter(|d| !d.is_empty()) {
+        parse_date(&d)?;
+        data["quote_date"] = json!(d);
+    }
+    if let Some(d) = input.valid_until.filter(|d| !d.is_empty()) {
+        parse_date(&d)?;
+        data["valid_until"] = json!(d);
+    }
+    if let Some(wh) = input.warehouse.filter(|w| !w.is_empty()) {
+        let _ = require("erp_inventory.stock_warehouse", &wh, "warehouse")?;
+        data["warehouse"] = json!(wh);
+    }
+    if let Some(term) = input.payment_term.filter(|t| !t.is_empty()) {
+        let _ = require("erp_pricing.payment_term", &term, "payment term")?;
+        data["payment_term"] = json!(term);
+    }
+    if let Some(list) = input.price_list.filter(|l| !l.is_empty()) {
+        let _ = require("erp_pricing.price_list", &list, "price list")?;
+        data["price_list"] = json!(list);
+    }
+    if let Some(notes) = input.notes {
+        data["notes"] = json!(notes);
+    }
+    db::update("quotation", &input.id, &data)?.ok_or_else(|| Error::msg("the quotation is gone"))
+}
+
+fn do_get_quotation_doc(input: Id) -> Result<Record> {
+    require_reader()?;
+    require("quotation", &input.id, "quotation")
+}
+
+fn do_get_quote_line(input: Id) -> Result<Record> {
+    require_reader()?;
+    require("quotation_line", &input.id, "quotation line")
+}
+
+/// Totals cover the firm lines only; optional lines are priced but not summed.
+fn recompute_quote(quote_id: &str) -> Result<()> {
     let mut subtotal = Decimal::zero(MONEY_SCALE);
     let mut tax_total = Decimal::zero(MONEY_SCALE);
-    for l in quote_lines(id_of(&quote)?)?.iter().filter(|l| l.get("optional") != Some(&json!(true))) {
+    for l in quote_lines(quote_id)?.iter().filter(|l| l.get("optional") != Some(&json!(true))) {
         subtotal = subtotal.checked_add(money_of(l, "amount")?)?;
         tax_total = tax_total.checked_add(money_of(l, "tax_amount")?)?;
     }
     let _: Option<Record> = db::update(
         "quotation",
-        id_of(&quote)?,
+        quote_id,
         &json!({ "subtotal": subtotal, "tax_total": tax_total, "total": subtotal.checked_add(tax_total)? }),
     )?;
-    Ok(line)
+    Ok(())
+}
+
+#[derive(Deserialize)]
+struct UpdateQuoteLine {
+    id: String,
+    item: String,
+    qty: Decimal,
+    #[serde(default)]
+    unit_price: Option<Decimal>,
+    #[serde(default)]
+    discount_pct: Option<Decimal>,
+    #[serde(default)]
+    tax: Option<String>,
+    #[serde(default)]
+    optional: Option<bool>,
+}
+
+/// Change a line of a draft quotation: the new line is built first, then takes the old one's place.
+fn do_update_quote_line(input: UpdateQuoteLine) -> Result<Record> {
+    require_user()?;
+    let old = require("quotation_line", &input.id, "quotation line")?;
+    let quote_id = text(&old, "quotation").ok_or_else(|| Error::msg("the line has no quotation"))?.to_string();
+    let quote = require("quotation", &quote_id, "quotation")?;
+    require_draft(&quote, "lines")?;
+    let added = do_add_quote_line(AddQuoteLine {
+        quotation: quote_id.clone(),
+        item: input.item,
+        qty: input.qty,
+        unit_price: input.unit_price,
+        discount_pct: input.discount_pct,
+        tax: input.tax,
+        optional: input.optional,
+    })?;
+    let kept = fold_line("quotation_line", &old, &added, &["quotation", "line_no"])?;
+    recompute_quote(&quote_id)?;
+    Ok(kept)
+}
+
+
+/// Move the values of a freshly built line onto an existing one and drop the new row, so the existing line keeps
+/// its id (and its history) through an edit. Values the new row does not have are cleared.
+fn fold_line(model: &str, old: &Record, new: &Record, keep: &[&str]) -> Result<Record> {
+    let (Some(old_obj), Some(new_obj)) = (old.as_object(), new.as_object()) else {
+        return Err(Error::msg("the line is not a record"));
+    };
+    let mut patch = serde_json::Map::new();
+    for (k, v) in new_obj {
+        if k != "id" && !keep.contains(&k.as_str()) {
+            patch.insert(k.clone(), v.clone());
+        }
+    }
+    for k in old_obj.keys() {
+        if k != "id" && !keep.contains(&k.as_str()) && !new_obj.contains_key(k) {
+            patch.insert(k.clone(), Value::Null);
+        }
+    }
+    let updated = db::update(model, id_of(old)?, &Value::Object(patch))?.ok_or_else(|| Error::msg("the line is gone"))?;
+    let _: Option<Record> = db::delete(model, id_of(new)?)?;
+    Ok(updated)
+}
+
+fn do_remove_quote_line(input: Id) -> Result<Record> {
+    require_user()?;
+    let line = require("quotation_line", &input.id, "quotation line")?;
+    let quote_id = text(&line, "quotation").ok_or_else(|| Error::msg("the line has no quotation"))?.to_string();
+    let quote = require("quotation", &quote_id, "quotation")?;
+    require_draft(&quote, "lines")?;
+    let gone = db::delete("quotation_line", &input.id)?.ok_or_else(|| Error::msg("the line is gone"))?;
+    recompute_quote(&quote_id)?;
+    Ok(gone)
+}
+
+/// Turn the quotation into an order with every optional add-on the customer took as well.
+fn do_convert_with_optional(input: Id) -> Result<Value> {
+    let optional: Vec<String> = quote_lines(&input.id)?
+        .iter()
+        .filter(|l| l.get("optional") == Some(&json!(true)))
+        .filter_map(|l| text(l, "id").map(str::to_string))
+        .collect();
+    do_convert(Convert { id: input.id, take_optional: Some(optional) })
 }
 
 fn do_send_quotation(input: Id) -> Result<Record> {
@@ -469,6 +624,12 @@ handler! {
     fn create_quotation(input: CreateQuotation) -> Record { do_create_quotation(input) }
     fn add_quotation_line(input: AddQuoteLine) -> Record { do_add_quote_line(input) }
     fn send_quotation(input: Id) -> Record { do_send_quotation(input) }
+    fn update_quotation(input: UpdateQuotation) -> Record { do_update_quotation(input) }
+    fn get_quotation_doc(input: Id) -> Record { do_get_quotation_doc(input) }
+    fn get_quotation_line(input: Id) -> Record { do_get_quote_line(input) }
+    fn update_quotation_line(input: UpdateQuoteLine) -> Record { do_update_quote_line(input) }
+    fn remove_quotation_line(input: Id) -> Record { do_remove_quote_line(input) }
+    fn convert_quotation_with_optional(input: Id) -> Value { do_convert_with_optional(input) }
     fn accept_quotation(input: Id) -> Record { set_state(&input.id, &["sent"], "accepted") }
     fn reject_quotation(input: Id) -> Record { set_state(&input.id, &["sent", "accepted"], "rejected") }
     fn convert_quotation_to_so(input: Convert) -> Value { do_convert(input) }

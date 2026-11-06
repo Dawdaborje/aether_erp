@@ -1,0 +1,3 @@
+<page roles="pos_reader,pos_cashier,pos_manager" route="/erp/pos/overview" title="Overview" icon="layout-dashboard" sort="34">
+  <view type="board" source="pos_board" drill="pos_board_drill"/>
+</page>

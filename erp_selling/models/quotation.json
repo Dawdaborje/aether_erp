@@ -32,7 +32,8 @@
       "required": true,
       "target": "party.party",
       "target_id": "mdl_mr76tss5ic",
-      "index": "plain"
+      "index": "plain",
+      "track": true
     },
     {
       "id": "fld_enh9g9k9cc",
@@ -80,20 +81,23 @@
           "label": "%converted%"
         }
       ],
-      "default": "draft"
+      "default": "draft",
+      "track": true
     },
     {
       "id": "fld_8s8eqpp689",
       "name": "quote_date",
       "label": "%quote_date%",
       "type": "date",
-      "required": true
+      "required": true,
+      "track": true
     },
     {
       "id": "fld_6rpj859dud",
       "name": "valid_until",
       "label": "%valid_until%",
-      "type": "date"
+      "type": "date",
+      "track": true
     },
     {
       "id": "fld_sbddsg9577",
@@ -102,7 +106,8 @@
       "type": "link",
       "target": "erp_inventory.stock_warehouse",
       "target_id": "mdl_bu5hotrqqi",
-      "index": "plain"
+      "index": "plain",
+      "track": true
     },
     {
       "id": "fld_g8i8ce068v",
@@ -111,7 +116,8 @@
       "type": "link",
       "target": "erp_pricing.payment_term",
       "target_id": "mdl_fkq90to5up",
-      "index": "plain"
+      "index": "plain",
+      "track": true
     },
     {
       "id": "fld_gt4fcgcti1",
@@ -120,7 +126,8 @@
       "type": "link",
       "target": "erp_pricing.price_list",
       "target_id": "mdl_unkbz5sj7z",
-      "index": "plain"
+      "index": "plain",
+      "track": true
     },
     {
       "id": "fld_rr2kifrgg7",
@@ -144,14 +151,16 @@
       "label": "%total%",
       "type": "decimal",
       "scale": 2,
-      "default": "0"
+      "default": "0",
+      "track": true
     },
     {
       "id": "fld_evizb22qbd",
       "name": "notes",
       "label": "%notes%",
       "type": "string",
-      "max_length": 500
+      "max_length": 500,
+      "track": true
     },
     {
       "id": "fld_2bjt6ox1h6",
@@ -159,7 +168,8 @@
       "label": "%so%",
       "type": "link",
       "target": "so",
-      "index": "plain"
+      "index": "plain",
+      "track": true
     }
   ],
   "view": {
@@ -171,5 +181,16 @@
       "valid_until",
       "total"
     ]
+  },
+  "chatter": {
+    "enabled": true,
+    "messages": false,
+    "notes": true,
+    "followers": false,
+    "track_changes": true
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

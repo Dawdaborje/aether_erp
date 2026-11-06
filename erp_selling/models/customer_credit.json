@@ -33,7 +33,8 @@
       "type": "decimal",
       "required": true,
       "scale": 2,
-      "help": "Open exposure above this holds new orders; 0 means no credit."
+      "help": "Open exposure above this holds new orders; 0 means no credit.",
+      "track": true
     },
     {
       "id": "fld_6o5dwxy4ex",
@@ -41,7 +42,8 @@
       "label": "%on_hold%",
       "type": "bool",
       "default": false,
-      "help": "Refuse new orders regardless of the limit."
+      "help": "Refuse new orders regardless of the limit.",
+      "track": true
     }
   ],
   "indexes": [
@@ -61,5 +63,16 @@
       "credit_limit",
       "on_hold"
     ]
+  },
+  "chatter": {
+    "enabled": true,
+    "messages": false,
+    "notes": true,
+    "followers": false,
+    "track_changes": true
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

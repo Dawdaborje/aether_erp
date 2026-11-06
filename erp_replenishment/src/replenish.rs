@@ -149,7 +149,7 @@ fn do_set_rule(input: SetRule) -> Result<Record> {
     db::update("reorder_rule", &input.id, &changes)?.ok_or_else(|| Error::msg("the rule is gone"))
 }
 
-fn available_at(company: &str, item: &str, warehouse: &str) -> Result<Decimal> {
+pub(crate) fn available_at(company: &str, item: &str, warehouse: &str) -> Result<Decimal> {
     let on_hand: Value = plugins::call(
         "erp_inventory",
         "on_hand",
@@ -159,7 +159,7 @@ fn available_at(company: &str, item: &str, warehouse: &str) -> Result<Decimal> {
 }
 
 /// Quantity already on its way into `warehouse`: open purchase-order lines plus open manufacturing orders.
-fn incoming(company: &str, item: &str, warehouse: &str) -> Result<Decimal> {
+pub(crate) fn incoming(company: &str, item: &str, warehouse: &str) -> Result<Decimal> {
     let mut total = Decimal::zero(QTY_SCALE);
     let lines: Vec<Record> = db::find("erp_procurement.po_line").filter("item", item).limit(2000).all()?;
     for line in &lines {

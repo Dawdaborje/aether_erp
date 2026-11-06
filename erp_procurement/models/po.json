@@ -86,7 +86,8 @@
           "label": "%to_approve%"
         }
       ],
-      "id": "fld_q7438k3wvz"
+      "id": "fld_q7438k3wvz",
+      "track": true
     },
     {
       "name": "order_date",
@@ -94,7 +95,8 @@
       "type": "date",
       "required": true,
       "index": "plain",
-      "id": "fld_646vna2hif"
+      "id": "fld_646vna2hif",
+      "track": true
     },
     {
       "name": "warehouse",
@@ -102,7 +104,8 @@
       "type": "link",
       "target": "erp_inventory.stock_warehouse",
       "target_id": "mdl_bu5hotrqqi",
-      "id": "fld_91xrf6xpxn"
+      "id": "fld_91xrf6xpxn",
+      "track": true
     },
     {
       "name": "total",
@@ -110,14 +113,16 @@
       "type": "decimal",
       "scale": 2,
       "default": "0",
-      "id": "fld_pmlxicxjfj"
+      "id": "fld_pmlxicxjfj",
+      "track": true
     },
     {
       "name": "notes",
       "label": "%notes%",
       "type": "string",
       "max_length": 500,
-      "id": "fld_2wwv06gg3l"
+      "id": "fld_2wwv06gg3l",
+      "track": true
     },
     {
       "name": "rfq",
@@ -132,7 +137,8 @@
       "label": "%subtotal%",
       "type": "decimal",
       "scale": 2,
-      "default": "0"
+      "default": "0",
+      "track": true
     },
     {
       "id": "fld_d5kn3j7gaq",
@@ -140,7 +146,8 @@
       "label": "%tax_total%",
       "type": "decimal",
       "scale": 2,
-      "default": "0"
+      "default": "0",
+      "track": true
     },
     {
       "id": "fld_ju6eiz50rf",
@@ -149,7 +156,8 @@
       "type": "link",
       "target": "erp_pricing.payment_term",
       "target_id": "mdl_fkq90to5up",
-      "index": "plain"
+      "index": "plain",
+      "track": true
     },
     {
       "id": "fld_xqcvof48tn",
@@ -158,7 +166,8 @@
       "type": "link",
       "target": "erp_pricing.price_list",
       "target_id": "mdl_unkbz5sj7z",
-      "index": "plain"
+      "index": "plain",
+      "track": true
     }
   ],
   "view": {
@@ -169,5 +178,16 @@
       "order_date",
       "total"
     ]
+  },
+  "chatter": {
+    "enabled": true,
+    "messages": false,
+    "notes": true,
+    "followers": false,
+    "track_changes": true
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }

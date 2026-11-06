@@ -12,7 +12,7 @@ See docs/design.md in this plugin (erp_manufacturing/docs/design.md).
 """
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["erp_item", "erp_inventory", "company", "uom", "currency"]
-capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call"]
+capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call", "history::read"]
 access_models = [
   { name = "bom", permissions = ["read", "write"] },
   { name = "bom_line", permissions = ["read", "write"] },

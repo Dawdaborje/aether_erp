@@ -14,7 +14,7 @@ See docs/design.md in this plugin (erp_procurement/docs/design.md).
 authors = [{ name = "Aether", email = "hello@aether.local" }]
 dependencies = ["erp_item", "erp_inventory", "company", "party", "uom", "currency", "erp_pricing"]
 optional_dependencies = ["erp_quality"]
-capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call"]
+capabilities = ["db::query", "db::mutate", "db::transaction", "events::emit", "plugins::call", "history::read", "report::export", "communication::send", "email::send"]
 access_models = [
   { name = "material_request", permissions = ["read", "write"] },
   { name = "material_request_line", permissions = ["read", "write"] },

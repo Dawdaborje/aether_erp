@@ -61,5 +61,9 @@
       "effective_date",
       "rate"
     ]
+  },
+  "history": {
+    "enabled": true,
+    "fields": "all"
   }
 }
