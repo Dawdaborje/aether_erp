@@ -3,7 +3,7 @@ name = "erp_inventory"
 icon_path = "assets/logo.svg"
 label = "Inventory"
 version = "0.1.0"
-description = "Append-only stock ledger: moves, layers and reservations."
+description = "The stock ledger: every stock move, cost layer and reservation, kept as a permanent record that is never edited."
 long_description = """
 Quantity and value live in one immutable chain. A posted move never changes; a mistake is a reversing
 move. FIFO, moving average (pooled layer) and standard cost are computed in pure functions and stored
